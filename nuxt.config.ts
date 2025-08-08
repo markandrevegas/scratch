@@ -1,30 +1,24 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 import { defineNuxtConfig } from 'nuxt/config'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  // css: ['~/assets/css/tailwind.css'],
-  tailwindcss: {
-    configPath: 'tailwind.config.ts',
-    cssPath: '~/assets/css/main.css',
-    exposeConfig: true,
-    viewer: true
+  css: ['@/assets/css/tailwind.css'],  // Use @ alias here
+  vite: {
+    plugins: [tsconfigPaths()],
   },
   modules: [
+    '@nuxtjs/color-mode',
+    '@nuxtjs/tailwindcss',
     '@nuxt/fonts',
     '@nuxt/image',
     '@nuxt/eslint',
     '@nuxt/test-utils'
   ],
-  fonts: {
-    provider: 'google',
-    families: [{ name: 'Inter', provider: 'google' }],
-    devtools: true,
-    defaults: {
-      weights: [300, 400, 500, 600],
-      styles: ['normal'],
-      subsets: ['danish']
-    }
-  },
+  colorMode: {
+    classSuffix: '',
+    fallback: 'light',
+    storageKey: 'nuxt-color-mode'
+  }
 })
