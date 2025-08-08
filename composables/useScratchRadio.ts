@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 export function useRadio() {
   const status = ref(null)
@@ -6,48 +6,68 @@ export function useRadio() {
   const loading = ref(false)
 
   // Keep an actual Audio instance for playback
-  const audioUrl = 'http://scratch-radio.ca:8000/stream'
+  const audio = 'http://scratch-radio.ca:8000/stream'
+  const playlist = 'http://scratch-radio.ca:8000/status-json.xsl'
+
   const audioPlayer = ref(null)
   const isPlaying = ref(false)
 
-  const playlistUrl = 'http://scratch-radio.ca:8000/status-json.xsl'
+  const song = ref({ title: '', artist: '' })
 
-  // Setup audio instance
+  let statusInterval = null
+  let lastTitle = null
+
+  // Create audio instance
   const setupAudio = () => {
     if (!audioPlayer.value) {
-      audioPlayer.value = new Audio(audioUrl)
+      audioPlayer.value = new Audio(audio)
       audioPlayer.value.preload = 'none'
       audioPlayer.value.crossOrigin = 'anonymous'
+
+      // Keep isPlaying in sync with actual player
+      audioPlayer.value.addEventListener('playing', () => {
+        isPlaying.value = true
+      })
+      audioPlayer.value.addEventListener('pause', () => {
+        isPlaying.value = false
+      })
     }
   }
 
-  // Play audio (must be triggered by a click)
+  // Play
   const play = async () => {
     if (!audioPlayer.value) setupAudio()
     try {
       await audioPlayer.value.play()
-      isPlaying.value = true
     } catch (err) {
       console.error('Playback blocked or failed:', err)
     }
   }
 
-  // Pause audio
+  // Pause
   const pause = () => {
     if (audioPlayer.value) {
       audioPlayer.value.pause()
-      isPlaying.value = false
     }
   }
 
-  // Fetch playlist/status JSON
   const fetchScratchRadio = async () => {
     loading.value = true
     try {
-      const res = await fetch(playlistUrl)
+      const res = await fetch(playlist)
       if (!res.ok) throw new Error('Failed to fetch radio status')
       const data = await res.json()
       status.value = data
+
+      const currentTitle = data.icestats?.source?.title || ''
+      if (lastTitle && currentTitle !== lastTitle) {
+        console.log('Track changed:', currentTitle)
+      }
+      lastTitle = currentTitle
+      // Split into title and artist
+      const [titlePart, artistPart] = currentTitle.split(/\s*-\s*/)
+      song.value.title = titlePart || ''
+      song.value.artist = artistPart || ''
     } catch (err) {
       error.value = err.message
     } finally {
@@ -55,16 +75,42 @@ export function useRadio() {
     }
   }
 
+  // Start auto-refresh
+  const startStatusUpdates = () => {
+    fetchScratchRadio()
+    statusInterval = setInterval(fetchScratchRadio, 5000)
+  }
+
+  const stopStatusUpdates = () => {
+    if (statusInterval) clearInterval(statusInterval)
+  }
+
+  // Lifecycle integration (optional if you call manually in component)
+  onMounted(() => {
+    setupAudio()
+    startStatusUpdates()
+  })
+  onUnmounted(() => {
+    stopStatusUpdates()
+    if (audioPlayer.value) {
+      audioPlayer.value.pause()
+      audioPlayer.value = null
+    }
+  })
+
   return {
     status,
     error,
     loading,
-    audioUrl,
+    audio,
     audioPlayer,
     isPlaying,
+    song,
     setupAudio,
     play,
     pause,
-    fetchScratchRadio
+    fetchScratchRadio,
+    startStatusUpdates,
+    stopStatusUpdates
   }
 }
