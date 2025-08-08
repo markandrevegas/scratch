@@ -16,9 +16,9 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/test-utils'
   ],
-  colorMode: {
+  /* colorMode: {
     classSuffix: '',
     fallback: 'light',
     storageKey: 'nuxt-color-mode'
-  }
+  } */
 })
