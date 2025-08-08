@@ -1,6 +1,25 @@
+<script setup>
+import { onMounted } from 'vue'
+
+const { status, isPlaying, play, pause, fetchScratchRadio } = useRadio()
+
+onMounted(() => {
+  fetchScratchRadio()
+})
+</script>
+
 <template>
-  <div class="font-inter bg-slate-300 dark:bg-abyssal text-abyssal dark:text-slate-300  h-screen flex flex-col justify-center items-center">
-    <h1>Welcome to My Nuxt 3 App</h1>
-    <ColorModeToggle />
+  <div>
+    <h1>Scratch Radio</h1>
+
+    <div>
+      <button v-if="!isPlaying" @click="play">Play</button>
+      <button v-else @click="pause">Pause</button>
+    </div>
+
+    <div v-if="status">
+      <p>Now Playing: {{ status.icestats?.source?.title }}</p>
+      <p>Listeners: {{ status.icestats?.source?.listeners }}</p>
+    </div>
   </div>
 </template>
