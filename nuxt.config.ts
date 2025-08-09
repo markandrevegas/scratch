@@ -4,7 +4,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  css: ['@/assets/css/tailwind.css'],  // Use @ alias here
+  css: ['@/assets/css/tailwind.css'],
   vite: {
     plugins: [tsconfigPaths()],
   },
@@ -16,9 +16,27 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/test-utils'
   ],
-  /* colorMode: {
-    classSuffix: '',
-    fallback: 'light',
-    storageKey: 'nuxt-color-mode'
-  } */
+  fonts: {
+    provider: 'google',
+    families: [{ name: 'Inter', provider: 'google' }],
+    devtools: true,
+    defaults: {
+      weights: [300, 400, 500, 600],
+      styles: ['normal'],
+      subsets: ['danish']
+    }
+  },
+  image: {
+    quality: 80,
+    providers: {
+      placehold: {
+        name: 'placehold',
+        provider: 'ipx',
+        options: {
+          baseURL: 'https://placehold.co'
+        }
+      }
+    },
+    domains: ['placehold.co']
+  }
 })
