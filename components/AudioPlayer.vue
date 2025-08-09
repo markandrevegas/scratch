@@ -15,6 +15,7 @@
         <NuxtImg v-else provider="placehold" src="64x64" alt="Default Cover" width="64" height="64" class="h-16 w-16 rounded-lg object-cover" />
       </div>
       <div class="col-span-2 rounded-lg text-xs flex flex-col justify-center items-start">
+        
         <div v-if="status">
           <span class="uppercase font-inter font-bold">{{ song.title }}</span>
           <br/>
@@ -22,9 +23,10 @@
           <!-- <p>Listeners: {{ status.icestats?.source?.listeners }}</p> -->
         </div>
       </div>
-      <div class="rounded-full border border-slate-400">
-        <span v-if="!isPlaying" @click="play">Play</span>
-        <span v-if="isPlaying" @click="pause">Pause</span>
+      <div class="rounded-full border border-slate-400 flex items-center justify-center">
+        <Transition name="fade" mode="out-in">
+          <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'fad:pause' : 'fad:play'" class="h-8 w-8 transition-opacity duration-300 hover:opacity-80" @click="isPlaying ? pause() : play()" />
+        </Transition>
       </div>
     </div>
   </div>

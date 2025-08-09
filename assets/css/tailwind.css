@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* fade-enter-from and fade-leave-to = starting/ending state (transparent) */
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+/* fade-enter-to and fade-leave-from = visible state */
+.fade-enter-to, .fade-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* fade-enter-active and fade-leave-active = transition timing */
+.fade-enter-active, .fade-leave-active {
+  transition: all 0.2s ease;
+}

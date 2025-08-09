@@ -14,7 +14,8 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/image',
     '@nuxt/eslint',
-    '@nuxt/test-utils'
+    '@nuxt/test-utils',
+    '@nuxt/icon'
   ],
   fonts: {
     provider: 'google',
