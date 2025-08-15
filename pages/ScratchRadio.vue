@@ -3,7 +3,9 @@
 </script>
 
 <template>
-  <ClientOnly>
-    <AudioPlayer />
-  </ClientOnly>
+  <div class="h-screen flex items-center justify-center">
+    <ClientOnly>
+      <AudioPlayer />
+    </ClientOnly>
+  </div>
 </template>
