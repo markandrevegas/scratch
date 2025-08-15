@@ -17,7 +17,7 @@
       <div class="col-span-2 rounded-lg text-xs flex flex-col justify-center items-start">
         
         <div v-if="status">
-          <span class="uppercase font-inter font-bold">{{ song.title }}</span>
+          <span class="uppercase font-inter font-light">{{ song.title }}</span>
           <br/>
           <span class="text-slate-400">{{ song.artist }}</span>
           <!-- <p>Listeners: {{ status.icestats?.source?.listeners }}</p> -->

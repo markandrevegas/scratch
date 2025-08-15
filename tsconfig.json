@@ -6,5 +6,9 @@
       "@/*": ["./*"]
     },
   },
-  "types": ["@nuxt/types", "@nuxt/fonts"]
+  "types": ["@nuxt/types", "@nuxt/fonts"],
+  "include": [
+    "nuxt.config.ts",
+    "types/**/*.d.ts"
+  ]
 }
