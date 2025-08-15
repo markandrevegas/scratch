@@ -1,6 +1,30 @@
 import { defineNuxtConfig } from 'nuxt/config'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
+// Extend the NuxtConfig type
+declare module 'nuxt/schema' {
+  interface NuxtConfig {
+    image?: {
+      quality?: number;
+      domains?: string[];
+      providers?: {
+        [key: string]: {
+          name: string;
+          provider: string;
+          options?: {
+            baseURL?: string;
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  }
+
+  interface NuxtOptions {
+    image?: NuxtConfig['image'];
+  }
+}
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -14,19 +38,8 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/image',
     '@nuxt/eslint',
-    '@nuxt/test-utils',
-    '@nuxt/icon'
+    '@nuxt/icon',
   ],
-  fonts: {
-    provider: 'google',
-    families: [{ name: 'Inter', provider: 'google' }],
-    devtools: true,
-    defaults: {
-      weights: [300, 400, 500, 600],
-      styles: ['normal'],
-      subsets: ['danish']
-    }
-  },
   image: {
     quality: 80,
     providers: {
