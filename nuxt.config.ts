@@ -52,5 +52,22 @@ export default defineNuxtConfig({
       }
     },
     domains: ['placehold.co']
+  },
+  runtimeConfig: {
+    public: {
+      fonts: {
+        selfHosted: false // Forces Google-hosted <link> injection
+      }
+    }
+  },
+  fonts: {
+    provider: 'google',
+    assets: {},
+    families: [
+      {
+        name: 'Oswald',
+        weights: [300, 400, 500, 600, 700]
+      }
+    ]
   }
 })
