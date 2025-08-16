@@ -12,7 +12,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        inter: ['Oswald', 'sans-serif'],
+        sans: ['Lexend', 'sans-serif'],
       },
       letterSpacing: {
         widest: '.25em'
