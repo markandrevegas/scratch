@@ -65,8 +65,8 @@ export default defineNuxtConfig({
     assets: {},
     families: [
       {
-        name: 'Oswald',
-        weights: [300, 400, 500, 600, 700]
+        name: 'Lexend',
+        weights: [100, 200, 300, 400, 500, 600, 700]
       }
     ]
   }
