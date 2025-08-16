@@ -23,9 +23,9 @@
         </div>
       </div>
       <div class="flex items-center justify-center">
-        <div class="h-8 w-8 rounded-full flex items-center justify-center hover:cursor-pointer hover:opacity-40 duration-500">
+        <div class="h-12 w-12 hover:shadow hover:shadow-sky-600 rounded-full flex items-center justify-center hover:cursor-pointer duration-500">
           <Transition name="fade" mode="out-in">
-            <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4 transition-opacity duration-300 text-slate-500 dark:text-slate-300" @click="isPlaying ? pause() : play()" />
+            <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4 text-slate-500 dark:text-slate-300" @click="isPlaying ? pause() : play()" />
           </Transition>
         </div>
       </div>
