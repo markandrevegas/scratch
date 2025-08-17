@@ -16,7 +16,7 @@
 </script>
 <template>
   <div>
-    <div class="font-sans grid grid-cols-4 w-[420px] h-24 mx-auto align-center gap-4">
+    <div class="font-sans grid grid-cols-4 w-[420px] h-16 mx-auto align-center gap-4">
       <div class="flex justify-center items-center">
         <NuxtImg provider="ipx" :src="random.urls.thumb" class="w-full h-full rounded-lg shadow" />
       </div>
@@ -29,7 +29,7 @@
         </div>
       </div>
       <div class="flex items-center justify-center">
-        <div class="h-12 w-12 hover:bg-abyssal text-cyan-800 opacity-60 hover:text-white hover:opacity-100 rounded-full flex items-center justify-center hover:cursor-pointer duration-500">
+        <div class="h-12 w-12 text-cyan-800 hover:text-white rounded-full flex items-center justify-center hover:cursor-pointer duration-500">
           <Transition name="fade" mode="out-in">
             <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4" @click="isPlaying ? pause() : play()" />
           </Transition>
