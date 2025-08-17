@@ -54,7 +54,9 @@ export default defineNuxtConfig({
     domains: ['placehold.co']
   },
   runtimeConfig: {
+    unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY,
     public: {
+      unsplashBase: 'https://api.unsplash.com',
       fonts: {
         selfHosted: false // Forces Google-hosted <link> injection
       }

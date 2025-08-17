@@ -1,18 +1,32 @@
 <script setup lang="ts">
   import { onMounted } from 'vue'
   import { useRadio } from '../composables/useScratchRadio'
+  import { useUnsplash } from '../composables/useUnsplash'
   const { status, isPlaying, play, pause, song, fetchScratchRadio } = useRadio()
+  const { getRandomPhoto, formatSrc } = useUnsplash()
 
+
+  // Fetch photos
+  const random = await getRandomPhoto({ orientation: 'landscape' })
+  // const search = await searchPhotos('mountains', { per_page: 6 })
   onMounted(() => {
     fetchScratchRadio()
+    console.log(random.urls.raw)
   })
 </script>
 <template>
   <div>
     <div class="font-sans grid grid-cols-4 w-[420px] h-24 mx-auto align-center">
+      <NuxtImg
+        provider="ipx"
+        :src="random.urls.raw"
+        width="800"
+        height="500"
+        class="rounded-lg shadow"
+      />
       <div class="flex justify-center items-center">
-        <NuxtImg v-if="song.image" :src="song.image" alt="Song Cover" width="64" height="64" class="h-16 w-16 rounded-lg object-cover" />
-        <NuxtImg v-else provider="placehold" src="64x64" alt="Default Cover" :width=64 :height=64 class="rounded-lg object-cover" />
+        <!-- <NuxtImg v-if="song?.image" :src="song?.image" alt="Song Cover" width="64" height="64" class="h-16 w-16 rounded-lg object-cover" /> -->
+        <NuxtImg provider="placehold" src="64x64" alt="Default Cover" :width=64 :height=64 class="rounded-lg object-cover" />
       </div>
       <div class="col-span-2 rounded-lg flex flex-col justify-center items-start">
         
