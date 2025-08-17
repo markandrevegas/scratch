@@ -3,7 +3,7 @@
   import { useRadio } from '../composables/useScratchRadio'
   import { useUnsplash } from '../composables/useUnsplash'
   const { status, isPlaying, play, pause, song, fetchScratchRadio } = useRadio()
-  const { getRandomPhoto, formatSrc } = useUnsplash()
+  const { getRandomPhoto } = useUnsplash()
 
 
   // Fetch photos
@@ -11,35 +11,27 @@
   // const search = await searchPhotos('mountains', { per_page: 6 })
   onMounted(() => {
     fetchScratchRadio()
-    console.log(random.urls.raw)
+    // console.log(random.urls)
   })
 </script>
 <template>
   <div>
-    <div class="font-sans grid grid-cols-4 w-[420px] h-24 mx-auto align-center">
-      <NuxtImg
-        provider="ipx"
-        :src="random.urls.raw"
-        width="800"
-        height="500"
-        class="rounded-lg shadow"
-      />
+    <div class="font-sans grid grid-cols-4 w-[420px] h-24 mx-auto align-center gap-4">
       <div class="flex justify-center items-center">
-        <!-- <NuxtImg v-if="song?.image" :src="song?.image" alt="Song Cover" width="64" height="64" class="h-16 w-16 rounded-lg object-cover" /> -->
-        <NuxtImg provider="placehold" src="64x64" alt="Default Cover" :width=64 :height=64 class="rounded-lg object-cover" />
+        <NuxtImg provider="ipx" :src="random.urls.thumb" class="w-full h-full rounded-lg shadow" />
       </div>
       <div class="col-span-2 rounded-lg flex flex-col justify-center items-start">
         
-        <div v-if="status">
-          <p class="font-semibold text-abyssal dark:text-slate-200 leading-none">{{ song.artist }}</p>
-          <span class="text-sm font-medium text-cyan-800 opacity-60 dark:text-slate-300">{{ song.title }}</span>
+        <div v-if="status" class="flex flex-col justify-center gap-1">
+          <p class="text-sm font-semibold text-abyssal dark:text-slate-200 leading-none">{{ song.artist }}</p>
+          <p class="text-xs font-medium text-cyan-800 opacity-60 dark:text-slate-300 leading-4">{{ song.title }}</p>
           <!-- <p>Listeners: {{ status.icestats?.source?.listeners }}</p> -->
         </div>
       </div>
       <div class="flex items-center justify-center">
-        <div class="h-12 w-12 hover:shadow hover:shadow-sky-600 rounded-full flex items-center justify-center hover:cursor-pointer duration-500">
+        <div class="h-12 w-12 hover:bg-abyssal text-cyan-800 opacity-60 hover:text-white hover:opacity-100 rounded-full flex items-center justify-center hover:cursor-pointer duration-500">
           <Transition name="fade" mode="out-in">
-            <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4 text-slate-500 dark:text-slate-300" @click="isPlaying ? pause() : play()" />
+            <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4" @click="isPlaying ? pause() : play()" />
           </Transition>
         </div>
       </div>
