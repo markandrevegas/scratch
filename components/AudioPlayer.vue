@@ -4,14 +4,20 @@
   import { useUnsplash } from '../composables/useUnsplash'
   const { status, isPlaying, play, pause, song, fetchScratchRadio } = useRadio()
   const { getRandomPhoto } = useUnsplash()
+  const { getAlbumArt } = useAlbumArt()
 
-
+  const artist = 'Cher'
+  const track = 'Believe'
+  // const albumArt = ref<string | null>(null)
   // Fetch photos
   const random = await getRandomPhoto({ orientation: 'landscape' })
+  const albumArt = ref<string | null>(null)
   // const search = await searchPhotos('mountains', { per_page: 6 })
-  onMounted(() => {
+
+  onMounted(async () => {
     fetchScratchRadio()
-    // console.log(random.urls)
+    albumArt.value = await getAlbumArt(artist, track)
+    console.log(albumArt.value)
   })
 </script>
 <template>

@@ -56,6 +56,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY,
     public: {
+      lastfmApiKey: process.env.LASTFM_API_KEY,
       unsplashBase: 'https://api.unsplash.com',
       fonts: {
         selfHosted: false // Forces Google-hosted <link> injection
