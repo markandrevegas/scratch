@@ -1,9 +1,11 @@
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useAlbumArt } from './useAlbumArt'
 
 export function useRadio() {
   const status = ref(null)
   const error = ref(null)
   const loading = ref(false)
+  const { getAlbumArt } = useAlbumArt()
 
   // Keep an actual Audio instance for playback
   const audio = 'http://scratch-radio.ca:8000/stream'
@@ -12,7 +14,8 @@ export function useRadio() {
   const audioPlayer = ref(null)
   const isPlaying = ref(false)
 
-  const song = ref({ title: '', artist: '' })
+  // const song = ref({ title: '', artist: '' })
+  const song = ref({ title: '', artist: '', art: null as string | null })
 
   let statusInterval = null
   let lastTitle = null
@@ -68,6 +71,12 @@ export function useRadio() {
       const [titlePart, artistPart] = currentTitle.split(/\s*-\s*/)
       song.value.title = titlePart || ''
       song.value.artist = artistPart || ''
+      // 🎨 Fetch album art whenever we have artist + title
+      if (song.value.artist && song.value.title) {
+        song.value.art = await getAlbumArt(song.value.artist, song.value.title)
+      } else {
+        song.value.art = null
+      }
     } catch (err) {
       error.value = err.message
     } finally {
