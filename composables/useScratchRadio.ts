@@ -1,100 +1,71 @@
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useAlbumArt } from './useAlbumArt'
+// import { useAlbumArt } from './useAlbumArt'
+interface TrackStatus {
+  title: string
+  artist: string
+  art: string | null
+}
 
 export function useRadio() {
-  const status = ref(null)
-  const error = ref(null)
+
+  const error = ref<string | null>(null)
   const loading = ref(false)
-  const { getAlbumArt } = useAlbumArt()
-
-  // Keep an actual Audio instance for playback
-  const audio = 'http://scratch-radio.ca:8000/stream'
-  const playlist = 'http://scratch-radio.ca:8000/status-json.xsl'
-
-  const audioPlayer = ref(null)
+  const audioPlayer = ref<HTMLAudioElement | null>(null)
   const isPlaying = ref(false)
-
-  // const song = ref({ title: '', artist: '' })
   const song = ref({ title: '', artist: '', art: null as string | null })
 
-  let statusInterval = null
-  let lastTitle = null
+  const audio = 'http://scratch-radio.ca:8000/stream'
+  let statusInterval: number | null = null
 
-  // Create audio instance
   const setupAudio = () => {
     if (!audioPlayer.value) {
       audioPlayer.value = new Audio(audio)
       audioPlayer.value.preload = 'none'
       audioPlayer.value.crossOrigin = 'anonymous'
 
-      // Keep isPlaying in sync with actual player
-      audioPlayer.value.addEventListener('playing', () => {
-        isPlaying.value = true
-      })
-      audioPlayer.value.addEventListener('pause', () => {
-        isPlaying.value = false
-      })
+      audioPlayer.value.addEventListener('playing', () => isPlaying.value = true)
+      audioPlayer.value.addEventListener('pause', () => isPlaying.value = false)
     }
   }
 
-  // Play
   const play = async () => {
     if (!audioPlayer.value) setupAudio()
     try {
-      await audioPlayer.value.play()
+      await audioPlayer.value?.play()
     } catch (err) {
       console.error('Playback blocked or failed:', err)
     }
   }
 
-  // Pause
   const pause = () => {
-    if (audioPlayer.value) {
-      audioPlayer.value.pause()
-    }
+    if (audioPlayer.value) audioPlayer.value.pause()
   }
 
+  // ← Replace your old fetchScratchRadio with this:
   const fetchScratchRadio = async () => {
     loading.value = true
     try {
-      const res = await fetch(playlist)
-      if (!res.ok) throw new Error('Failed to fetch radio status')
-      const data = await res.json()
-      status.value = data
-
-      const currentTitle = data.icestats?.source?.title || ''
-      if (lastTitle && currentTitle !== lastTitle) {
-        console.log('Track changed:', currentTitle)
-      }
-      lastTitle = currentTitle
-      // Split into title and artist
-      const [titlePart, artistPart] = currentTitle.split(/\s*-\s*/)
-      song.value.title = titlePart || ''
-      song.value.artist = artistPart || ''
-      // 🎨 Fetch album art whenever we have artist + title
-      if (song.value.artist && song.value.title) {
-        song.value.art = await getAlbumArt(song.value.artist, song.value.title)
-      } else {
-        song.value.art = null
-      }
-    } catch (err) {
-      error.value = err.message
+      const data = await $fetch<TrackStatus>('/api/track-status')
+      song.value.title = data.title || ''
+      song.value.artist = data.artist || ''
+      song.value.art = data.art
+    } catch (err: unknown) {
+      error.value = err instanceof Error ? err.message : String(err)
+      song.value.art = null
     } finally {
       loading.value = false
     }
   }
 
-  // Start auto-refresh
   const startStatusUpdates = () => {
     fetchScratchRadio()
-    statusInterval = setInterval(fetchScratchRadio, 5000)
+    statusInterval = window.setInterval(fetchScratchRadio, 5000)
   }
 
   const stopStatusUpdates = () => {
-    if (statusInterval) clearInterval(statusInterval)
+    if (statusInterval !== null) clearInterval(statusInterval)
   }
 
-  // Lifecycle integration (optional if you call manually in component)
   onMounted(() => {
     setupAudio()
     startStatusUpdates()
@@ -108,7 +79,6 @@ export function useRadio() {
   })
 
   return {
-    status,
     error,
     loading,
     audio,
