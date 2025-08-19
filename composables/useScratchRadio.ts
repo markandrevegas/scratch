@@ -1,20 +1,15 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 // import { useAlbumArt } from './useAlbumArt'
-interface TrackStatus {
-  title: string
-  artist: string
-  art: string | null
-}
 
 export function useRadio() {
 
-  const error = ref<string | null>(null)
-  const loading = ref(false)
-  const audioPlayer = ref<HTMLAudioElement | null>(null)
-  const isPlaying = ref(false)
   const song = ref({ title: '', artist: '', art: null as string | null })
+  const isPlaying = ref(false)
+  const loading = ref(false)
+  const error = ref<string | null>(null)
 
   const audio = 'http://scratch-radio.ca:8000/stream'
+  const audioPlayer = ref<HTMLAudioElement | null>(null)
   let statusInterval: number | null = null
 
   const setupAudio = () => {
@@ -45,10 +40,12 @@ export function useRadio() {
   const fetchScratchRadio = async () => {
     loading.value = true
     try {
-      const data = await $fetch<TrackStatus>('/api/track-status')
+      // const data = await $fetch<TrackStatus>('/api/track-status')
+      const data = await $fetch<{ title: string; artist: string; art: string | null }>('/api/track-status')
       song.value.title = data.title || ''
       song.value.artist = data.artist || ''
       song.value.art = data.art
+      console.log(song.value)
     } catch (err: unknown) {
       error.value = err instanceof Error ? err.message : String(err)
       song.value.art = null
@@ -78,18 +75,6 @@ export function useRadio() {
     }
   })
 
-  return {
-    error,
-    loading,
-    audio,
-    audioPlayer,
-    isPlaying,
-    song,
-    setupAudio,
-    play,
-    pause,
-    fetchScratchRadio,
-    startStatusUpdates,
-    stopStatusUpdates
-  }
+  return { song, isPlaying, play, pause, fetchScratchRadio }
+
 }
