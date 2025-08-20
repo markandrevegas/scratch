@@ -24,12 +24,12 @@ export default defineEventHandler(async () => {
     if (!title || !artist) return { title: title || '', artist: artist || '', art: null }
 
     const key = `${artist}-${title}`
+    console.log(key)
 
     // 2️⃣ Return cached album art if available
     if (albumArtCache.has(key)) {
       return { title, artist, art: albumArtCache.get(key) ?? null }
     }
-    console.log(albumArtCache)
 
     // 3️⃣ Get Spotify token (cached)
     const now = Date.now()
@@ -56,7 +56,8 @@ export default defineEventHandler(async () => {
     }
 
     // 4️⃣ Search Spotify for track album art
-    const query = encodeURIComponent(`track:${title} artist:${artist}`)
+    const query = encodeURIComponent(`track:${artist} artist:${title}`)
+    console.log(`Searching Spotify for: ${query}`)
     const spotifyRes = await $fetch<{
       tracks?: { items: { album?: { images?: SpotifyImage[] } }[] }
     }>(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=1`, {
@@ -64,7 +65,9 @@ export default defineEventHandler(async () => {
         Authorization: `Bearer ${spotifyToken}`
       }
     })
-    console.log(spotifyRes)
+
+    console.log(`Spotify response:`, spotifyRes)
+    
     const trackItem = spotifyRes.tracks?.items?.[0]
     const art = trackItem?.album?.images?.[0]?.url ?? null
 

@@ -1,5 +1,4 @@
 import { ref, onMounted, onUnmounted } from 'vue'
-// import { useAlbumArt } from './useAlbumArt'
 
 export function useRadio() {
 
@@ -78,3 +77,4 @@ export function useRadio() {
   return { song, isPlaying, play, pause, fetchScratchRadio }
 
 }
+export default useRadio
