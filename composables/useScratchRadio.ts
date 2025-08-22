@@ -44,7 +44,7 @@ export function useRadio() {
       song.value.title = data.title || ''
       song.value.artist = data.artist || ''
       song.value.art = data.art
-      console.log(song.value)
+      // console.log(song.value)
     } catch (err: unknown) {
       error.value = err instanceof Error ? err.message : String(err)
       song.value.art = null
