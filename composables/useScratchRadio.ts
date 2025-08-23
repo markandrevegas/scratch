@@ -67,19 +67,17 @@ export function useRadio() {
       song.value.title = data.title || ''
       song.value.artist = data.artist || ''
       song.value.art = data.art
-      if (data.startTime) {
-        // Calculate initial elapsedTime from server start time
+      
+      if (elapsedTime.value === 0 && data.startTime) {
         const start = new Date(data.startTime).getTime()
         const now = Date.now()
         elapsedTime.value = Math.floor((now - start) / 1000)
-      } else {
-        elapsedTime.value = 0
       }
+
       // console.log(song.value)
     } catch (err: unknown) {
       error.value = err instanceof Error ? err.message : String(err)
       song.value.art = null
-      elapsedTime.value = 0
     } finally {
       loading.value = false
     }
