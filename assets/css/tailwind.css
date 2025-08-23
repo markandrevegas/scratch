@@ -2,15 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  progress::-webkit-progress-value {
-    @apply bg-sky-500;
-  }
-
-  progress::-moz-progress-bar {
-    @apply bg-sky-500;
-  }
+/* global CSS or scoped in your component */
+progress.progress-bar {
+  /* remove default appearance */
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #e5e7eb; /* Tailwind gray-200 */
 }
+
+progress.progress-bar::-webkit-progress-bar {
+  background-color: #e5e7eb; /* Tailwind gray-200 */
+  border-radius: 9999px;
+}
+
+progress.progress-bar::-webkit-progress-value {
+  background-color: #3b82f6; /* Tailwind blue-500 */
+  border-radius: 9999px;
+}
+
+progress.progress-bar::-moz-progress-bar {
+  background-color: #3b82f6; /* Firefox */
+  border-radius: 9999px;
+}
+
 
 /* fade-enter-from and fade-leave-to = starting/ending state (transparent) */
 .fade-enter-from, .fade-leave-to {

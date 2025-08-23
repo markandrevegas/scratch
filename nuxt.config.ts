@@ -47,7 +47,7 @@ export default defineNuxtConfig({
         name: 'placehold',
         provider: 'ipx',
         options: {
-          baseURL: 'https://placehold.co/64x64'
+          baseURL: 'https://placehold.co/48x48'
         }
       }
     },

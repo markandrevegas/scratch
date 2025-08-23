@@ -1,5 +1,5 @@
 // server/api/track-status.get.ts
-// import type { IncomingMessage, ServerResponse } from 'http'
+
 import { defineEventHandler } from 'h3'
 interface SpotifyImage {
   url: string
@@ -24,7 +24,7 @@ export default defineEventHandler(async () => {
     if (!title || !artist) return { title: title || '', artist: artist || '', art: null }
 
     const key = `${artist}-${title}`
-    console.log(res)
+    // console.log(res)
 
     // 2️⃣ Return cached album art if available
     if (albumArtCache.has(key)) {
