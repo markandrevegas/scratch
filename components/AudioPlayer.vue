@@ -1,6 +1,31 @@
 <script setup lang="ts">
-  import { onMounted } from 'vue'
+  import { ref, onMounted } from 'vue'
   import { useRadio } from '../composables/useScratchRadio'
+  import { useUnsplash } from '../composables/useUnsplash'
+
+  const { getRandomPhoto } = useUnsplash()
+  export interface UnsplashImage {
+    id: string
+    description: string | null
+    alt_description: string | null
+    urls: {
+      raw: string
+      full: string
+      regular: string
+      small: string
+      thumb: string
+    }
+    user: {
+      name: string
+      username: string
+      portfolio_url: string | null
+    }
+    links: {
+      html: string
+      download: string
+    }
+  }
+  const unsplashImage = ref<UnsplashImage | null>(null)
 
   const { isPlaying, play, pause, elapsedTime, song, fetchScratchRadio } = useRadio()
 
@@ -12,6 +37,13 @@
 
   onMounted(async () => {
     fetchScratchRadio()
+    try {
+      const photo = await getRandomPhoto({ query: '70s reggae' })
+      unsplashImage.value = photo.urls?.small || null
+      // console.log('Unsplash image fetched:', unsplashImage.value)
+    } catch (e) {
+      console.error('Unsplash fallback failed', e)
+    }
   })
 </script>
 <template>
@@ -19,7 +51,7 @@
     <div class="shadow-lg grid grid-cols-3 rounded-lg dark:bg-abyssal w-96">
       <div class="col-span-1 flex justify-center items-center w-full">
         <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-32 w-32 rounded-l-lg shadow object-cover" />
-        <NuxtImg v-else src="64x64" provider="placehold" class="h-32 w-32 rounded-l-lg shadow" />
+        <NuxtImg v-else :src="unsplashImage" class="h-32 w-32 rounded-l-lg shadow object-cover" />
       </div>
       <div class="col-span-2 rounded-lg flex justify-start items-start">
         <div class="flex flex-col justify-between h-full w-full pt-4 pr-4 pb-2 pl-4 gap-2">
