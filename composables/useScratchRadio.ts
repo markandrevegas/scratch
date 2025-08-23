@@ -9,10 +9,10 @@ export function useRadio() {
 
   const elapsedTime = ref(0)
   let timer: number | null = null
+  let statusInterval: number | null = null
 
   const audio = 'http://scratch-radio.ca:8000/stream'
   const audioPlayer = ref<HTMLAudioElement | null>(null)
-  let statusInterval: number | null = null
 
   const setupAudio = () => {
     if (!audioPlayer.value) {
@@ -63,14 +63,23 @@ export function useRadio() {
     loading.value = true
     try {
       // const data = await $fetch<TrackStatus>('/api/track-status')
-      const data = await $fetch<{ title: string; artist: string; art: string | null }>('/api/track-status')
+      const data = await $fetch<{ title: string; artist: string; art: string | null; startTime?: string }>('/api/track-status')
       song.value.title = data.title || ''
       song.value.artist = data.artist || ''
       song.value.art = data.art
+      if (data.startTime) {
+        // Calculate initial elapsedTime from server start time
+        const start = new Date(data.startTime).getTime()
+        const now = Date.now()
+        elapsedTime.value = Math.floor((now - start) / 1000)
+      } else {
+        elapsedTime.value = 0
+      }
       // console.log(song.value)
     } catch (err: unknown) {
       error.value = err instanceof Error ? err.message : String(err)
       song.value.art = null
+      elapsedTime.value = 0
     } finally {
       loading.value = false
     }
