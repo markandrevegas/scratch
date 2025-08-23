@@ -1,5 +1,6 @@
 // composables/useAlbumArt.ts
-// import { useRuntimeConfig } from '#app'
+
+import { useRuntimeConfig } from '#app'
 
 // Spotify token caching
 let spotifyToken: string | null = null

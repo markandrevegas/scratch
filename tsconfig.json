@@ -6,8 +6,8 @@
       "~/*": ["./*"],
       "@/*": ["./*"]
     },
+    "types": ["@types/node", "nuxt"]  // remove @nuxt/types and @nuxt/fonts
   },
-  "types": ["@nuxt/types", "@nuxt/fonts", "@types/node", "nuxt"],
   "include": [
     "nuxt.config.ts",
     "types/**/*.d.ts"
