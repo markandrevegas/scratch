@@ -1,7 +1,6 @@
 // server/api/track-status.get.ts
 
 import { defineEventHandler } from 'h3'
-import { pipeToWebWritable } from 'vue/server-renderer'
 interface SpotifyImage {
   url: string
   height: number
@@ -67,7 +66,7 @@ export default defineEventHandler(async () => {
       }
     })
 
-    console.log(`Spotify response:`, spotifyRes)
+    // console.log(`Spotify response:`, spotifyRes)
     
     const trackItem = spotifyRes.tracks?.items?.[0]
     const art = trackItem?.album?.images?.[0]?.url ?? null
