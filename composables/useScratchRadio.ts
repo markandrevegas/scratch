@@ -58,6 +58,31 @@ export function useRadio() {
     if (audioPlayer.value) audioPlayer.value.pause()
   }
 
+  const refresh = async () => {
+    if (!audioPlayer.value) setupAudio()
+
+    if (audioPlayer.value) {
+      // Pause the current stream
+      audioPlayer.value.pause()
+      stopElapsedTimer()
+      // Reset elapsed time
+      elapsedTime.value = 0
+
+      // Reset src to force reload
+      const currentTime = 0
+      audioPlayer.value.currentTime = currentTime
+      audioPlayer.value.src = '' // Clear src briefly
+      audioPlayer.value.src = audio // Reassign the stream URL
+
+      try {
+        await audioPlayer.value.play()
+      } catch (err) {
+        console.error('Failed to refresh stream:', err)
+      }
+    }
+  }
+
+
   // ← Replace your old fetchScratchRadio with this:
   const fetchScratchRadio = async () => {
     loading.value = true
@@ -106,7 +131,7 @@ export function useRadio() {
     }
   })
 
-  return { song, isPlaying, elapsedTime, play, pause, fetchScratchRadio }
+  return { song, isPlaying, elapsedTime, play, pause, refresh, fetchScratchRadio }
 
 }
 export default useRadio

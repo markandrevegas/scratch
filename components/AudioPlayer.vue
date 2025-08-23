@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, watch } from 'vue'
   import { useRadio } from '../composables/useScratchRadio'
   import { useUnsplash } from '../composables/useUnsplash'
 
@@ -27,13 +27,31 @@
   }
   const unsplashImage = ref<UnsplashImage | null>(null)
 
-  const { isPlaying, play, pause, elapsedTime, song, fetchScratchRadio } = useRadio()
+  const { isPlaying, play, pause, refresh, elapsedTime, song, fetchScratchRadio } = useRadio()
+
+  const hovered = ref(false)
+  const liked = ref(false)
 
   function formatTime(seconds: number) {
     const m = Math.floor(seconds / 60)
     const s = Math.floor(seconds % 60).toString().padStart(2, '0')
     return `${m}:${s}`
   }
+
+  const copySong = async () => {
+    if (liked.value) return
+    try {
+      await navigator.clipboard.writeText(`${song.value.title} - ${song.value.artist}`)
+      liked.value = true
+      console.log('Copied to clipboard!')
+    } catch (err) {
+      console.error('Failed to copy:', err)
+    }
+  }
+
+  watch(song, () => {
+    liked.value = false
+  })
 
   onMounted(async () => {
     fetchScratchRadio()
@@ -50,7 +68,7 @@
   <div>
     <div class="shadow-lg grid grid-cols-3 rounded-lg dark:bg-abyssal w-96">
       <div class="col-span-1 flex justify-center items-center w-full">
-        <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-32 w-32 rounded-l-lg shadow object-cover" />
+        <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-full w-32 rounded-l-lg shadow object-cover" />
         <NuxtImg v-else :src="unsplashImage" class="h-32 w-32 rounded-l-lg shadow object-cover" />
       </div>
       <div class="col-span-2 rounded-lg flex justify-start items-start">
@@ -66,19 +84,21 @@
             <progress :value="elapsedTime" max="720" class="progress-bar w-5/6 h-[2px] rounded-full overflow-hidden appearance-none" />
             <span class="leading-none text-xs text-slate-600/60 dark:text-slate-300">{{ formatTime(elapsedTime) }}</span>
           </div>
-          <div class="h-8 w-full grid grid-cols-4 text-abyssal dark:text-slate-300 hover:text-abyssal dark:hover:text-slate-200 rounded-full flex items-center justify-between hover:cursor-pointer duration-500" @click="isPlaying ? pause() : play()">
+          <div class="h-8 w-full grid grid-cols-4 text-abyssal dark:text-slate-300 hover:text-abyssal dark:hover:text-slate-200 rounded-full flex items-center justify-between hover:cursor-pointer duration-500">
             <Transition name="fade" mode="out-in">
-              <Icon name="jam:refresh-reverse" class="h-4 w-4"  />
+              <Icon name="jam:refresh-reverse" class="h-4 w-4" @click="refresh" />
             </Transition>
             <div class="col-span-2 flex justify-center">
               <Transition name="fade" mode="out-in">
-                <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4"  />
+                <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4" @click="isPlaying ? pause() : play()" />
               </Transition>
             </div>
             <div class="flex justify-end">
-              <Transition name="fade" mode="out-in">
-                <Icon name="jam:heart" class="h-4 w-4"  />
-              </Transition>
+              <div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
+                <Transition name="fade" mode="out-in">
+                  <Icon :key="liked ? 'filled' : hovered ? 'filled' : 'outline'" :name="liked || hovered ? 'jam:heart-f text-red-600' : 'jam:heart'" :class="liked ? 'text-red-600' : 'dark:text-slate-200 text-abyssal'" class="h-4 w-4"  @click="copySong"/>
+                </Transition>
+              </div>
             </div>
           </div>
           <!-- <p>Listeners: {{ status.icestats?.source?.listeners }}</p> -->
