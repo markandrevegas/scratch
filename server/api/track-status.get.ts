@@ -18,13 +18,13 @@ export default defineEventHandler(async () => {
     // 1️⃣ Fetch current radio track
     const res = await $fetch<{ icestats?: { source?: { title?: string } } }>(playlist)
     const currentTitle = res.icestats?.source?.title || ''
-    const [title, artist] = currentTitle.split(/\s*-\s*/)
+    const [artist, title] = currentTitle.split(/\s*-\s*/)
     // console.log(currentTitle, title, artist)
 
     if (!title || !artist) return { title: title || '', artist: artist || '', art: null }
 
     const key = `${artist}-${title}`
-    console.log(key)
+    console.log(res)
 
     // 2️⃣ Return cached album art if available
     if (albumArtCache.has(key)) {

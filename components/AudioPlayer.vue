@@ -42,10 +42,10 @@
       </div>
       <div class="col-span-2 rounded-lg flex justify-start items-start">
         <div class="flex flex-col justify-center pt-6 pl-2 w-full">
-          <p class="text-sm font-semibold text-abyssal dark:text-slate-200 leading-none">{{ song.artist }}</p>
-          <p class="text-xs font-medium text-cyan-800 opacity-60 dark:text-slate-300 leading-4">{{ song.title }}</p>
+          <p class="text-sm font-semibold text-abyssal dark:text-slate-200 leading-none">{{ song.title }}</p>
+          <p class="text-xs font-medium text-cyan-800 opacity-60 dark:text-slate-300 leading-4">{{ song.artist }}</p>
           <div class="w-full flex items-center gap-4">
-            <progress :value="elapsedTime" max="3600" class="h-[2px] bg-sky-300 w-4/5" />
+            <progress :value="elapsedTime" max="3600" class="w-4/5 h-[2px] rounded-full overflow-hidden appearance-none bg-sky-200" />
             <p class="text-xs text-cyan-800/60">{{ formatTime(elapsedTime) }}</p>
           </div>
           <!-- <progress :value="elapsedTime" max="3600" class="h-2 bg-sky-300" /> -->

@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  progress::-webkit-progress-value {
+    @apply bg-sky-500;
+  }
+
+  progress::-moz-progress-bar {
+    @apply bg-sky-500;
+  }
+}
+
 /* fade-enter-from and fade-leave-to = starting/ending state (transparent) */
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
