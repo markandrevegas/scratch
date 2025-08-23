@@ -43,7 +43,6 @@
     try {
       await navigator.clipboard.writeText(`${song.value.title} - ${song.value.artist}`)
       liked.value = true
-      console.log('Copied to clipboard!')
     } catch (err) {
       console.error('Failed to copy:', err)
     }
@@ -67,9 +66,9 @@
 <template>
   <div>
     <div class="shadow-lg grid grid-cols-3 rounded-lg dark:bg-abyssal w-96">
-      <div class="col-span-1 flex justify-center items-center w-full">
-        <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-full w-32 rounded-l-lg shadow object-cover" />
-        <NuxtImg v-else :src="unsplashImage" class="h-32 w-32 rounded-l-lg shadow object-cover" />
+      <div class="col-span-1">
+        <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-32 w-full rounded-l-lg shadow object-cover" />
+        <NuxtImg v-else :src="unsplashImage" class="h-32 w-full rounded-l-lg shadow object-cover" />
       </div>
       <div class="col-span-2 rounded-lg flex justify-start items-start">
         <div class="flex flex-col justify-between h-full w-full pt-4 pr-4 pb-2 pl-4 gap-2">
@@ -95,9 +94,24 @@
             </div>
             <div class="flex justify-end">
               <div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
-                <Transition name="fade" mode="out-in">
-                  <Icon :key="liked ? 'filled' : hovered ? 'filled' : 'outline'" :name="liked || hovered ? 'jam:heart-f text-red-600' : 'jam:heart'" :class="liked ? 'text-red-600' : 'dark:text-slate-200 text-abyssal'" class="h-4 w-4"  @click="copySong"/>
-                </Transition>
+              <Transition name="fade" mode="out-in">
+                <Icon
+                  :key="liked ? 'liked' : hovered ? 'hovered' : 'default'"
+                  :name="liked ? 'jam:heart-f' : hovered ? 'jam:heart-f' : 'jam:heart'"
+                  :class="[
+                    'h-4 w-4',
+                    liked
+                      ? 'text-red-600'
+                      : hovered
+                        ? 'text-abyssal dark:text-slate-200'
+                        : 'text-abyssal dark:text-slate-200'
+                  ]"
+                  @mouseenter="hovered = true"
+                  @mouseleave="hovered = false"
+                  @click="copySong"
+                />
+              </Transition>
+
               </div>
             </div>
           </div>
