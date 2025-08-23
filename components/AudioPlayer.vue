@@ -75,7 +75,7 @@
           <div class="flex justify-between items-start">
             <div>
               <p class="text-sm font-semibold text-abyssal dark:text-slate-300 mb-[2px]">{{ song.title }}</p>
-              <p class="text-xs font-medium text-slate-600 opacity-60 dark:text-slate-200 leading-none">{{ song.artist }}</p>
+              <p class="text-[11px] font-light text-abyssal dark:text-slate-300 leading-none">{{ song.artist }}</p>
             </div>
             <ColorModeToggle />
           </div>
@@ -85,11 +85,11 @@
           </div>
           <div class="h-8 w-full grid grid-cols-4 text-abyssal dark:text-slate-300 hover:text-abyssal dark:hover:text-slate-200 rounded-full flex items-center justify-between hover:cursor-pointer duration-500">
             <Transition name="fade" mode="out-in">
-              <Icon name="jam:refresh-reverse" class="h-4 w-4" @click="refresh" />
+              <Icon name="jam:refresh-reverse hover:text-abyssal/50 dark:hover:text-slate-300/60 transition-colors duration-200" class="h-4 w-4" @click="refresh" />
             </Transition>
             <div class="col-span-2 flex justify-center">
               <Transition name="fade" mode="out-in">
-                <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4" @click="isPlaying ? pause() : play()" />
+                <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4 hover:text-abyssal/50 dark:hover:text-slate-300/60 transition-colors duration-200" @click="isPlaying ? pause() : play()" />
               </Transition>
             </div>
             <div class="flex justify-end">
@@ -103,7 +103,7 @@
                     liked
                       ? 'text-red-600'
                       : hovered
-                        ? 'text-abyssal dark:text-slate-200'
+                        ? 'text-abyssal hover:text-red-600 dark:text-slate-200'
                         : 'text-abyssal dark:text-slate-200'
                   ]"
                   @mouseenter="hovered = true"
