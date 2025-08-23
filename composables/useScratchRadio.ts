@@ -7,6 +7,9 @@ export function useRadio() {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
+  const elapsedTime = ref(0)
+  let timer: number | null = null
+
   const audio = 'http://scratch-radio.ca:8000/stream'
   const audioPlayer = ref<HTMLAudioElement | null>(null)
   let statusInterval: number | null = null
@@ -17,8 +20,28 @@ export function useRadio() {
       audioPlayer.value.preload = 'none'
       audioPlayer.value.crossOrigin = 'anonymous'
 
-      audioPlayer.value.addEventListener('playing', () => isPlaying.value = true)
-      audioPlayer.value.addEventListener('pause', () => isPlaying.value = false)
+      audioPlayer.value.addEventListener('playing', () => {
+        isPlaying.value = true
+        startElapsedTimer()
+      })
+      audioPlayer.value.addEventListener('pause', () => {
+        isPlaying.value = false
+        stopElapsedTimer()
+      })
+    }
+  }
+
+  const startElapsedTimer = () => {
+    if (timer) return
+    timer = window.setInterval(() => {
+      elapsedTime.value++
+    }, 1000)
+  }
+
+  const stopElapsedTimer = () => {
+    if (timer) {
+      clearInterval(timer)
+      timer = null
     }
   }
 
@@ -68,13 +91,15 @@ export function useRadio() {
   })
   onUnmounted(() => {
     stopStatusUpdates()
+    stopElapsedTimer()
+    stopStatusUpdates()
     if (audioPlayer.value) {
       audioPlayer.value.pause()
       audioPlayer.value = null
     }
   })
 
-  return { song, isPlaying, play, pause, fetchScratchRadio }
+  return { song, isPlaying, elapsedTime, play, pause, fetchScratchRadio }
 
 }
 export default useRadio
