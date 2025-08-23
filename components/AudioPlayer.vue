@@ -35,9 +35,9 @@
 </script>
 <template>
   <div>
-    <div class="shadow-lg grid grid-cols-4 rounded-lg dark:bg-slate-200/30">
+    <div class="shadow-lg grid grid-cols-4 rounded-lg dark:bg-abyssal">
       <div class="flex justify-center items-center w-full">
-        <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-32 w-32 rounded-l-lg shadow" />
+        <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-32 w-32 rounded-l-lg shadow object-cover" />
         <NuxtImg v-else src="48x48" provider="placehold" class="w-full h-full rounded-l-lg shadow" />
       </div>
       <div class="col-span-3 rounded-lg flex justify-start items-start">

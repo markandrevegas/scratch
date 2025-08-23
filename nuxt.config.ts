@@ -26,6 +26,15 @@ declare module 'nuxt/schema' {
 }
 
 export default defineNuxtConfig({
+  app: {
+    head: {
+      link: [
+        { rel: 'preconnect', href: 'https://api.spotify.com', crossorigin: '' },
+        { rel: 'preconnect', href: 'https://api.unsplash.com', crossorigin: '' },
+        { rel: 'preconnect', href: 'http://scratch-radio.ca:8000' },
+      ],
+    },
+  },
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   css: ['@/assets/css/tailwind.css'],
