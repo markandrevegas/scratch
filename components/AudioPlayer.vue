@@ -37,7 +37,7 @@
   <div>
     <div class="shadow-lg border border-slate-100 grid grid-cols-4 rounded-l-lg">
       <div class="flex justify-center items-center w-full">
-        <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="w-full h-full rounded-l-lg shadow" />
+        <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-32 w-32 rounded-l-lg shadow" />
         <NuxtImg v-else src="48x48" provider="placehold" class="w-full h-full rounded-l-lg shadow" />
       </div>
       <div class="col-span-3 rounded-lg flex justify-start items-start">

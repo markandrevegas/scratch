@@ -41,7 +41,6 @@ export default defineNuxtConfig({
     '@nuxt/icon',
   ],
   image: {
-    quality: 80,
     providers: {
       placehold: {
         name: 'placehold',
@@ -51,7 +50,8 @@ export default defineNuxtConfig({
         }
       }
     },
-    domains: ['placehold.co']
+    domains: ['placehold.co'],
+    quality: 80
   },
   runtimeConfig: {
     spotifyClientId: process.env.SPOTIFY_CLIENT_ID,

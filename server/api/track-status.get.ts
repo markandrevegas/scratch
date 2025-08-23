@@ -1,6 +1,7 @@
 // server/api/track-status.get.ts
 
 import { defineEventHandler } from 'h3'
+import { pipeToWebWritable } from 'vue/server-renderer'
 interface SpotifyImage {
   url: string
   height: number
@@ -56,7 +57,7 @@ export default defineEventHandler(async () => {
     }
 
     // 4️⃣ Search Spotify for track album art
-    const query = encodeURIComponent(`track:${artist} artist:${title}`)
+    const query = encodeURIComponent(`track:${title} artist:${artist}`)
     console.log(`Searching Spotify for: ${query}`)
     const spotifyRes = await $fetch<{
       tracks?: { items: { album?: { images?: SpotifyImage[] } }[] }
