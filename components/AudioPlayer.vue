@@ -65,10 +65,10 @@
 </script>
 <template>
   <div>
-    <div class="shadow-lg grid grid-cols-3 rounded-lg dark:bg-abyssal w-96">
-      <div class="col-span-1">
-        <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-32 w-full rounded-l-lg shadow object-cover" />
-        <NuxtImg v-else :src="unsplashImage" class="h-32 w-full rounded-l-lg shadow object-cover" />
+    <div class="shadow-lg grid grid-cols-3 rounded-lg dark:bg-abyssal h-32 w-96">
+      <div class="col-span-1 h-32">
+        <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-full w-full rounded-l-lg shadow object-cover" />
+        <NuxtImg v-else :src="unsplashImage" class="h-full w-full rounded-l-lg shadow object-cover" />
       </div>
       <div class="col-span-2 rounded-lg flex justify-start items-start">
         <div class="flex flex-col justify-between h-full w-full pt-4 pr-4 pb-2 pl-4 gap-2">
@@ -85,11 +85,11 @@
           </div>
           <div class="h-8 w-full grid grid-cols-4 text-abyssal dark:text-slate-300 hover:text-abyssal dark:hover:text-slate-200 rounded-full flex items-center justify-between hover:cursor-pointer duration-500">
             <Transition name="fade" mode="out-in">
-              <Icon name="jam:refresh-reverse hover:text-abyssal/50 dark:hover:text-slate-300/60 transition-colors duration-200" class="h-4 w-4" @click="refresh" />
+              <Icon name="jam:refresh-reverse" class="h-4 w-4 text-abyssal hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60 transition-colors duration-200" @click="refresh" />
             </Transition>
             <div class="col-span-2 flex justify-center">
               <Transition name="fade" mode="out-in">
-                <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4 hover:text-abyssal/50 dark:hover:text-slate-300/60 transition-colors duration-200" @click="isPlaying ? pause() : play()" />
+                <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4 hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60 transition-colors duration-200" @click="isPlaying ? pause() : play()" />
               </Transition>
             </div>
             <div class="flex justify-end">
