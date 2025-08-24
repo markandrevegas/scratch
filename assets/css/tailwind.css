@@ -15,7 +15,7 @@ progress.progress-bar::-webkit-progress-bar {
   border-radius: 9999px;
 }
 .dark progress.progress-bar::-webkit-progress-bar {
-  @apply bg-abyssal/30 rounded-full; /* Tailwind gray-700 for dark mode */
+  @apply bg-abyssal rounded-full; /* Tailwind gray-700 for dark mode */
   border-radius: 9999px;
 }
 
