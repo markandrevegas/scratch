@@ -26,6 +26,7 @@
     }
   }
   const unsplashImage = ref<UnsplashImage | null>(null)
+  const coverImage = computed(() => song.art || unsplashImage || '/fallback.jpg')
 
   const { isPlaying, play, pause, refresh, elapsedTime, song, fetchScratchRadio } = useRadio()
 
@@ -68,7 +69,7 @@
     <div class="shadow-lg grid grid-cols-3 rounded-lg dark:bg-abyssal h-32 w-96">
       <div class="col-span-1 h-32">
         <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-full w-full rounded-l-lg shadow object-cover" />
-        <NuxtImg v-else :src="unsplashImage" class="h-full w-full rounded-l-lg shadow object-cover" />
+        <NuxtImg v-else-if="unsplashImage" :src="unsplashImage" class="h-full w-full rounded-l-lg shadow object-cover" />
       </div>
       <div class="col-span-2 rounded-lg flex justify-start items-start">
         <div class="flex flex-col justify-between h-full w-full pt-4 pr-4 pb-2 pl-4 gap-2">
