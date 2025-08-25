@@ -9,7 +9,7 @@ interface SpotifyImage {
 // Server-side cache
 let spotifyToken: string | null = null
 let tokenExpiry: number | null = null
-const albumArtCache = new Map<string, string | null>()
+// const albumArtCache = new Map<string, string | null>()
 
 export default defineEventHandler(async () => {
   const playlist = 'http://scratch-radio.ca:8000/status-json.xsl'
@@ -23,13 +23,13 @@ export default defineEventHandler(async () => {
 
     if (!title || !artist) return { title: title || '', artist: artist || '', art: null }
 
-    const key = `${artist}-${title}`
+    // const key = `${artist}-${title}`
     // console.log(res)
 
     // 2️⃣ Return cached album art if available
-    if (albumArtCache.has(key)) {
-      return { title, artist, art: albumArtCache.get(key) ?? null }
-    }
+    // if (albumArtCache.has(key)) {
+    //   return { title, artist, art: albumArtCache.get(key) ?? null }
+    // }
 
     // 3️⃣ Get Spotify token (cached)
     const now = Date.now()
@@ -72,7 +72,7 @@ export default defineEventHandler(async () => {
     const art = trackItem?.album?.images?.[0]?.url ?? null
 
     // 5️⃣ Cache album art for future requests
-    albumArtCache.set(key, art)
+    // albumArtCache.set(key, art)
 
     return { title, artist, art }
   } catch (err: unknown) {
