@@ -26,7 +26,6 @@
     }
   }
   const unsplashImage = ref<UnsplashImage | null>(null)
-  const coverImage = computed(() => song.art || unsplashImage || '/fallback.jpg')
 
   const { isPlaying, play, pause, refresh, elapsedTime, song, fetchScratchRadio } = useRadio()
 
