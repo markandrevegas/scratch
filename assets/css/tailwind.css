@@ -54,7 +54,7 @@ progress.progress-bar::-moz-progress-bar {
 
 /* fade-enter-to and fade-leave-from = visible state */
 .fade-enter-to, .fade-leave-from {
-  @aaply  opacity-100 transform scale-100;
+  @apply  opacity-100 transform scale-100;
 }
 
 /* fade-enter-active and fade-leave-active = transition timing */

@@ -26,6 +26,7 @@ declare module 'nuxt/schema' {
 }
 
 export default defineNuxtConfig({
+  ssr: true,
   app: {
     head: {
       link: [
@@ -83,5 +84,10 @@ export default defineNuxtConfig({
         weights: [100, 200, 300, 400, 500, 600, 700]
       }
     ]
+  },
+  nitro: {
+    externals: {
+      inline: ['ipx', 'ofetch']
+    }
   }
 })
