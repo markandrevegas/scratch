@@ -3,13 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
+    "build": "npx nuxi build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
+    "preview": "npx serve .output/public",
     "postinstall": "nuxt prepare",
     "format": "prettier --write **/*.{vue,js,ts,json,md}",
-    "start": "bun .output/server/index.mjs"
+    "start": "node .output/server/index.mjs --hostname scratch.local --port 3000"
   },
   "dependencies": {
     "@nuxt/eslint": "1.8.0",

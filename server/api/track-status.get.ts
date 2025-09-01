@@ -1,7 +1,9 @@
 // server/api/track-status.get.ts
 import { defineEventHandler } from 'h3'
 import { $fetch } from 'ofetch'
-import { useRuntimeConfig } from '#imports'
+
+const spotifyClientId = process.env.NUXT_SPOTIFY_CLIENT_ID
+const spotifyClientSecret = process.env.NUXT_SPOTIFY_CLIENT_SECRET
 
 interface SpotifyImage {
   url: string
@@ -15,7 +17,6 @@ let tokenExpiry: number | null = null
 
 export default defineEventHandler(async () => {
   const playlist = 'http://scratch-radio.ca:8000/status-json.xsl'
-  const config = useRuntimeConfig()
 
   try {
     // 1️⃣ Fetch current radio track
@@ -30,8 +31,8 @@ export default defineEventHandler(async () => {
     // 2️⃣ Get Spotify token (cached)
     const now = Date.now()
     if (!spotifyToken || !tokenExpiry || now >= tokenExpiry) {
-      const clientId = config.spotifyClientId
-      const clientSecret = config.spotifyClientSecret
+      const clientId = spotifyClientId
+      const clientSecret = spotifyClientSecret
 
       if (!clientId || !clientSecret) {
         throw new Error('Missing Spotify credentials')
