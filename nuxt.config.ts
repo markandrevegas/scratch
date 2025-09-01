@@ -1,5 +1,5 @@
-import { defineNuxtConfig } from 'nuxt/config'
-import tsconfigPaths from 'vite-tsconfig-paths'
+import { defineNuxtConfig } from 'nuxt/config';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 // Extend the NuxtConfig type
 declare module 'nuxt/schema' {
@@ -26,7 +26,6 @@ declare module 'nuxt/schema' {
 }
 
 export default defineNuxtConfig({
-  ssr: true,
   app: {
     head: {
       link: [
@@ -64,14 +63,14 @@ export default defineNuxtConfig({
     quality: 80
   },
   runtimeConfig: {
-    spotifyClientId: process.env.SPOTIFY_CLIENT_ID,
-    spotifyClientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY,
+    spotifyClientId: process.env.NUXT_SPOTIFY_CLIENT_ID,
+    spotifyClientSecret: process.env.NUXT_SPOTIFY_CLIENT_SECRET,
+    unsplashAccessKey: process.env.NUXT_UNSPLASH_ACCESS_KEY,
     public: {
-      lastfmApiKey: process.env.LASTFM_API_KEY,
+      lastfmApiKey: process.env.NUXT_LASTFM_API_KEY,
       unsplashBase: 'https://api.unsplash.com',
       fonts: {
-        selfHosted: false // Forces Google-hosted <link> injection
+        selfHosted: false
       }
     }
   },
@@ -86,6 +85,7 @@ export default defineNuxtConfig({
     ]
   },
   nitro: {
+    preset: 'static',
     externals: {
       inline: ['ipx', 'ofetch']
     }
