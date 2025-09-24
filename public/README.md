@@ -1,7 +1,7 @@
 # Nuxt 4 Radio App
 
 A modern Nuxt 4 application with Vue 3, Vite, and TailwindCSS.
-This project is designed as a client-side radio streaming app with live track updates, Spotify album art using Soptify api, and Unsplash fallback images.
+This project is designed as a client-side radio streaming app with live track updates, Spotify album art using Spotify api, and Unsplash fallback images.
 
 ---
 
@@ -25,3 +25,4 @@ Clone the repo and install dependencies:
 
 ```bash
 bun install
+```
