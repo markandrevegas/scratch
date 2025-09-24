@@ -1,137 +1,147 @@
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from "vue"
 
 export function useRadio() {
+	const song = ref({ title: "", artist: "", art: null as string | null })
+	const isPlaying = ref(false)
+	const loading = ref(false)
+	const error = ref<string | null>(null)
 
-  const song = ref({ title: '', artist: '', art: null as string | null })
-  const isPlaying = ref(false)
-  const loading = ref(false)
-  const error = ref<string | null>(null)
+	const elapsedTime = ref(0)
+	let timer: number | null = null
+	let statusInterval: number | null = null
 
-  const elapsedTime = ref(0)
-  let timer: number | null = null
-  let statusInterval: number | null = null
+	const audio = "http://scratch-radio.ca:8000/stream"
+	const audioPlayer = ref<HTMLAudioElement | null>(null)
 
-  const audio = 'http://scratch-radio.ca:8000/stream'
-  const audioPlayer = ref<HTMLAudioElement | null>(null)
+	const setupAudio = () => {
+		if (!audioPlayer.value) {
+			audioPlayer.value = new Audio(audio)
+			audioPlayer.value.preload = "none"
+			audioPlayer.value.crossOrigin = "anonymous"
 
-  const setupAudio = () => {
-    if (!audioPlayer.value) {
-      audioPlayer.value = new Audio(audio)
-      audioPlayer.value.preload = 'none'
-      audioPlayer.value.crossOrigin = 'anonymous'
+			audioPlayer.value.addEventListener("playing", () => {
+				isPlaying.value = true
+				startElapsedTimer()
+			})
+			audioPlayer.value.addEventListener("pause", () => {
+				isPlaying.value = false
+				stopElapsedTimer()
+			})
+		}
+	}
 
-      audioPlayer.value.addEventListener('playing', () => {
-        isPlaying.value = true
-        startElapsedTimer()
-      })
-      audioPlayer.value.addEventListener('pause', () => {
-        isPlaying.value = false
-        stopElapsedTimer()
-      })
-    }
-  }
+	const startElapsedTimer = () => {
+		if (timer) return
+		timer = window.setInterval(() => {
+			elapsedTime.value++
+		}, 1000)
+	}
 
-  const startElapsedTimer = () => {
-    if (timer) return
-    timer = window.setInterval(() => {
-      elapsedTime.value++
-    }, 1000)
-  }
+	const stopElapsedTimer = () => {
+		if (timer) {
+			clearInterval(timer)
+			timer = null
+		}
+	}
 
-  const stopElapsedTimer = () => {
-    if (timer) {
-      clearInterval(timer)
-      timer = null
-    }
-  }
+	const play = async () => {
+		if (!audioPlayer.value) setupAudio()
+		try {
+			await audioPlayer.value?.play()
+		} catch (err) {
+			console.error("Playback blocked or failed:", err)
+		}
+	}
 
-  const play = async () => {
-    if (!audioPlayer.value) setupAudio()
-    try {
-      await audioPlayer.value?.play()
-    } catch (err) {
-      console.error('Playback blocked or failed:', err)
-    }
-  }
+	const pause = () => {
+		if (audioPlayer.value) audioPlayer.value.pause()
+	}
 
-  const pause = () => {
-    if (audioPlayer.value) audioPlayer.value.pause()
-  }
+	const refresh = async () => {
+		if (!audioPlayer.value) setupAudio()
 
-  const refresh = async () => {
-    if (!audioPlayer.value) setupAudio()
+		if (audioPlayer.value) {
+			// Pause the current stream
+			audioPlayer.value.pause()
+			stopElapsedTimer()
+			// Reset elapsed time
+			elapsedTime.value = 0
 
-    if (audioPlayer.value) {
-      // Pause the current stream
-      audioPlayer.value.pause()
-      stopElapsedTimer()
-      // Reset elapsed time
-      elapsedTime.value = 0
+			// Reset src to force reload
+			const currentTime = 0
+			audioPlayer.value.currentTime = currentTime
+			audioPlayer.value.src = "" // Clear src briefly
+			audioPlayer.value.src = audio // Reassign the stream URL
 
-      // Reset src to force reload
-      const currentTime = 0
-      audioPlayer.value.currentTime = currentTime
-      audioPlayer.value.src = '' // Clear src briefly
-      audioPlayer.value.src = audio // Reassign the stream URL
+			try {
+				await audioPlayer.value.play()
+			} catch (err) {
+				console.error("Failed to refresh stream:", err)
+			}
+		}
+	}
 
-      try {
-        await audioPlayer.value.play()
-      } catch (err) {
-        console.error('Failed to refresh stream:', err)
-      }
-    }
-  }
+	// ← Replace your old fetchScratchRadio with this:
+	const fetchScratchRadio = async () => {
+		loading.value = true
+		try {
+			// const data = await $fetch<TrackStatus>('/api/track-status')
+			const data = await $fetch<{
+				title: string
+				artist: string
+				art: string | null
+				startTime?: string
+			}>("/api/track-status")
+			song.value.title = data.title || ""
+			song.value.artist = data.artist || ""
+			song.value.art = data.art
 
+			if (elapsedTime.value === 0 && data.startTime) {
+				const start = new Date(data.startTime).getTime()
+				const now = Date.now()
+				elapsedTime.value = Math.floor((now - start) / 1000)
+			}
 
-  // ← Replace your old fetchScratchRadio with this:
-  const fetchScratchRadio = async () => {
-    loading.value = true
-    try {
-      // const data = await $fetch<TrackStatus>('/api/track-status')
-      const data = await $fetch<{ title: string; artist: string; art: string | null; startTime?: string }>('/api/track-status')
-      song.value.title = data.title || ''
-      song.value.artist = data.artist || ''
-      song.value.art = data.art
-      
-      if (elapsedTime.value === 0 && data.startTime) {
-        const start = new Date(data.startTime).getTime()
-        const now = Date.now()
-        elapsedTime.value = Math.floor((now - start) / 1000)
-      }
+			// console.log(song.value)
+		} catch (err: unknown) {
+			error.value = err instanceof Error ? err.message : String(err)
+			song.value.art = null
+		} finally {
+			loading.value = false
+		}
+	}
 
-      // console.log(song.value)
-    } catch (err: unknown) {
-      error.value = err instanceof Error ? err.message : String(err)
-      song.value.art = null
-    } finally {
-      loading.value = false
-    }
-  }
+	const startStatusUpdates = () => {
+		fetchScratchRadio()
+		statusInterval = window.setInterval(fetchScratchRadio, 5000)
+	}
 
-  const startStatusUpdates = () => {
-    fetchScratchRadio()
-    statusInterval = window.setInterval(fetchScratchRadio, 5000)
-  }
+	const stopStatusUpdates = () => {
+		if (statusInterval !== null) clearInterval(statusInterval)
+	}
 
-  const stopStatusUpdates = () => {
-    if (statusInterval !== null) clearInterval(statusInterval)
-  }
+	onMounted(() => {
+		setupAudio()
+		startStatusUpdates()
+	})
+	onUnmounted(() => {
+		stopStatusUpdates()
+		stopElapsedTimer()
+		stopStatusUpdates()
+		if (audioPlayer.value) {
+			audioPlayer.value.pause()
+			audioPlayer.value = null
+		}
+	})
 
-  onMounted(() => {
-    setupAudio()
-    startStatusUpdates()
-  })
-  onUnmounted(() => {
-    stopStatusUpdates()
-    stopElapsedTimer()
-    stopStatusUpdates()
-    if (audioPlayer.value) {
-      audioPlayer.value.pause()
-      audioPlayer.value = null
-    }
-  })
-
-  return { song, isPlaying, elapsedTime, play, pause, refresh, fetchScratchRadio }
-
+	return {
+		song,
+		isPlaying,
+		elapsedTime,
+		play,
+		pause,
+		refresh,
+		fetchScratchRadio
+	}
 }
 export default useRadio

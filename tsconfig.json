@@ -5,10 +5,7 @@
       "~/*": ["./*"],
       "@/*": ["./*"]
     },
-    "types": ["@types/node", "nuxt"]  // remove @nuxt/types and @nuxt/fonts
+    "types": ["@types/node", "nuxt"] // remove @nuxt/types and @nuxt/fonts
   },
-  "include": [
-    "nuxt.config.ts",
-    "types/**/*.d.ts"
-  ]
+  "include": ["nuxt.config.ts", "types/**/*.d.ts"]
 }
