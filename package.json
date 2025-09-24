@@ -9,7 +9,7 @@
     "preview": "npx serve .output/public",
     "postinstall": "nuxt prepare",
     "format": "prettier --write **/*.{vue,js,ts,json,md}",
-    "start": "node .output/server/index.mjs --hostname scratch.local --port 3000"
+    "start": "node .output/server/index.mjs --hostname scratch.local"
   },
   "dependencies": {
     "@nuxt/eslint": "1.8.0",
