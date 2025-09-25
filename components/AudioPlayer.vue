@@ -104,7 +104,7 @@ onMounted(async () => {
           <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-full w-full rounded-t-lg object-cover" />
           <NuxtImg v-else-if="unsplashImage" :src="unsplashImage" class="h-full w-full rounded-t-lg object-cover" />
         </div>
-        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="hidden absolute inset-0 bg-black/40"></div>
       </div>
       <div class="h-32 shadow-lg rounded-b-lg flex flex-col justify-center gap-4">
         <div class="text-center px-4">
