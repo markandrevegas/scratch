@@ -2,62 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-/* global CSS or scoped in your component */
-progress.progress-bar {
-  /* remove default appearance */
-  -webkit-appearance: none;
-  appearance: none;
-  @apply bg-gray-200 rounded-full; /* Tailwind gray-200 */
+
+@layer base {
+  body {
+    @apply dark:bg-slate-500
+  }
 }
 
-progress.progress-bar::-webkit-progress-bar {
-  @apply bg-gray-200 rounded-full; /* Tailwind gray-200 */
-  border-radius: 9999px;
-}
-.dark progress.progress-bar::-webkit-progress-bar {
-  @apply bg-abyssal rounded-full; /* Tailwind gray-700 for dark mode */
-  border-radius: 9999px;
-}
+@layer components {
+  /* global CSS or scoped in your component */
+  progress.progress-bar {
+    /* remove default appearance */
+    -webkit-appearance: none;
+    appearance: none;
+    @apply bg-gray-200 rounded-full; /* Tailwind gray-200 */
+  }
 
-progress.progress-bar::-webkit-progress-value {
-  @apply bg-abyssal rounded-full;
-  border-radius: 9999px;
-}
-.dark progress.progress-bar::-webkit-progress-value {
-  @apply bg-abyssal/30 rounded-full;
-  border-radius: 9999px;
-}
+  progress.progress-bar::-webkit-progress-bar {
+    @apply bg-gray-200 rounded-full; /* Tailwind gray-200 */
+    border-radius: 9999px;
+  }
+  .dark progress.progress-bar::-webkit-progress-bar {
+    @apply bg-abyssal rounded-full; /* Tailwind gray-700 for dark mode */
+    border-radius: 9999px;
+  }
 
-progress.progress-bar::-moz-progress-bar {
-  @apply bg-abyssal rounded-full; /* Firefox */
-  border-radius: 9999px;
-}
-.dark progress.progress-bar::-moz-progress-bar {
-  @apply bg-abyssal/30 rounded-full; /* Firefox */
-  border-radius: 9999px;
-}
-.dark progress.progress-bar::-webkit-progress-value {
-  @apply bg-slate-300/50 rounded-full;
-  border-radius: 9999px;
-}
+  progress.progress-bar::-webkit-progress-value {
+    @apply bg-abyssal rounded-full;
+    border-radius: 9999px;
+  }
+  .dark progress.progress-bar::-webkit-progress-value {
+    @apply bg-abyssal/30 rounded-full;
+    border-radius: 9999px;
+  }
 
-.dark progress.progress-bar::-moz-progress-bar {
-  @apply bg-slate-300/50 rounded-full;
-  border-radius: 9999px;
-}
+  progress.progress-bar::-moz-progress-bar {
+    @apply bg-abyssal rounded-full; /* Firefox */
+    border-radius: 9999px;
+  }
+  .dark progress.progress-bar::-moz-progress-bar {
+    @apply bg-abyssal/30 rounded-full; /* Firefox */
+    border-radius: 9999px;
+  }
+  .dark progress.progress-bar::-webkit-progress-value {
+    @apply bg-slate-300/50 rounded-full;
+    border-radius: 9999px;
+  }
 
+  .dark progress.progress-bar::-moz-progress-bar {
+    @apply bg-slate-300/50 rounded-full;
+    border-radius: 9999px;
+  }
+  }
 
-/* fade-enter-from and fade-leave-to = starting/ending state (transparent) */
-.fade-enter-from, .fade-leave-to {
-  @apply opacity-0 transform scale-90;
-}
+@layer utilities {
+  /* fade-enter-from and fade-leave-to = starting/ending state (transparent) */
+  .fade-enter-from, .fade-leave-to {
+    @apply opacity-0 transform scale-90;
+  }
 
-/* fade-enter-to and fade-leave-from = visible state */
-.fade-enter-to, .fade-leave-from {
-  @apply  opacity-100 transform scale-100;
-}
+  /* fade-enter-to and fade-leave-from = visible state */
+  .fade-enter-to, .fade-leave-from {
+    @apply  opacity-100 transform scale-100;
+  }
 
-/* fade-enter-active and fade-leave-active = transition timing */
-.fade-enter-active, .fade-leave-active {
-  @apply duration-300 ease-in-out;
+  /* fade-enter-active and fade-leave-active = transition timing */
+  .fade-enter-active, .fade-leave-active {
+    @apply duration-300 ease-in-out;
+  }
 }
