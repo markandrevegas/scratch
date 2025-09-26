@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue"
+import { ref, onMounted, watch, computed } from "vue"
 import { useRadio } from "../composables/useScratchRadio"
 import { useUnsplash } from "../composables/useUnsplash"
 
@@ -30,7 +30,28 @@ const unsplashImage = ref<UnsplashImage | null>(null)
 const { isPlaying, play, pause, refresh, elapsedTime, song, fetchScratchRadio } = useRadio()
 
 const hovered = ref(false)
-const liked = ref(false)
+// const liked = ref(false)
+const liked = computed({
+  get: () => {
+    if (!song.value) return false
+    return favorites.value.some(
+      s => s.title === song.value.title && s.artist === song.value.artist && s.liked
+    )
+  },
+  set: (val: boolean) => {
+    if (!song.value) return
+    const songInFavorites = favorites.value.find(
+      s => s.title === song.value.title && s.artist === song.value.artist
+    )
+    if (songInFavorites) {
+      songInFavorites.liked = val
+    } else if (val) {
+      // Only add if liking a new song
+      favorites.value.push({ ...song.value, liked: true })
+    }
+    localStorage.setItem('favorites', JSON.stringify(favorites.value))
+  }
+})
 
 interface Song {
   title: string
@@ -52,21 +73,13 @@ if (typeof window !== 'undefined') {
   if (storedLiked) likedSongs.value = JSON.parse(storedLiked)
 }
 
-function formatTime(seconds: number) {
-	const m = Math.floor(seconds / 60)
-	const s = Math.floor(seconds % 60)
-		.toString()
-		.padStart(2, "0")
-	return `${m}:${s}`
-}
-
 function isPortraitEnough(photo: any, minRatio = 1.2) {
   // Unsplash returns width & height in the JSON
   const { width, height } = photo
   const ratio = height / width
   return ratio >= minRatio
 }
-// copy song to clipboard and mark as liked
+
 // add song to favorites
 const copySong = async () => {
   try {
@@ -86,7 +99,7 @@ const copySong = async () => {
       favSong.liked = true
     }
 
-    liked.value = true
+    // liked.value = true
 
     if (typeof window !== 'undefined') {
       localStorage.setItem('favorites', JSON.stringify(favorites.value))
@@ -95,7 +108,6 @@ const copySong = async () => {
     console.error("Failed to copy:", err)
   }
 }
-
 // Watch song likes and reset liked state
 watch(song, (newSong) => {
   liked.value = !!favorites.value.find(
@@ -176,8 +188,19 @@ onMounted(async () => {
           <div class="flex justify-end">
             <div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
               <Transition name="fade" mode="out-in">
-                <Icon :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" :name="liked ? 'jam:heart-f' : hovered ? 'jam:heart-f' : 'jam:heart'" :class="['h-4 w-4', liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-slate-200' : 'text-abyssal dark:text-slate-200']" @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" />
-              </Transition>
+  <Icon
+    :key="liked ? 'liked' : hovered ? 'hovered' : 'default'"
+    :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'"
+    :class="[
+      'h-4 w-4 transition-colors duration-200',
+      liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-slate-200' : 'text-abyssal dark:text-slate-200'
+    ]"
+    @mouseenter="hovered = true"
+    @mouseleave="hovered = false"
+    @click="copySong"
+  />
+</Transition>
+
             </div>
           </div>
         </div>
