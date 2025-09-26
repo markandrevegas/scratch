@@ -52,6 +52,13 @@ function formatTime(seconds: number) {
 		.padStart(2, "0")
 	return `${m}:${s}`
 }
+
+function isPortraitEnough(photo: any, minRatio = 1.2) {
+  // Unsplash returns width & height in the JSON
+  const { width, height } = photo
+  const ratio = height / width
+  return ratio >= minRatio
+}
 // copy song to clipboard and mark as liked
 // add song to favorites
 const copySong = async () => {
@@ -89,8 +96,20 @@ watch(
 onMounted(async () => {
 	fetchScratchRadio()
 	try {
-		const photo = await getRandomPhoto({ query: "70s reggae" })
+		const photo = await getRandomPhoto({ query: "70s reggae", orientation: 'portrait', count: '1'})
 		unsplashImage.value = photo.urls?.small || null
+    const portrait = Array.isArray(photo)
+      ? photo.find(p => isPortraitEnough(p, 1.2))
+      : isPortraitEnough(photo, 1.2)
+        ? photo
+        : null
+
+    if (portrait) {
+      unsplashImage.value = portrait.urls.regular
+    } else {
+      console.warn("No suitable portrait image found, using fallback")
+      unsplashImage.value = photo.urls.small
+    }
 	} catch (e) {
 		console.error("Unsplash fallback failed", e)
 	}
