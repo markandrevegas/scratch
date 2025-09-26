@@ -16,7 +16,7 @@ export function useRadio() {
 	const setupAudio = () => {
 		if (!audioPlayer.value) {
 			audioPlayer.value = new Audio(audio)
-			audioPlayer.value.preload = "none"
+			audioPlayer.value.preload = "auto"
 			audioPlayer.value.crossOrigin = "anonymous"
 
 			audioPlayer.value.addEventListener("playing", () => {
@@ -27,6 +27,7 @@ export function useRadio() {
 				isPlaying.value = false
 				stopElapsedTimer()
 			})
+      audioPlayer.value.load()
 		}
 	}
 
@@ -70,8 +71,9 @@ export function useRadio() {
 			// Reset src to force reload
 			const currentTime = 0
 			audioPlayer.value.currentTime = currentTime
-			audioPlayer.value.src = "" // Clear src briefly
-			audioPlayer.value.src = audio // Reassign the stream URL
+			audioPlayer.value.pause()
+      audioPlayer.value.currentTime = 0
+      await audioPlayer.value.play()
 
 			try {
 				await audioPlayer.value.play()
