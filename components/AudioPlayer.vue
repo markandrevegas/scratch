@@ -156,9 +156,10 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="h-72 overflow-y-auto relative">
-      <div class="p-2 pl-3 bg-zinc-100 sticky top-0 z-20 flex">
-        <p class="text-sm text-abyssal">Playlist</p>
+    <div class="h-72 overflow-y-auto relative rounded-t-lg">
+      <div class="px-2 pt-4 pb-3 pl-3 bg-abyssal text-zinc-100 sticky top-0 z-20 flex justify-start items-center gap-2">
+        <Icon name="jam-heart-f" class="size-3" />
+        <p class="text-xs uppercase tracking-widest font-medium">Favorites</p>
       </div>
       <ul class="flex flex-col gap-2">
         <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
