@@ -101,10 +101,9 @@ onMounted(async () => {
     <div class="w-72 h-96 mx-auto flex flex-col rounded-t-lg">
       <div class="h-48 relative flex flex-col justify-center items-center rounded-t-lg overflow-hidden">
         <div class="absolute h-full w-full flex justify-center items-center overflow-hidden">
-          <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-full w-full rounded-t-lg object-cover" />
-          <NuxtImg v-else-if="unsplashImage" :src="unsplashImage" class="h-full w-full rounded-t-lg object-cover" />
+          <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-full w-full rounded-t-lg object-cover object-top" />
+          <NuxtImg v-else-if="unsplashImage" :src="unsplashImage" class="h-full w-full rounded-t-lg object-cover object-top" />
         </div>
-        <div class="hidden absolute inset-0 bg-black/40"></div>
       </div>
       <div class="h-32 shadow-lg rounded-b-lg flex flex-col justify-center gap-4">
         <div class="text-center px-4">
@@ -138,10 +137,10 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <ul class="flex flex-col gap-2 max-h-96 overflow-y-auto">
+    <ul class="flex flex-col gap-2 h-96 overflow-y-scroll">
       <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
-        <span class="flex justify-center items-center">0{{ i + 1 }}.</span>
-        <span class="inline-block flex-col justify-center items-center">
+        <span class="flex justify-center items-start">0{{ i + 1 }}.</span>
+        <span class="inline-block flex-col justify-center items-start">
           <span class="block text-abyssal leading-3 font-semibold">{{ s.title }}</span>
           <span class="text-abyssal opacity-70">{{ s.artist }}</span>
         </span>
