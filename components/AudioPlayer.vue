@@ -97,8 +97,8 @@ onMounted(async () => {
 })
 </script>
 <template>
-	<div class="flex justify-center items-start gap-4">
-    <div class="w-72 h-96 mx-auto flex flex-col rounded-t-lg">
+	<div class="flex gap-4">
+    <div class="w-72 mx-auto flex flex-col rounded-t-lg">
       <div class="h-48 relative flex flex-col justify-center items-center rounded-t-lg overflow-hidden">
         <div class="absolute h-full w-full flex justify-center items-center overflow-hidden">
           <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-full w-full rounded-t-lg object-cover object-top" />
@@ -137,14 +137,19 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <ul class="flex flex-col gap-2 h-96 overflow-y-scroll">
-      <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
-        <span class="flex justify-center items-start">0{{ i + 1 }}.</span>
-        <span class="inline-block flex-col justify-center items-start">
-          <span class="block text-abyssal leading-3 font-semibold">{{ s.title }}</span>
-          <span class="text-abyssal opacity-70">{{ s.artist }}</span>
-        </span>
-      </li>
-    </ul>
+    <div class="h-72 overflow-y-auto relative">
+      <div class="p-2 pl-3 bg-zinc-100 sticky top-0 z-20 flex">
+        <p class="text-sm text-abyssal">Playlist</p>
+      </div>
+      <ul class="flex flex-col gap-2">
+        <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
+          <span class="flex justify-center items-start">0{{ i + 1 }}.</span>
+          <span class="inline-block flex-col justify-center items-start">
+            <span class="block text-abyssal leading-3 font-semibold">{{ s.title }}</span>
+            <span class="text-abyssal opacity-70">{{ s.artist }}</span>
+          </span>
+        </li>
+      </ul>
+    </div>
 	</div>
 </template>
