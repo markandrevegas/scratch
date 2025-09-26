@@ -188,25 +188,24 @@ onMounted(async () => {
           <div class="flex justify-end">
             <div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
               <Transition name="fade" mode="out-in">
-  <Icon
-    :key="liked ? 'liked' : hovered ? 'hovered' : 'default'"
-    :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'"
-    :class="[
-      'h-4 w-4 transition-colors duration-200',
-      liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-slate-200' : 'text-abyssal dark:text-slate-200'
-    ]"
-    @mouseenter="hovered = true"
-    @mouseleave="hovered = false"
-    @click="copySong"
-  />
-</Transition>
-
+                <Icon
+                  :key="liked ? 'liked' : hovered ? 'hovered' : 'default'"
+                  :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'"
+                  :class="[
+                    'h-4 w-4 transition-colors duration-200',
+                    liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-slate-200' : 'text-abyssal dark:text-slate-200'
+                  ]"
+                  @mouseenter="hovered = true"
+                  @mouseleave="hovered = false"
+                  @click="copySong"
+                />
+              </Transition>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="h-72 overflow-y-auto scroll-smooth relative rounded-t-lg">
+    <div class="h-72 min-w-96 overflow-y-auto scroll-smooth relative rounded-t-lg">
       <div class="px-2 pt-4 pb-3 pl-3 bg-abyssal text-zinc-100 sticky top-0 z-20 flex justify-start items-center gap-2">
         <Icon name="jam-heart-f" class="size-3" />
         <p class="text-xs uppercase tracking-widest font-medium">Favorites</p>
