@@ -36,6 +36,7 @@ interface Song {
   title: string
   artist: string
   art?: string | null
+  liked?: boolean
 }
 
 const favorites = ref<Song[]>([])
@@ -43,6 +44,12 @@ const favorites = ref<Song[]>([])
 if (typeof window !== 'undefined') {
   const stored = localStorage.getItem('favorites')
   if (stored) favorites.value = JSON.parse(stored)
+}
+// Load liked songs from localStorage
+const likedSongs = ref<Song[]>([])
+if (typeof window !== 'undefined') {
+  const storedLiked = localStorage.getItem('likedSongs')
+  if (storedLiked) likedSongs.value = JSON.parse(storedLiked)
 }
 
 function formatTime(seconds: number) {
@@ -62,26 +69,40 @@ function isPortraitEnough(photo: any, minRatio = 1.2) {
 // copy song to clipboard and mark as liked
 // add song to favorites
 const copySong = async () => {
-	if (liked.value) return
-	try {
-		await navigator.clipboard.writeText(`${song.value.title} - ${song.value.artist}`)
-		liked.value = true
-    // Avoid duplicates in favorites
-    const exists = favorites.value.find(
-      (s) => s.title === song.value.title && s.artist === song.value.artist
+  try {
+    await navigator.clipboard.writeText(`${song.value.title} - ${song.value.artist}`)
+
+    // Find the song in favorites
+    let favSong = favorites.value.find(
+      s => s.title === song.value.title && s.artist === song.value.artist
     )
-    if (!exists) {
-      favorites.value.push({ ...song.value })
-      console.log(favorites)
+
+    if (!favSong) {
+      // Add new song
+      favSong = { ...song.value, liked: true }
+      favorites.value.push(favSong)
+    } else {
+      // Mark existing song as liked
+      favSong.liked = true
     }
-	} catch (err) {
-		console.error("Failed to copy:", err)
-	}
+
+    liked.value = true
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('favorites', JSON.stringify(favorites.value))
+    }
+  } catch (err) {
+    console.error("Failed to copy:", err)
+  }
 }
+
 // Watch song likes and reset liked state
-watch(song, () => {
-	liked.value = false
+watch(song, (newSong) => {
+  liked.value = !!favorites.value.find(
+    s => s.title === newSong.title && s.artist === newSong.artist && s.liked
+  )
 })
+
 // Watch favorites and persist them
 watch(
   favorites,
@@ -113,6 +134,12 @@ onMounted(async () => {
 	} catch (e) {
 		console.error("Unsplash fallback failed", e)
 	}
+  // Initial check on mount
+  if (song.value) {
+    liked.value = !!favorites.value.find(
+      s => s.title === song.value.title && s.artist === song.value.artist && s.liked
+    )
+  }
 })
 </script>
 <template>
@@ -156,7 +183,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="h-72 overflow-y-auto relative rounded-t-lg">
+    <div class="h-72 overflow-y-auto scroll-smooth relative rounded-t-lg">
       <div class="px-2 pt-4 pb-3 pl-3 bg-abyssal text-zinc-100 sticky top-0 z-20 flex justify-start items-center gap-2">
         <Icon name="jam-heart-f" class="size-3" />
         <p class="text-xs uppercase tracking-widest font-medium">Favorites</p>
