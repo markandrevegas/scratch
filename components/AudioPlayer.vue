@@ -73,17 +73,16 @@ if (typeof window !== 'undefined') {
   if (storedLiked) likedSongs.value = JSON.parse(storedLiked)
 }
 
-function isPortraitEnough(photo: any, minRatio = 1.2) {
-  // Unsplash returns width & height in the JSON
-  const { width, height } = photo
-  const ratio = height / width
-  return ratio >= minRatio
-}
-
 // add song to favorites
 const copySong = async () => {
   try {
-    await navigator.clipboard.writeText(`${song.value.title} - ${song.value.artist}`)
+    // Check if navigator and navigator.clipboard exist before trying to use them
+    if (navigator && navigator.clipboard) {
+      await navigator.clipboard.writeText(`${song.value.title} - ${song.value.artist}`)
+    } else {
+      // Provide a fallback or log a message if clipboard access isn't available
+      console.warn("Clipboard API not available. Skipping copy operation.")
+    }
 
     // Find the song in favorites
     let favSong = favorites.value.find(
@@ -131,7 +130,7 @@ onMounted(async () => {
 	try {
 		const photo = await getRandomPhoto({ query: "70s reggae", orientation: 'portrait', count: '1'})
 		unsplashImage.value = photo.urls?.small || null
-    const portrait = Array.isArray(photo)
+    /* const portrait = Array.isArray(photo)
       ? photo.find(p => isPortraitEnough(p, 1.2))
       : isPortraitEnough(photo, 1.2)
         ? photo
@@ -142,7 +141,7 @@ onMounted(async () => {
     } else {
       console.warn("No suitable portrait image found, using fallback")
       unsplashImage.value = photo.urls.small
-    }
+    } */
 	} catch (e) {
 		console.error("Unsplash fallback failed", e)
 	}
