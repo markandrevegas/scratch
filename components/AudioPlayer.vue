@@ -98,8 +98,6 @@ const copySong = async () => {
       favSong.liked = true
     }
 
-    // liked.value = true
-
     if (typeof window !== 'undefined') {
       localStorage.setItem('favorites', JSON.stringify(favorites.value))
     }
@@ -107,14 +105,13 @@ const copySong = async () => {
     console.error("Failed to copy:", err)
   }
 }
-// Watch song likes and reset liked state
+
 watch(song, (newSong) => {
   liked.value = !!favorites.value.find(
     s => s.title === newSong.title && s.artist === newSong.artist && s.liked
   )
 })
 
-// Watch favorites and persist them
 watch(
   favorites,
   (newVal) => {
@@ -130,22 +127,9 @@ onMounted(async () => {
 	try {
 		const photo = await getRandomPhoto({ query: "70s reggae", orientation: 'portrait', count: '1'})
 		unsplashImage.value = photo.urls?.small || null
-    /* const portrait = Array.isArray(photo)
-      ? photo.find(p => isPortraitEnough(p, 1.2))
-      : isPortraitEnough(photo, 1.2)
-        ? photo
-        : null
-
-    if (portrait) {
-      unsplashImage.value = portrait.urls.regular
-    } else {
-      console.warn("No suitable portrait image found, using fallback")
-      unsplashImage.value = photo.urls.small
-    } */
 	} catch (e) {
 		console.error("Unsplash fallback failed", e)
 	}
-  // Initial check on mount
   if (song.value) {
     liked.value = !!favorites.value.find(
       s => s.title === song.value.title && s.artist === song.value.artist && s.liked
@@ -204,10 +188,10 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="h-72 min-w-96 overflow-y-auto scroll-smooth relative rounded-t-lg">
-      <div class="px-2 pt-4 pb-3 pl-3 bg-abyssal text-zinc-100 sticky top-0 z-20 flex justify-start items-center gap-2">
-        <Icon name="jam-heart-f" class="size-3" />
-        <p class="text-xs uppercase tracking-widest font-medium">Favorites</p>
+    <div v-if="favorites.length > 0" class="h-72 min-w-96 overflow-y-auto scroll-smooth relative rounded-lg">
+      <div class="px-2 pt-4 pb-3 pl-3 text-abyssal bg-white sticky top-0 z-20 flex justify-start items-center gap-2">
+        <Icon name="jam-heart" class="size-3" />
+        <p class="text-[11px] uppercase tracking-widest font-light">Favorites</p>
       </div>
       <ul class="flex flex-col gap-2">
         <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
@@ -218,6 +202,9 @@ onMounted(async () => {
           </span>
         </li>
       </ul>
+    </div>
+    <div v-else class="h-72 min-w-96 flex items-center justify-center rounded-lg bg-gray-50">
+      <p class="text-sm text-abyssal opacity-60">No favorites yet</p>
     </div>
 	</div>
 </template>
