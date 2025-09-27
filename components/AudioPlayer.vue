@@ -27,7 +27,7 @@ export interface UnsplashImage {
 }
 const unsplashImage = ref<UnsplashImage | null>(null)
 
-const { isPlaying, play, pause, refresh, elapsedTime, song, fetchScratchRadio } = useRadio()
+const { isPlaying, play, pause, elapsedTime, song, fetchScratchRadio } = useRadio()
 
 const hovered = ref(false)
 // const liked = ref(false)
@@ -160,9 +160,10 @@ onMounted(async () => {
           <!-- <span class="text-xs leading-none text-slate-600/60 dark:text-slate-300">{{ formatTime(elapsedTime) }}</span> -->
         </div>
         <div class="grid h-8 w-3/4 mx-auto grid-cols-4 items-center justify-between rounded-full text-abyssal duration-500 hover:cursor-pointer hover:text-abyssal dark:text-slate-300 dark:hover:text-slate-200">
-          <Transition name="fade" mode="out-in">
+          <!-- <Transition name="fade" mode="out-in">
             <Icon name="jam:refresh-reverse" class="h-4 w-4 text-abyssal transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60" @click="refresh" />
-          </Transition>
+          </Transition> -->
+          <ColorModeToggle />
           <div class="col-span-2 flex justify-center">
             <Transition name="fade" mode="out-in">
               <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4 transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60" @click="isPlaying ? pause() : play()" />
@@ -188,23 +189,27 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div v-if="favorites.length > 0" class="h-72 min-w-96 overflow-y-auto scroll-smooth relative rounded-lg">
-      <div class="px-2 pt-4 pb-3 pl-3 text-abyssal bg-white sticky top-0 z-20 flex justify-start items-center gap-2">
-        <Icon name="jam-heart" class="size-3" />
-        <p class="text-[11px] uppercase tracking-widest font-light">Favorites</p>
+    <div class="h-72 w-96">
+      <div v-if="favorites.length > 0">
+        <div class="px-2 pt-4 pb-3 pl-3 text-abyssal bg-white sticky top-0 z-20 flex justify-start items-center gap-2">
+          <Icon name="jam-heart" class="size-3" />
+          <p class="text-[11px] uppercase tracking-widest font-light">Favorites</p>
+        </div>
+        <ul class="flex flex-col gap-2">
+          <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
+            <span class="flex justify-center items-start">0{{ i + 1 }}.</span>
+            <span class="inline-block flex-col justify-center items-start">
+              <span class="block text-abyssal leading-3 font-semibold">{{ s.title }}</span>
+              <span class="text-abyssal opacity-70">{{ s.artist }}</span>
+            </span>
+          </li>
+        </ul>
       </div>
-      <ul class="flex flex-col gap-2">
-        <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
-          <span class="flex justify-center items-start">0{{ i + 1 }}.</span>
-          <span class="inline-block flex-col justify-center items-start">
-            <span class="block text-abyssal leading-3 font-semibold">{{ s.title }}</span>
-            <span class="text-abyssal opacity-70">{{ s.artist }}</span>
-          </span>
-        </li>
-      </ul>
-    </div>
-    <div v-else class="h-72 min-w-96 flex items-center justify-center rounded-lg bg-gray-50">
-      <p class="text-sm text-abyssal opacity-60">No favorites yet</p>
+      <div v-else class="h-full flex flex-col gap-2 items-center justify-center rounded-lg bg-gray-100">
+        <Icon name="mdi-light:heart-off" class="size-8 text-abyssal opacity-60" />
+        <p class="text-abyssal text-sm">No favorites yet</p>
+        <p class="text-abyssal opacity-60 text-xs w-1/2 text-center">Like the song to add to your playlist</p>
+      </div>
     </div>
 	</div>
 </template>
