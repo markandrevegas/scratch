@@ -69,7 +69,7 @@ export default defineEventHandler(async () => {
 
     const trackItem = spotifyRes.tracks?.items?.[0]
     const art = trackItem?.album?.images?.[0]?.url ?? null
-
+    console.log('if art: ', art)
     return { title, artist, art }
   } catch (err: unknown) {
     console.error('Failed to fetch track status:', err)

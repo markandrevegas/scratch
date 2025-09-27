@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from "vue"
 import { useRadio } from "../composables/useScratchRadio"
-import { useUnsplash } from "../composables/useUnsplash"
+// import { useUnsplash } from "../composables/useUnsplash"
 
-const { getRandomPhoto } = useUnsplash()
+/* const { getRandomPhoto } = useUnsplash()
 export interface UnsplashImage {
 	id: string
 	description: string | null
@@ -25,7 +25,7 @@ export interface UnsplashImage {
 		download: string
 	}
 }
-const unsplashImage = ref<UnsplashImage | null>(null)
+const unsplashImage = ref<UnsplashImage | null>(null) */
 
 const { isPlaying, play, pause, elapsedTime, song, fetchScratchRadio } = useRadio()
 
@@ -124,12 +124,6 @@ watch(
 
 onMounted(async () => {
 	fetchScratchRadio()
-	try {
-		const photo = await getRandomPhoto({ query: "70s reggae", orientation: 'portrait', count: '1'})
-		unsplashImage.value = photo.urls?.small || null
-	} catch (e) {
-		console.error("Unsplash fallback failed", e)
-	}
   if (song.value) {
     liked.value = !!favorites.value.find(
       s => s.title === song.value.title && s.artist === song.value.artist && s.liked
@@ -142,8 +136,7 @@ onMounted(async () => {
     <div class="h-72 w-72 mx-auto flex flex-col rounded-t-lg">
       <div class="h-48 relative flex flex-col justify-center items-center rounded-t-lg overflow-hidden">
         <div class="absolute h-full w-full flex justify-center items-center overflow-hidden">
-          <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-full w-full rounded-t-lg object-cover object-top" />
-          <NuxtImg v-else-if="unsplashImage" :src="unsplashImage" class="h-full w-full rounded-t-lg object-cover object-top" />
+          <NuxtImg v-if="song?.art" provider="ipx" :src="song.art" class="h-full w-full rounded-t-lg object-cover object-top" />
         </div>
       </div>
       <div class="h-32 shadow-lg rounded-b-lg flex flex-col justify-center gap-4 dark:bg-abyssal">
