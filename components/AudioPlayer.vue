@@ -139,14 +139,14 @@ onMounted(async () => {
 </script>
 <template>
 	<div class="flex gap-4">
-    <div class="w-72 mx-auto flex flex-col rounded-t-lg">
+    <div class="h-72 w-72 mx-auto flex flex-col rounded-t-lg">
       <div class="h-48 relative flex flex-col justify-center items-center rounded-t-lg overflow-hidden">
         <div class="absolute h-full w-full flex justify-center items-center overflow-hidden">
           <NuxtImg v-if="song.art" provider="ipx" :src="song.art" class="h-full w-full rounded-t-lg object-cover object-top" />
           <NuxtImg v-else-if="unsplashImage" :src="unsplashImage" class="h-full w-full rounded-t-lg object-cover object-top" />
         </div>
       </div>
-      <div class="h-32 shadow-lg rounded-b-lg flex flex-col justify-center gap-4">
+      <div class="h-32 shadow-lg rounded-b-lg flex flex-col justify-center gap-4 dark:bg-abyssal">
         <div class="text-center px-4">
           <p class="mb-[6px] text-xs leading-3 font-semibold text-abyssal dark:text-slate-300">
             {{ song.title }}
@@ -160,9 +160,6 @@ onMounted(async () => {
           <!-- <span class="text-xs leading-none text-slate-600/60 dark:text-slate-300">{{ formatTime(elapsedTime) }}</span> -->
         </div>
         <div class="grid h-8 w-3/4 mx-auto grid-cols-4 items-center justify-between rounded-full text-abyssal duration-500 hover:cursor-pointer hover:text-abyssal dark:text-slate-300 dark:hover:text-slate-200">
-          <!-- <Transition name="fade" mode="out-in">
-            <Icon name="jam:refresh-reverse" class="h-4 w-4 text-abyssal transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60" @click="refresh" />
-          </Transition> -->
           <ColorModeToggle />
           <div class="col-span-2 flex justify-center">
             <Transition name="fade" mode="out-in">
@@ -189,9 +186,9 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="h-72 w-96">
-      <div v-if="favorites.length > 0">
-        <div class="px-2 pt-4 pb-3 pl-3 text-abyssal bg-white sticky top-0 z-20 flex justify-start items-center gap-2">
+    <div class="h-72 w-72 dark:bg-abyssal dark:text-zinc-100">
+      <div v-if="favorites.length > 0" class="">
+        <div class="px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2">
           <Icon name="jam-heart" class="size-3" />
           <p class="text-[11px] uppercase tracking-widest font-light">Favorites</p>
         </div>
@@ -199,8 +196,8 @@ onMounted(async () => {
           <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
             <span class="flex justify-center items-start">0{{ i + 1 }}.</span>
             <span class="inline-block flex-col justify-center items-start">
-              <span class="block text-abyssal leading-3 font-semibold">{{ s.title }}</span>
-              <span class="text-abyssal opacity-70">{{ s.artist }}</span>
+              <span class="block leading-3 font-semibold">{{ s.title }}</span>
+              <span>{{ s.artist }}</span>
             </span>
           </li>
         </ul>
