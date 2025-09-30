@@ -1,15 +1,16 @@
-import { defineEventHandler, getQuery } from 'h3'
+import { defineEventHandler } from 'h3'
 const UNSPLASH_KEY = process.env.NUXT_UNSPLASH_ACCESS_KEY
 const unsplashBase = process.env.NUXT_UNSPLASH_BASE || 'https://api.unsplash.com'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   // const config = useRuntimeConfig() as RuntimeConfig
-  const query = getQuery(event)
-
-  // Convert all query values to strings
-  const params = new URLSearchParams(
-    Object.fromEntries(Object.entries(query).map(([k, v]) => [k, String(v)]))
-  )
+  // Always use a fixed query for Unsplash
+  const params = new URLSearchParams({
+    query: '70s reggae',
+    orientation: 'landscape',
+    content_filter: 'high',
+    count: '1'
+  })
 
   // Use Authorization header with runtime config
   const res = await fetch(`${unsplashBase}/photos/random?${params.toString()}`, {
