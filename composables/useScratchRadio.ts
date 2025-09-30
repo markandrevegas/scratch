@@ -27,7 +27,7 @@ export function useRadio() {
 				isPlaying.value = false
 				stopElapsedTimer()
 			})
-      audioPlayer.value.load()
+			audioPlayer.value.load()
 		}
 	}
 
@@ -72,8 +72,8 @@ export function useRadio() {
 			const currentTime = 0
 			audioPlayer.value.currentTime = currentTime
 			audioPlayer.value.pause()
-      audioPlayer.value.currentTime = 0
-      await audioPlayer.value.play()
+			audioPlayer.value.currentTime = 0
+			await audioPlayer.value.play()
 
 			try {
 				await audioPlayer.value.play()
