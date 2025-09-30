@@ -4,11 +4,17 @@ import { $fetch } from 'ofetch'
 
 const spotifyClientId = process.env.NUXT_SPOTIFY_CLIENT_ID
 const spotifyClientSecret = process.env.NUXT_SPOTIFY_CLIENT_SECRET
+const unsplashAccessKey = process.env.NUXT_UNSPLASH_ACCESS_KEY
 
 interface SpotifyImage {
   url: string
   height: number
   width: number
+}
+
+interface UnsplashResponse {
+  urls: { regular: string }
+  user: { name: string }
 }
 
 // Server-side cache
@@ -57,7 +63,7 @@ export default defineEventHandler(async () => {
 
     // 3️⃣ Search Spotify for track album art
     const query = encodeURIComponent(`track:${title} artist:${artist}`)
-    console.log(`Searching Spotify for: ${query}`)
+    // console.log(`Searching Spotify for: ${query}`)
 
     const spotifyRes = await $fetch<{
       tracks?: { items: { album?: { images?: SpotifyImage[] } }[] }
@@ -68,8 +74,17 @@ export default defineEventHandler(async () => {
     })
 
     const trackItem = spotifyRes.tracks?.items?.[0]
-    const art = trackItem?.album?.images?.[0]?.url ?? null
-    console.log('if art: ', art)
+    let art = trackItem?.album?.images?.[0]?.url ?? null
+    if (!art && unsplashAccessKey) {
+      try {
+        const unsplashRes = await $fetch<UnsplashResponse[]>(
+          `https://api.unsplash.com/photos/random?query=${encodeURIComponent('70s reggae')}&count=1&orientation=landscape&content_filter=high&client_id=${unsplashAccessKey}`
+        )
+        art = unsplashRes[0]?.urls?.regular ?? null
+      } catch (err) {
+        console.error('Unsplash fallback failed:', err)
+      }
+    }
     return { title, artist, art }
   } catch (err: unknown) {
     console.error('Failed to fetch track status:', err)
