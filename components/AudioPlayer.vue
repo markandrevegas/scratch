@@ -132,7 +132,7 @@ onMounted(async () => {
 })
 </script>
 <template>
-	<div class="flex gap-4">
+	<div class="flex items-center gap-4">
     <div class="h-96 w-72 mx-auto flex flex-col rounded-t-lg">
       <div class="h-72 relative flex flex-col justify-center items-center rounded-t-lg overflow-hidden">
         <div class="absolute h-full w-full flex justify-center items-center overflow-hidden">
@@ -179,7 +179,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="h-96 w-72 dark:bg-abyssal dark:text-zinc-100">
+    <div class="h-64 w-72 dark:bg-abyssal dark:text-zinc-100">
       <div v-if="favorites.length > 0" class="">
         <div class="px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2">
           <Icon name="jam-heart" class="size-3" />
