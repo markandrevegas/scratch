@@ -133,64 +133,73 @@ onMounted(async () => {
 </script>
 <template>
 	<div class="flex gap-4">
-		<div class="mx-auto flex h-72 w-72 flex-col rounded-t-lg">
-			<div class="relative flex h-48 flex-col items-center justify-center overflow-hidden rounded-t-lg">
-				<div class="absolute flex h-full w-full items-center justify-center overflow-hidden">
-					<NuxtImg v-if="song.art" :src="song?.art || unsplashImage?.urls?.regular" provider="ipx" class="h-full w-full rounded-t-lg object-cover object-top" />
-				</div>
-			</div>
-			<div class="flex h-32 flex-col justify-center gap-4 rounded-b-lg shadow-lg dark:bg-abyssal">
-				<div class="px-4 text-center">
-					<p class="mb-[6px] text-xs font-semibold leading-3 text-abyssal dark:text-slate-300">
-						{{ song.title }}
-					</p>
-					<p class="text-[11px] leading-none text-abyssal opacity-70 dark:text-slate-300">
-						{{ song.artist }}
-					</p>
-				</div>
-				<div class="mx-auto flex w-3/4 items-center justify-between">
-					<progress :value="elapsedTime" max="720" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
-				</div>
-				<div class="mx-auto grid h-8 w-3/4 grid-cols-4 items-center justify-between rounded-full text-abyssal duration-500 hover:cursor-pointer hover:text-abyssal dark:text-slate-300 dark:hover:text-slate-200">
-					<ColorModeToggle />
-					<div class="col-span-2 flex justify-center">
-						<Transition name="fade" mode="out-in">
-							<Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4 transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60" @click="isPlaying ? pause() : play()" />
-						</Transition>
-					</div>
-					<div class="flex justify-end">
-						<div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
-							<Transition name="fade" mode="out-in">
-								<Icon :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'" :class="['h-4 w-4 transition-colors duration-200', liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-slate-200' : 'text-abyssal dark:text-slate-200']" @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" />
-							</Transition>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="h-72 w-72 dark:bg-abyssal dark:text-zinc-100">
-			<Transition mode="out-in" enter-active-class="transition-opacity duration-500 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="transition-opacity duration-500 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
-				<div v-if="favorites.length > 0" key="has-favorites" class="h-full">
-					<div class="sticky top-0 z-20 flex items-center justify-start gap-2 px-2 pb-3 pl-3 pt-4">
-						<Icon name="jam-heart" class="size-3" />
-						<p class="text-[11px] font-light uppercase tracking-widest">Favorites</p>
-					</div>
-					<ul class="flex flex-col gap-2">
-						<li v-for="(s, i) in favorites" :key="i" class="grid grid-cols-[48px_auto] py-2 text-[11px]">
-							<span class="flex items-start justify-center">0{{ i + 1 }}.</span>
-							<span class="inline-block flex-col items-start justify-center">
-								<span class="block font-semibold leading-3">{{ s.title }}</span>
-								<span>{{ s.artist }}</span>
-							</span>
-						</li>
-					</ul>
-				</div>
-				<div v-else key="no-favorites" class="flex h-full flex-col items-center justify-center gap-2 rounded-lg bg-gray-100">
-					<Icon name="mdi-light:heart-off" class="size-8 text-abyssal opacity-60" />
-					<p class="text-sm text-abyssal">No favorites yet</p>
-					<p class="w-1/2 text-center text-xs text-abyssal opacity-60">Like the song to add to your playlist</p>
-				</div>
-			</Transition>
-		</div>
+    <div class="h-96 w-72 mx-auto flex flex-col rounded-t-lg">
+      <div class="h-72 relative flex flex-col justify-center items-center rounded-t-lg overflow-hidden">
+        <div class="absolute h-full w-full flex justify-center items-center overflow-hidden">
+          <NuxtImg v-if="song.art" :src="song?.art || unsplashImage?.urls?.regular" provider="ipx" class="h-full w-full rounded-t-lg object-cover object-top" />
+        </div>
+      </div>
+      <div class="h-32 shadow-lg rounded-b-lg flex flex-col justify-center gap-4 dark:bg-abyssal">
+        <div class="text-center px-4">
+          <p class="mb-[6px] text-xs leading-3 font-semibold text-abyssal dark:text-slate-300">
+            {{ song.title }}
+          </p>
+          <p class="text-[11px] leading-none text-abyssal opacity-70 dark:text-slate-300">
+            {{ song.artist }}
+          </p>
+        </div>
+        <div class="flex w-3/4 mx-auto items-center justify-between">
+          <progress :value="elapsedTime" max="720" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
+          <!-- <span class="text-xs leading-none text-slate-600/60 dark:text-slate-300">{{ formatTime(elapsedTime) }}</span> -->
+        </div>
+        <div class="grid h-8 w-3/4 mx-auto grid-cols-4 items-center justify-between rounded-full text-abyssal duration-500 hover:cursor-pointer hover:text-abyssal dark:text-slate-300 dark:hover:text-slate-200">
+          <ColorModeToggle />
+          <div class="col-span-2 flex justify-center">
+            <Transition name="fade" mode="out-in">
+              <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4 transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60" @click="isPlaying ? pause() : play()" />
+            </Transition>
+          </div>
+          <div class="flex justify-end">
+            <div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
+              <Transition name="fade" mode="out-in">
+                <Icon
+                  :key="liked ? 'liked' : hovered ? 'hovered' : 'default'"
+                  :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'"
+                  :class="[
+                    'h-4 w-4 transition-colors duration-200',
+                    liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-slate-200' : 'text-abyssal dark:text-slate-200'
+                  ]"
+                  @mouseenter="hovered = true"
+                  @mouseleave="hovered = false"
+                  @click="copySong"
+                />
+              </Transition>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="h-96 w-72 dark:bg-abyssal dark:text-zinc-100">
+      <div v-if="favorites.length > 0" class="">
+        <div class="px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2">
+          <Icon name="jam-heart" class="size-3" />
+          <p class="text-[11px] uppercase tracking-widest font-light">Favorites</p>
+        </div>
+        <ul class="flex flex-col gap-2">
+          <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
+            <span class="flex justify-center items-start">0{{ i + 1 }}.</span>
+            <span class="inline-block flex-col justify-center items-start">
+              <span class="block leading-3 font-semibold">{{ s.title }}</span>
+              <span>{{ s.artist }}</span>
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div v-else class="h-full flex flex-col gap-2 items-center justify-center rounded-lg bg-gray-100">
+        <Icon name="mdi-light:heart-off" class="size-8 text-abyssal opacity-60" />
+        <p class="text-abyssal text-sm">No favorites yet</p>
+        <p class="text-abyssal opacity-60 text-xs w-1/2 text-center">Like the song to add to your playlist</p>
+      </div>
+    </div>
 	</div>
 </template>
