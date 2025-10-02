@@ -149,7 +149,7 @@ onMounted(async () => {
           <NuxtImg v-if="song.art" :src="song?.art || unsplashImage?.urls?.regular" provider="ipx" class="h-full w-full rounded-t-lg object-cover object-top" />
         </div>
       </div>
-      <div class="h-32 shadow-lg rounded-b-lg flex flex-col justify-center gap-4 dark:bg-abyssal">
+      <div class="h-40 shadow-lg rounded-b-lg flex flex-col justify-center gap-4 dark:bg-abyssal">
         <div class="text-center px-4">
           <p class="mb-[6px] text-xs leading-3 font-semibold text-abyssal dark:text-slate-300">
             {{ song.title }}
