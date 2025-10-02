@@ -32,117 +32,107 @@ const { isPlaying, play, pause, elapsedTime, song, fetchScratchRadio } = useRadi
 const hovered = ref(false)
 // const liked = ref(false)
 const liked = computed({
-  get: () => {
-    if (!song.value) return false
-    return favorites.value.some(
-      s => s.title === song.value.title && s.artist === song.value.artist && s.liked
-    )
-  },
-  set: (val: boolean) => {
-    if (!song.value) return
-    const songInFavorites = favorites.value.find(
-      s => s.title === song.value.title && s.artist === song.value.artist
-    )
-    if (songInFavorites) {
-      songInFavorites.liked = val
-    } else if (val) {
-      // Only add if liking a new song
-      favorites.value.push({ ...song.value, liked: true })
-    }
-    localStorage.setItem('favorites', JSON.stringify(favorites.value))
-  }
+	get: () => {
+		if (!song.value) return false
+		return favorites.value.some((s) => s.title === song.value.title && s.artist === song.value.artist && s.liked)
+	},
+	set: (val: boolean) => {
+		if (!song.value) return
+		const songInFavorites = favorites.value.find((s) => s.title === song.value.title && s.artist === song.value.artist)
+		if (songInFavorites) {
+			songInFavorites.liked = val
+		} else if (val) {
+			// Only add if liking a new song
+			favorites.value.push({ ...song.value, liked: true })
+		}
+		localStorage.setItem("favorites", JSON.stringify(favorites.value))
+	}
 })
 
 interface Song {
-  title: string
-  artist: string
-  art?: string | null
-  liked?: boolean
+	title: string
+	artist: string
+	art?: string | null
+	liked?: boolean
 }
 
 const favorites = ref<Song[]>([])
 // Load favorites from localStorage on mount
-if (typeof window !== 'undefined') {
-  const stored = localStorage.getItem('favorites')
-  if (stored) favorites.value = JSON.parse(stored)
+if (typeof window !== "undefined") {
+	const stored = localStorage.getItem("favorites")
+	if (stored) favorites.value = JSON.parse(stored)
 }
 // Load liked songs from localStorage
 const likedSongs = ref<Song[]>([])
-if (typeof window !== 'undefined') {
-  const storedLiked = localStorage.getItem('likedSongs')
-  if (storedLiked) likedSongs.value = JSON.parse(storedLiked)
+if (typeof window !== "undefined") {
+	const storedLiked = localStorage.getItem("likedSongs")
+	if (storedLiked) likedSongs.value = JSON.parse(storedLiked)
 }
 
 // add song to favorites
 const copySong = async () => {
-  try {
-    // Check if navigator and navigator.clipboard exist before trying to use them
-    if (navigator && navigator.clipboard) {
-      await navigator.clipboard.writeText(`${song.value.title} - ${song.value.artist}`)
-    } else {
-      // Provide a fallback or log a message if clipboard access isn't available
-      console.warn("Clipboard API not available. Skipping copy operation.")
-    }
+	try {
+		// Check if navigator and navigator.clipboard exist before trying to use them
+		if (navigator && navigator.clipboard) {
+			await navigator.clipboard.writeText(`${song.value.title} - ${song.value.artist}`)
+		} else {
+			// Provide a fallback or log a message if clipboard access isn't available
+			console.warn("Clipboard API not available. Skipping copy operation.")
+		}
 
-    // Find the song in favorites
-    let favSong = favorites.value.find(
-      s => s.title === song.value.title && s.artist === song.value.artist
-    )
+		// Find the song in favorites
+		let favSong = favorites.value.find((s) => s.title === song.value.title && s.artist === song.value.artist)
 
-    if (!favSong) {
-      // Add new song
-      favSong = { ...song.value, liked: true }
-      favorites.value.push(favSong)
-    } else {
-      // Mark existing song as liked
-      favSong.liked = true
-    }
+		if (!favSong) {
+			// Add new song
+			favSong = { ...song.value, liked: true }
+			favorites.value.push(favSong)
+		} else {
+			// Mark existing song as liked
+			favSong.liked = true
+		}
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('favorites', JSON.stringify(favorites.value))
-    }
-  } catch (err) {
-    console.error("Failed to copy:", err)
-  }
+		if (typeof window !== "undefined") {
+			localStorage.setItem("favorites", JSON.stringify(favorites.value))
+		}
+	} catch (err) {
+		console.error("Failed to copy:", err)
+	}
 }
 
 watch(song, async (newSong) => {
-  liked.value = !!favorites.value.find(
-    s => s.title === newSong.title && s.artist === newSong.artist && s.liked
-  )
-  if (newSong && !newSong.art) {
-    try {
-      unsplashImage.value = await getRandomPhoto({ query: newSong.artist || newSong.title })
-      if (unsplashImage.value) {
-        newSong.art = unsplashImage.value.urls.regular
-      }
-    } catch (err) {
-      console.error("Failed to fetch Unsplash image:", err)
-    }
-  }
+	liked.value = !!favorites.value.find((s) => s.title === newSong.title && s.artist === newSong.artist && s.liked)
+	if (newSong && !newSong.art) {
+		try {
+			unsplashImage.value = await getRandomPhoto({ query: newSong.artist || newSong.title })
+			if (unsplashImage.value) {
+				newSong.art = unsplashImage.value.urls.regular
+			}
+		} catch (err) {
+			console.error("Failed to fetch Unsplash image:", err)
+		}
+	}
 })
 
 watch(
-  favorites,
-  (newVal) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('favorites', JSON.stringify(newVal))
-    }
-  },
-  { deep: true }
+	favorites,
+	(newVal) => {
+		if (typeof window !== "undefined") {
+			localStorage.setItem("favorites", JSON.stringify(newVal))
+		}
+	},
+	{ deep: true }
 )
 
 onMounted(async () => {
 	fetchScratchRadio()
-  if (song.value) {
-    liked.value = !!favorites.value.find(
-      s => s.title === song.value.title && s.artist === song.value.artist && s.liked
-    )
-  }
+	if (song.value) {
+		liked.value = !!favorites.value.find((s) => s.title === song.value.title && s.artist === song.value.artist && s.liked)
+	}
 })
 </script>
 <template>
-	<div class="flex gap-4">
+	<div class="flex items-center gap-4">
     <div class="h-96 w-72 mx-auto flex flex-col rounded-t-lg">
       <div class="h-72 relative flex flex-col justify-center items-center rounded-t-lg overflow-hidden">
         <div class="absolute h-full w-full flex justify-center items-center overflow-hidden">
@@ -189,7 +179,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="h-96 w-72 dark:bg-abyssal dark:text-zinc-100">
+    <div class="h-64 w-72 dark:bg-abyssal dark:text-zinc-100">
       <div v-if="favorites.length > 0" class="">
         <div class="px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2">
           <Icon name="jam-heart" class="size-3" />
