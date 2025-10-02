@@ -5,7 +5,7 @@ const unsplashBase = process.env.NUXT_UNSPLASH_BASE || 'https://api.unsplash.com
 export default defineEventHandler(async () => {
 	// Always use a fixed query for Unsplash
 	const params = new URLSearchParams({
-		query: "70s reggae",
+		query: "reggae concert indoors", 
 		orientation: "squarish",
 		content_filter: "high",
 		count: "1"
