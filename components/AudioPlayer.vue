@@ -179,9 +179,9 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="h-64 w-72 dark:bg-abyssal dark:text-zinc-100">
+    <div class="h-64 w-72 overflow-y-auto dark:bg-abyssal dark:text-zinc-100 rounded-lg">
       <div v-if="favorites.length > 0" class="">
-        <div class="px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2">
+        <div class="px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2 bg-white dark:bg-abyssal">
           <Icon name="jam-heart" class="size-3" />
           <p class="text-[11px] uppercase tracking-widest font-light">Favorites</p>
         </div>
