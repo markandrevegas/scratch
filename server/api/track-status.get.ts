@@ -63,7 +63,6 @@ export default defineEventHandler(async () => {
 
     // 3️⃣ Search Spotify for track album art
     const query = encodeURIComponent(`track:${title} artist:${artist}`)
-    // console.log(`Searching Spotify for: ${query}`)
 
     const spotifyRes = await $fetch<{
       tracks?: { items: { album?: { images?: SpotifyImage[] } }[] }

@@ -133,13 +133,13 @@ onMounted(async () => {
 </script>
 <template>
 	<div class="flex items-center gap-4 mt-8">
-    <div class="h-96 w-72 mx-auto flex flex-col rounded-t-lg">
+    <div class="h-96 w-72 mx-auto flex flex-col rounded-lg shadow">
       <div class="h-72 relative flex flex-col justify-center items-center rounded-t-lg overflow-hidden">
         <div class="absolute h-full w-full flex justify-center items-center overflow-hidden">
           <NuxtImg v-if="song.art" :src="song?.art || unsplashImage?.urls?.regular" provider="ipx" class="h-full w-full rounded-t-lg object-cover object-top" />
         </div>
       </div>
-      <div class="h-48 shadow-lg rounded-b-lg flex flex-col justify-center gap-4 dark:bg-abyssal">
+      <div class="h-48 rounded-b-lg flex flex-col justify-center gap-4 dark:bg-abyssal">
         <div class="text-center px-4">
           <p class="mb-[6px] text-xs leading-4 font-semibold text-abyssal dark:text-slate-300">
             {{ song.title }}
@@ -179,26 +179,26 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="h-64 w-72 overflow-y-auto dark:bg-abyssal dark:text-zinc-100 rounded-lg">
-      <div v-if="favorites.length > 0" class="">
-        <div class="px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2 bg-white dark:bg-abyssal">
+    <div class="h-64 w-72 overflow-y-auto rounded-lg shadow dark:bg-abyssal dark:text-zinc-100">
+      <div v-if="favorites.length > 0">
+        <div class="px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2">
           <Icon name="jam-heart" class="size-3" />
           <p class="text-[11px] uppercase tracking-widest font-light">Favorites</p>
         </div>
         <ul class="flex flex-col gap-2">
           <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
-            <span class="flex justify-center items-start">0{{ i + 1 }}.</span>
+            <span class="flex justify-center items-start opacity-60">0{{ i + 1 }}.</span>
             <span class="inline-block flex-col justify-center items-start">
               <span class="block leading-3 font-semibold">{{ s.title }}</span>
-              <span>{{ s.artist }}</span>
+              <span class="opacity-60">{{ s.artist }}</span>
             </span>
           </li>
         </ul>
       </div>
-      <div v-else class="h-full flex flex-col gap-2 items-center justify-center rounded-lg bg-gray-100">
-        <Icon name="mdi-light:heart-off" class="size-8 text-abyssal opacity-60" />
-        <p class="text-abyssal text-sm">No favorites yet</p>
-        <p class="text-abyssal opacity-60 text-xs w-1/2 text-center">Like the song to add to your playlist</p>
+      <div v-else class="h-full flex flex-col gap-2 items-center justify-center opacity-60">
+        <Icon name="mdi-light:heart-off" class="size-8" />
+        <p class="text-sm">No favorites yet</p>
+        <p class="text-xs w-1/2 text-center">Like the song to add to your playlist</p>
       </div>
     </div>
 	</div>
