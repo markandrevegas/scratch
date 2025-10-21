@@ -100,17 +100,10 @@ const copySong = async () => {
 	}
 }
 
-watch(song, async (newSong) => {
+watch(song, async (newSong, oldSong) => {
 	liked.value = !!favorites.value.find((s) => s.title === newSong.title && s.artist === newSong.artist && s.liked)
-	if (newSong && !newSong.art) {
-		try {
-			unsplashImage.value = await getRandomPhoto({ query: newSong.artist || newSong.title })
-			if (unsplashImage.value) {
-				newSong.art = unsplashImage.value.urls.regular
-			}
-		} catch (err) {
-			console.error("Failed to fetch Unsplash image:", err)
-		}
+	if ( newSong && oldSong && newSong.title === oldSong.title && newSong.artist === oldSong.artist ) {
+		return
 	}
 })
 

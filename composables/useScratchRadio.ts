@@ -84,6 +84,7 @@ export function useRadio() {
 	}
 
 	// ← Replace your old fetchScratchRadio with this:
+	let localArtCache: { title: string; artist: string; art: string | null } | null = null
 	const fetchScratchRadio = async () => {
 		loading.value = true
 		try {
@@ -94,9 +95,32 @@ export function useRadio() {
 				art: string | null
 				startTime?: string
 			}>("/api/track-status")
-			song.value.title = data.title || ""
-			song.value.artist = data.artist || ""
-			song.value.art = data.art
+			const isNewSong = data.title !== song.value.title || data.artist !== song.value.artist
+
+			if (isNewSong) {
+				// New song: reset cache and update song data
+				localArtCache = null
+				song.value.title = data.title || ""
+				song.value.artist = data.artist || ""
+				song.value.art = data.art
+			} else {
+				// Same song: update metadata but preserve art if we already have it
+				song.value.title = data.title || ""
+				song.value.artist = data.artist || ""
+
+				// Only update art if the server provided a non-null value
+				// OR if we don't have a cached value yet.
+				if (data.art !== null) {
+					song.value.art = data.art
+					localArtCache = { title: data.title, artist: data.artist, art: data.art }
+				} else if (localArtCache && localArtCache.title === data.title && localArtCache.artist === data.artist) {
+					// Use cached art if server returned null for the same song
+					song.value.art = localArtCache.art
+				} else {
+					// Server returned null and no local cache exists
+					song.value.art = null
+				}
+			}
 
 			if (elapsedTime.value === 0 && data.startTime) {
 				const start = new Date(data.startTime).getTime()
@@ -108,6 +132,7 @@ export function useRadio() {
 		} catch (err: unknown) {
 			error.value = err instanceof Error ? err.message : String(err)
 			song.value.art = null
+			localArtCache = null
 		} finally {
 			loading.value = false
 		}
