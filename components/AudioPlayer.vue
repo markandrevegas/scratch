@@ -75,8 +75,11 @@ const copySong = async () => {
 	}
 }
 
-watch(song, async (newSong) => {
+watch(song, async (newSong, oldSong) => {
 	liked.value = !!favorites.value.find((s) => s.title === newSong.title && s.artist === newSong.artist && s.liked)
+	if ( newSong && oldSong && newSong.title === oldSong.title && newSong.artist === oldSong.artist ) {
+		return
+	}
 })
 
 watch(
