@@ -1,4 +1,5 @@
 import { ref, onMounted, onUnmounted } from "vue"
+import { $fetch } from "ofetch"
 
 export function useRadio() {
 	const song = ref({ title: "", artist: "", art: null as string | null })
@@ -83,7 +84,6 @@ export function useRadio() {
 		}
 	}
 
-	// ← Replace your old fetchScratchRadio with this:
 	const fetchScratchRadio = async () => {
 		loading.value = true
 		try {

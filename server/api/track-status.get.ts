@@ -20,6 +20,15 @@ interface UnsplashResponse {
 // Server-side cache
 let spotifyToken: string | null = null
 let tokenExpiry: number | null = null
+// 2️⃣ Track art cache
+interface TrackCacheItem {
+  artist: string
+  title: string
+  art: string | null
+  timestamp: number
+}
+const trackCache: Record<string, TrackCacheItem> = {}
+const TRACK_CACHE_DURATION = 10_000 // 10 seconds
 
 export default defineEventHandler(async () => {
   const playlist = 'http://scratch-radio.ca:8000/status-json.xsl'
@@ -29,13 +38,18 @@ export default defineEventHandler(async () => {
     const res = await $fetch<{ icestats?: { source?: { title?: string } } }>(playlist)
     const currentTitle = res.icestats?.source?.title || ''
     const [artist, title] = currentTitle.split(/\s*-\s*/)
-
+    const now = Date.now()
     if (!title || !artist) {
       return { title: title || '', artist: artist || '', art: null }
     }
+    const trackKey = `${artist}-${title}`
+    // Return cached track art if still valid
+    const cached = trackCache[trackKey]
+    if (cached && now - cached.timestamp < TRACK_CACHE_DURATION) {
+      return cached
+    }
 
     // 2️⃣ Get Spotify token (cached)
-    const now = Date.now()
     if (!spotifyToken || !tokenExpiry || now >= tokenExpiry) {
       const clientId = spotifyClientId
       const clientSecret = spotifyClientSecret
@@ -75,16 +89,28 @@ export default defineEventHandler(async () => {
     const trackItem = spotifyRes.tracks?.items?.[0]
     let art = trackItem?.album?.images?.[0]?.url ?? null
     if (!art && unsplashAccessKey) {
-      try {
-        const unsplashRes = await $fetch<UnsplashResponse[]>(
-          `https://api.unsplash.com/photos/random?query=${encodeURIComponent('70s reggae')}&count=1&orientation=landscape&content_filter=high&client_id=${unsplashAccessKey}`
-        )
-        art = unsplashRes[0]?.urls?.regular ?? null
-      } catch (err) {
-        console.error('Unsplash fallback failed:', err)
+      const unsplashKey = `unsplash-${trackKey}`
+      const unsplashCached = trackCache[unsplashKey]
+      if (unsplashCached) {
+        art = unsplashCached.art
+      } else {
+        try {
+          const unsplashRes = await $fetch<UnsplashResponse[]>(
+            `https://api.unsplash.com/photos/random?query=${encodeURIComponent('70s reggae')}&count=1&orientation=landscape&content_filter=high&client_id=${unsplashAccessKey}`
+          )
+          art = unsplashRes[0]?.urls?.regular ?? null
+          // Cache Unsplash art permanently for this track
+          trackCache[unsplashKey] = { artist, title, art, timestamp: now }
+        } catch (err) {
+          console.error('Unsplash fallback failed:', err)
+        }
       }
     }
-    return { title, artist, art }
+    // Cache final track info
+    const trackData: TrackCacheItem = { artist, title, art, timestamp: now }
+    trackCache[trackKey] = trackData
+    // Cache result
+    return trackData
   } catch (err: unknown) {
     console.error('Failed to fetch track status:', err)
     return { title: '', artist: '', art: null }
