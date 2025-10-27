@@ -2,7 +2,7 @@
 import { ref, onMounted, watch, computed } from "vue"
 import { useRadio } from "../composables/useScratchRadio"
 
-const { isPlaying, play, pause, elapsedTime, song, fetchScratchRadio } = useRadio()
+const { isPlaying, play, pause, volume, setVolume, elapsedTime, song, fetchScratchRadio } = useRadio()
 
 const hovered = ref(false)
 // const liked = ref(false)
@@ -115,7 +115,7 @@ onMounted(async () => {
 </script>
 <template>
 	<div class="h-screen flex flex-col justify-center sm:w-4/5 mx-auto">
-    <div class="w-full sm:w-/4/5 mx-auto bg-white dark:bg-slate-800 rounded-lg shadow-lg h-36 flex relative overflow-visible">
+    <div class="w-full sm:w-4/5 md:w-3/5 xl:w-2/5 mx-auto bg-white dark:bg-slate-800 rounded-lg shadow-lg h-36 flex relative overflow-visible">
       <div class="w-[64px] h-full flex flex-col items-center justify-between py-4 rounded-l-lg">
         <div>
           <Icon @click="seeFavoritesList" name="jam:menu" class="size-6 text-abyssal dark:text-slate-300" />
@@ -124,8 +124,29 @@ onMounted(async () => {
       </div>
       <div class="absolute top-1/2 left-[64px] h-64 -translate-y-1/2 w-[250px] sm:w-[240px] flex flex-col items-center z-0">
         <NuxtImg v-if="song.art" :src="song?.art"  provider="ipx" class="w-full h-full rounded-lg object-cover object-center shadow-lg relative" />
-        <Transition name="fade" mode="out-in">
-          <div v-show="showFavorites" class="absolute inset-0 bg-white z-20 rounded-lg flex flex-col overflow-auto"></div>
+        <Transition name="slide-fade" mode="out-in">
+          <div v-if="showFavorites" class="absolute inset-0 z-20 rounded-lg flex flex-col overflow-auto">
+            <div v-if="favorites.length > 0" class="bg-slate-200">
+              <div class="bg-slate-200 px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2">
+                <Icon name="ic:twotone-favorite" class="size-4" />
+                <p class="text-[11px] uppercase tracking-widest font-light">Favorites</p>
+              </div>
+              <ul class="flex flex-col gap-2">
+                <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
+                  <span class="flex justify-center items-start opacity-60">0{{ i + 1 }}.</span>
+                  <span class="inline-block flex-col justify-center items-start">
+                    <span class="block leading-3 font-semibold">{{ s.title }}</span>
+                    <span class="opacity-60">{{ s.artist }}</span>
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <div v-else class="h-full bg-slate-200 flex flex-col gap-2 items-center justify-center">
+              <Icon name="mdi-light:heart-off" class="size-8" />
+              <p class="text-sm">No favorites yet</p>
+              <p class="text-xs w-1/2 text-center">Like the song to add to your playlist</p>
+            </div>
+          </div>
         </Transition>
       </div>
       <div class="h-full p-4 flex-1 ml-[250px] sm:ml-[240px]">
@@ -154,15 +175,14 @@ onMounted(async () => {
             </Transition>
           </div>
         </div>
-
         <div class="flex w-full items-center justify-between gap-4 my-4">
           <progress :value="elapsedTime" max="720" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
           <span class="text-[10px] leading-none text-slate-600/60 dark:text-slate-300">{{formattedElapsed}}</span>
         </div>
         <div class="flex justify-center items-center gap-8">
-          <div class="flex">
+          <div @click="setVolume(volume === 0 ? 1 : 0)" class="flex">
             <Transition name="fade" mode="out-in">
-              <Icon name="jam:chevrons-left" class="size-4 bg-abyssal dark:bg-slate-300 text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60" />
+              <Icon :key="volume === 0 ? 'muted' : 'unmuted'" :name="volume === 0 ? 'material-symbols:volume-mute' : 'material-symbols:volume-up'" class="size-4 bg-abyssal dark:bg-slate-300 text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60" />
             </Transition>
           </div>
           <div class="flex">
@@ -178,27 +198,24 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="hidden h-64 w-72 overflow-y-auto rounded-lg shadow dark:bg-abyssal dark:text-zinc-100">
-      <div v-if="favorites.length > 0">
-        <div class="px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2">
-          <Icon name="jam-heart" class="size-3" />
-          <p class="text-[11px] uppercase tracking-widest font-light">Favorites</p>
-        </div>
-        <ul class="flex flex-col gap-2">
-          <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
-            <span class="flex justify-center items-start opacity-60">0{{ i + 1 }}.</span>
-            <span class="inline-block flex-col justify-center items-start">
-              <span class="block leading-3 font-semibold">{{ s.title }}</span>
-              <span class="opacity-60">{{ s.artist }}</span>
-            </span>
-          </li>
-        </ul>
-      </div>
-      <div v-else class="h-full flex flex-col gap-2 items-center justify-center opacity-60">
-        <Icon name="mdi-light:heart-off" class="size-8" />
-        <p class="text-sm">No favorites yet</p>
-        <p class="text-xs w-1/2 text-center">Like the song to add to your playlist</p>
-      </div>
-    </div>
 	</div>
 </template>
+<style>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+}
+
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-12px) scale(0.98);
+}
+
+</style>

@@ -6,6 +6,7 @@ export function useRadio() {
 	const isPlaying = ref(false)
 	const loading = ref(false)
 	const error = ref<string | null>(null)
+  const volume = ref(1)
 
 	const elapsedTime = ref(0)
 	let timer: number | null = null
@@ -19,6 +20,7 @@ export function useRadio() {
 			audioPlayer.value = new Audio(audio)
 			audioPlayer.value.preload = "auto"
 			audioPlayer.value.crossOrigin = "anonymous"
+      audioPlayer.value.volume = volume.value
 
 			audioPlayer.value.addEventListener("playing", () => {
 				isPlaying.value = true
@@ -31,6 +33,13 @@ export function useRadio() {
 			audioPlayer.value.load()
 		}
 	}
+
+  const setVolume = (value: number) => {
+    if (audioPlayer.value) {
+      audioPlayer.value.volume = Math.min(Math.max(value, 0), 1)
+    }
+    volume.value = value
+  }
 
 	const startElapsedTimer = () => {
 		if (timer) return
@@ -140,6 +149,8 @@ export function useRadio() {
 		song,
 		isPlaying,
 		elapsedTime,
+    volume,
+    setVolume,
 		play,
 		pause,
 		refresh,
