@@ -30,7 +30,7 @@ interface Song {
 	art?: string | null
 	liked?: boolean
 }
-
+const showFavorites = ref(false)
 const favorites = ref<Song[]>([])
 // Load favorites from localStorage on mount
 if (typeof window !== "undefined") {
@@ -75,6 +75,12 @@ const copySong = async () => {
 	}
 }
 
+// see favoritesList
+const seeFavoritesList = () => {
+  showFavorites.value = !showFavorites.value
+  console.log(showFavorites.value)
+}
+
 watch(song, async (newSong, oldSong) => {
 	liked.value = !!favorites.value.find((s) => s.title === newSong.title && s.artist === newSong.artist && s.liked)
 	if ( newSong && oldSong && newSong.title === oldSong.title && newSong.artist === oldSong.artist ) {
@@ -92,6 +98,14 @@ watch(
 	{ deep: true }
 )
 
+const formattedElapsed = computed(() => {
+  const totalSeconds = elapsedTime.value || 0
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  const paddedSeconds = seconds.toString().padStart(2, '0')
+  return `${minutes}:${paddedSeconds}`
+})
+
 onMounted(async () => {
 	fetchScratchRadio()
 	if (song.value) {
@@ -100,54 +114,71 @@ onMounted(async () => {
 })
 </script>
 <template>
-	<div class="flex items-center gap-4 mt-8">
-    <div class="h-auto w-72 mx-auto flex flex-col rounded-lg shadow">
-      <div class="min-h-72 relative flex flex-col justify-center items-center rounded-t-lg overflow-hidden">
-        <div class="absolute h-full w-full flex justify-center items-center overflow-hidden">
-          <NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="h-72 w-full rounded-t-lg object-contain object-top" />
+	<div class="h-screen flex flex-col justify-center sm:w-4/5 mx-auto">
+    <div class="w-full sm:w-/4/5 mx-auto bg-white dark:bg-slate-800 rounded-lg shadow-lg h-36 flex relative overflow-visible">
+      <div class="w-[64px] h-full flex flex-col items-center justify-between py-4 rounded-l-lg">
+        <div>
+          <Icon @click="seeFavoritesList" name="jam:menu" class="size-6 text-abyssal dark:text-slate-300" />
         </div>
+        <ColorModeToggle />
       </div>
-      <div class="h-40 rounded-b-lg flex flex-col justify-center gap-4 dark:bg-abyssal">
-        <div class="text-center px-4">
-          <p class="mb-[6px] text-xs leading-4 font-semibold text-abyssal dark:text-slate-300">
-            {{ song.title }}
-          </p>
-          <p class="text-[11px] leading-none text-abyssal opacity-70 dark:text-slate-300">
-            {{ song.artist }}
-          </p>
-        </div>
-        <div class="flex w-3/4 mx-auto items-center justify-between">
-          <progress :value="elapsedTime" max="720" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
-          <!-- <span class="text-xs leading-none text-slate-600/60 dark:text-slate-300">{{ formatTime(elapsedTime) }}</span> -->
-        </div>
-        <div class="grid h-8 w-3/4 mx-auto grid-cols-4 items-center justify-between rounded-full text-abyssal duration-500 hover:cursor-pointer hover:text-abyssal dark:text-slate-300 dark:hover:text-slate-200">
-          <ColorModeToggle />
-          <div class="col-span-2 flex justify-center">
+      <div class="absolute top-1/2 left-[64px] h-64 -translate-y-1/2 w-[250px] sm:w-[240px] flex flex-col items-center z-0">
+        <NuxtImg v-if="song.art" :src="song?.art"  provider="ipx" class="w-full h-full rounded-lg object-cover object-center shadow-lg relative" />
+        <Transition name="fade" mode="out-in">
+          <div v-show="showFavorites" class="absolute inset-0 bg-white z-20 rounded-lg flex flex-col overflow-auto"></div>
+        </Transition>
+      </div>
+      <div class="h-full p-4 flex-1 ml-[250px] sm:ml-[240px]">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="mb-1 text-xs leading-none font-medium text-abyssal dark:text-slate-300">
+              {{ song.artist }}
+            </p>
+            <p class="text-[10px] font-light leading-4 text-abyssal dark:text-slate-300">
+              {{ song.title }}
+            </p>
+          </div>
+          <div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
             <Transition name="fade" mode="out-in">
-              <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'clarity:pause-solid' : 'clarity:play-solid'" class="h-4 w-4 transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60" @click="isPlaying ? pause() : play()" />
+              <Icon
+                :key="liked ? 'liked' : hovered ? 'hovered' : 'default'"
+                :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'"
+                :class="[
+                  'h-4 w-4 transition-colors duration-200',
+                  liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-slate-200' : 'text-abyssal dark:text-slate-200'
+                ]"
+                @mouseenter="hovered = true"
+                @mouseleave="hovered = false"
+                @click="copySong"
+              />
             </Transition>
           </div>
-          <div class="flex justify-end">
-            <div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
-              <Transition name="fade" mode="out-in">
-                <Icon
-                  :key="liked ? 'liked' : hovered ? 'hovered' : 'default'"
-                  :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'"
-                  :class="[
-                    'h-4 w-4 transition-colors duration-200',
-                    liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-slate-200' : 'text-abyssal dark:text-slate-200'
-                  ]"
-                  @mouseenter="hovered = true"
-                  @mouseleave="hovered = false"
-                  @click="copySong"
-                />
-              </Transition>
-            </div>
+        </div>
+
+        <div class="flex w-full items-center justify-between gap-4 my-4">
+          <progress :value="elapsedTime" max="720" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
+          <span class="text-[10px] leading-none text-slate-600/60 dark:text-slate-300">{{formattedElapsed}}</span>
+        </div>
+        <div class="flex justify-center items-center gap-8">
+          <div class="flex">
+            <Transition name="fade" mode="out-in">
+              <Icon name="jam:chevrons-left" class="size-4 bg-abyssal dark:bg-slate-300 text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60" />
+            </Transition>
+          </div>
+          <div class="flex">
+            <Transition name="fade" mode="out-in">
+              <Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'material-symbols:pause-circle' : 'material-symbols:play-circle'" class="size-6 bg-abyssal dark:bg-slate-300 text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60" @click="isPlaying ? pause() : play()" />
+            </Transition>
+          </div>
+          <div class="flex">
+            <Transition name="fade" mode="out-in">
+              <Icon name="jam:chevrons-right" class="size-4 bg-abyssal dark:bg-slate-300 text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:hover:text-slate-300/60" />
+            </Transition>
           </div>
         </div>
       </div>
     </div>
-    <div class="h-64 w-72 overflow-y-auto rounded-lg shadow dark:bg-abyssal dark:text-zinc-100">
+    <div class="hidden h-64 w-72 overflow-y-auto rounded-lg shadow dark:bg-abyssal dark:text-zinc-100">
       <div v-if="favorites.length > 0">
         <div class="px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2">
           <Icon name="jam-heart" class="size-3" />

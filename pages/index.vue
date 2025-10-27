@@ -1,9 +1,7 @@
 <script setup></script>
 
 <template>
-	<div class="mt-24">
-		<ClientOnly>
-			<AudioPlayer />
-		</ClientOnly>
-	</div>
+	<ClientOnly>
+    <AudioPlayer />
+  </ClientOnly>
 </template>
