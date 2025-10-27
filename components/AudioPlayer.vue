@@ -101,13 +101,13 @@ onMounted(async () => {
 </script>
 <template>
 	<div class="flex items-center gap-4 mt-8">
-    <div class="h-96 w-72 mx-auto flex flex-col rounded-lg shadow">
-      <div class="h-72 relative flex flex-col justify-center items-center rounded-t-lg overflow-hidden">
+    <div class="h-auto w-72 mx-auto flex flex-col rounded-lg shadow">
+      <div class="min-h-72 relative flex flex-col justify-center items-center rounded-t-lg overflow-hidden">
         <div class="absolute h-full w-full flex justify-center items-center overflow-hidden">
-          <NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="h-full w-full rounded-t-lg object-cover object-top" />
+          <NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="h-72 w-full rounded-t-lg object-contain object-top" />
         </div>
       </div>
-      <div class="h-48 rounded-b-lg flex flex-col justify-center gap-4 dark:bg-abyssal">
+      <div class="h-40 rounded-b-lg flex flex-col justify-center gap-4 dark:bg-abyssal">
         <div class="text-center px-4">
           <p class="mb-[6px] text-xs leading-4 font-semibold text-abyssal dark:text-slate-300">
             {{ song.title }}
