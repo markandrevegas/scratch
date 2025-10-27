@@ -3,6 +3,8 @@
 A modern Nuxt 4 application with Vue 3, Vite, and TailwindCSS.
 This is for only one station, Scratch Radio. It uses Spotify album art using the Spotify API, and Unsplash as fallback.
 
+![Preview of app](./screenshot.png)
+
 ---
 
 ## Features
