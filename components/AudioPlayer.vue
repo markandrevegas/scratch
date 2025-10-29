@@ -126,7 +126,7 @@ onMounted(async () => {
         <NuxtImg v-if="song.art" :src="song?.art"  provider="ipx" class="w-full h-full rounded-lg object-cover object-center shadow-lg relative" />
         <Transition name="slide-fade" mode="out-in">
           <div v-if="showFavorites" class="absolute inset-0 z-20 rounded-lg flex flex-col overflow-auto">
-            <div v-if="favorites.length > 0" class="bg-slate-200">
+            <div v-if="favorites.length > 0" class="bg-slate-200 flex-1">
               <div class="bg-slate-200 px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2">
                 <Icon name="ic:twotone-favorite" class="size-4" />
                 <p class="text-[11px] uppercase tracking-widest font-light">Favorites</p>
@@ -141,7 +141,7 @@ onMounted(async () => {
                 </li>
               </ul>
             </div>
-            <div v-else class="h-full bg-slate-200 flex flex-col gap-2 items-center justify-center">
+            <div v-else class="flex-1 bg-slate-200 flex flex-col gap-2 items-center justify-center">
               <Icon name="mdi-light:heart-off" class="size-8" />
               <p class="text-sm">No favorites yet</p>
               <p class="text-xs w-1/2 text-center">Like the song to add to your playlist</p>
