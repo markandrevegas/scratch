@@ -1,5 +1,5 @@
 <template>
-	<button :class="isDark ? 'bg-transparent text-slate-300' : 'bg-transparent text-abyssal'" @click="toggle">
+	<button :class="isDark ? 'bg-transparent text-yellow-50/90' : 'bg-transparent text-abyssal'" @click="toggle">
 		<span v-if="isDark">
 			<!-- Sun icon -->
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">

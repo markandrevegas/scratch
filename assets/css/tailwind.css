@@ -4,10 +4,9 @@
 
 @layer base {
   body {
-    @apply dark:bg-slate-700;
+    @apply dark:bg-slate-600 dark:text-yellow-50/90 text-abyssal;
   }
 }
-/* Custom progress bar styling */
 progress.progress-bar {
   -webkit-appearance: none;
   appearance: none;

@@ -136,29 +136,32 @@ onMounted(async () => {
 		<div class="relative mx-auto flex h-36 w-full overflow-visible rounded-lg bg-white shadow-lg dark:bg-slate-800 sm:w-4/5 md:w-3/5 xl:w-2/5">
 			<div class="flex h-full w-[64px] flex-col items-center justify-between rounded-l-lg py-4">
 				<div>
-					<Icon name="jam:menu" class="size-6 text-abyssal dark:text-slate-300" @click="toggleFaves" />
+					<Icon name="jam:menu" class="size-6" @click="toggleFaves" />
 				</div>
 				<ColorModeToggle />
 			</div>
-			<div class="absolute left-[64px] top-1/2 z-0 flex h-64 w-[250px] -translate-y-1/2 flex-col items-center sm:w-[240px] overflow-hidden">
+			<div class="absolute left-[64px] top-1/2 z-0 flex h-64 w-[250px] -translate-y-1/2 flex-col items-center sm:w-[240px] shadow-2xl">
 				<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="relative h-full w-full rounded-lg bg-white object-cover object-center shadow-lg" />
 				<Transition name="slide-horizontal">
-					<div v-if="showFavorites" class="absolute inset-0 z-20 flex flex-col overflow-auto rounded-lg">
-						<div v-if="favorites.length > 0" class="flex-1 bg-slate-100">
-							<div class="sticky top-0 z-20 flex items-center justify-between bg-slate-100 px-2 pb-3 pl-3 pt-4">
+					<div v-if="showFavorites" class="absolute inset-0 z-20 flex flex-col overflow-auto rounded-lg bg-white text-abyssal dark:bg-slate-700 dark:text-yellow-50/90">
+						<div v-if="favorites.length > 0" class="h-full flex flex-col justify-between">
+							<div class="sticky top-0 z-20 flex items-center justify-between px-2 pb-3 pl-3 pt-4">
 								<p class="text-[11px] font-light uppercase tracking-widest">Favorites</p>
 								<Icon name="material-symbols-light:close-small-outline-rounded" class="size-5" @click="toggleFaves" />
 							</div>
-							<ul class="flex flex-col gap-2">
+							<ul class="flex-1 overflow-auto flex flex-col gap-1 px-2">
 								<li v-for="(s, i) in favorites" :key="i" class="grid grid-cols-[48px_auto_24px] py-2 pr-2 text-[11px]">
 									<span class="flex items-start justify-center opacity-60">0{{ i + 1 }}.</span>
 									<span class="inline-block flex-col items-start justify-center">
 										<span class="block font-semibold leading-3">{{ s.title }}</span>
-										<span class="opacity-60">{{ s.artist }}</span>
+										<span class="opacity-60 dark:opacity-90">{{ s.artist }}</span>
 									</span>
 									<Icon name="material-symbols:heart-minus-rounded opacity-50 hover:opacity-100 transition-opacity duration-500 hover:cursor-pointer" class="size-4" @click="removeFromFavorites(s)" />
 								</li>
 							</ul>
+              <div class="px-2 py-3 pl-3">
+                <span class="text-[11px] font-light uppercase tracking-widest">Favorites: {{ favorites.length }}</span>
+              </div>
 						</div>
 						<div v-else class="flex flex-1 flex-col items-center justify-center gap-2 bg-slate-200" @click="toggleFaves">
 							<Icon name="mdi-light:heart-off" class="size-8" />
@@ -171,37 +174,37 @@ onMounted(async () => {
 			<div class="ml-[250px] h-full flex-1 p-4 sm:ml-[240px]">
 				<div class="flex items-start justify-between">
 					<div>
-						<p class="mb-1 text-xs font-medium leading-none text-abyssal dark:text-slate-300">
+						<p class="mb-1 text-xs font-medium leading-none">
 							{{ song.artist }}
 						</p>
-						<p class="text-[10px] font-light leading-4 text-abyssal dark:text-slate-300">
+						<p class="text-[10px] font-light leading-4">
 							{{ song.title }}
 						</p>
 					</div>
 					<div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
 						<Transition name="fade" mode="out-in">
-							<Icon :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'" :class="['h-4 w-4 transition-colors duration-200', liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-slate-200' : 'text-abyssal dark:text-slate-200']" @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" />
+							<Icon :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'" :class="['h-4 w-4 transition-colors duration-200', liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-yellow-50/90' : 'text-abyssal dark:text-yellow-50/90']" @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" />
 						</Transition>
 					</div>
 				</div>
 				<div class="my-4 flex w-full items-center justify-between gap-4">
 					<progress :value="elapsedTime" max="720" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
-					<span class="text-[10px] leading-none text-slate-600/60 dark:text-slate-300">{{ formattedElapsed }}</span>
+					<span class="text-[10px] leading-none">{{ formattedElapsed }}</span>
 				</div>
 				<div class="flex items-center justify-center gap-8">
-					<div @click="setVolume(volume === 0 ? 1 : 0)" class="flex">
+					<div class="flex" @click="setVolume(volume === 0 ? 1 : 0)">
 						<Transition name="fade" mode="out-in">
-							<Icon :key="volume === 0 ? 'muted' : 'unmuted'" :name="volume === 0 ? 'material-symbols:volume-mute' : 'material-symbols:volume-up'" class="size-4 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-slate-300 dark:hover:text-slate-300/60" />
+							<Icon :key="volume === 0 ? 'muted' : 'unmuted'" :name="volume === 0 ? 'material-symbols:volume-mute' : 'material-symbols:volume-up'" class="size-4 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-yellow-50/100 dark:hover:text-yellow-50/90" />
 						</Transition>
 					</div>
 					<div class="flex">
 						<Transition name="fade" mode="out-in">
-							<Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'material-symbols:pause-circle' : 'material-symbols:play-circle'" class="size-6 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-slate-300 dark:hover:text-slate-300/60" @click="isPlaying ? pause() : play()" />
+							<Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'material-symbols:pause-circle' : 'material-symbols:play-circle'" class="size-6 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-yellow-50/90 dark:hover:text-yellow-50/100" @click="isPlaying ? pause() : play()" />
 						</Transition>
 					</div>
 					<div class="flex">
 						<Transition name="fade" mode="out-in">
-							<Icon name="jam:chevrons-right" class="size-4 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-slate-300 dark:hover:text-slate-300/60" />
+							<Icon name="jam:chevrons-right" class="size-4 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-yellow-50/90 dark:hover:text-yellow-50/90" />
 						</Transition>
 					</div>
 				</div>
