@@ -2,6 +2,6 @@
 
 <template>
 	<ClientOnly>
-    <AudioPlayer />
-  </ClientOnly>
+		<AudioPlayer />
+	</ClientOnly>
 </template>
