@@ -159,7 +159,7 @@ onMounted(async () => {
 				</div>
 				<ColorModeToggle />
 			</div>
-			<div class="absolute left-[64px] top-1/2 z-0 flex h-64 w-[250px] -translate-y-1/2 flex-col items-center sm:w-[240px] shadow-2xl">
+			<div class="absolute left-[64px] top-1/2 z-0 flex h-64 w-[250px] -translate-y-1/2 flex-col items-center sm:w-[240px] shadow-2xl overflow-hidden">
 				<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="relative h-full w-full rounded-lg bg-white object-cover object-center shadow-lg" />
 				<Transition name="slide-horizontal">
 					<div v-if="showFavorites" class="absolute inset-0 z-20 flex flex-col overflow-auto rounded-lg bg-white text-abyssal dark:bg-abyssal dark:text-yellow-50/90">
@@ -183,10 +183,9 @@ onMounted(async () => {
                 <span class="text-[11px] font-light hover:cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-500" @click="downloadFavorites">Download</span>
               </div>
 						</div>
-						<div v-else class="flex flex-1 flex-col items-center justify-center gap-2 bg-slate-200" @click="toggleFaves">
+						<div v-else class="flex flex-1 flex-col items-center justify-center gap-2" @click="toggleFaves">
 							<Icon name="mdi-light:heart-off" class="size-8" />
-							<p class="text-sm">No favorites yet</p>
-							<p class="w-1/2 text-center text-xs">Like the song to add to your playlist</p>
+							<p class="w-1/2 text-center text-[11px] leading-4 font-light">Like the song to add to your playlist</p>
 						</div>
 					</div>
 				</Transition>
@@ -208,7 +207,7 @@ onMounted(async () => {
 					</div>
 				</div>
 				<div class="my-4 flex w-full items-center justify-between gap-4">
-					<progress :value="elapsedTime" max="720" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
+					<progress :value="elapsedTime" max="60" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
 					<span class="text-[10px] leading-none">{{ formattedElapsed }}</span>
 				</div>
 				<div class="flex items-center justify-center gap-8">
@@ -219,7 +218,7 @@ onMounted(async () => {
 					</div>
 					<div class="flex">
 						<Transition name="fade" mode="out-in">
-							<Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'material-symbols:pause-circle' : 'material-symbols:play-circle'" class="size-6 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-yellow-50/90 dark:hover:text-yellow-50/100" @click="isPlaying ? pause() : play()" />
+							<Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'material-symbols:pause-circle' : 'material-symbols:play-circle'" class="size-8 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-yellow-50/90 dark:hover:text-yellow-50/100" @click="isPlaying ? pause() : play()" />
 						</Transition>
 					</div>
 					<div class="flex">
