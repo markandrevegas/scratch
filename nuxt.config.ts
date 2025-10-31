@@ -45,7 +45,10 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	css: ["@/assets/css/tailwind.css"],
 	vite: {
-		plugins: [tsconfigPaths()]
+		plugins: [tsconfigPaths()],
+    server: {
+      allowedHosts: ['scratch.local']
+    }
 	},
 	modules: ["@nuxtjs/color-mode", "@nuxtjs/tailwindcss", "@nuxt/fonts", "@nuxt/image", "@nuxt/eslint", "@nuxt/icon"],
 	image: {

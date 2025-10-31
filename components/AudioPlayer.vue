@@ -74,6 +74,31 @@ const copySong = async () => {
 		console.error("Failed to copy:", err)
 	}
 }
+// remove from favorites
+const removeFromFavorites = (targetSong: Song) => {
+  if (!targetSong) return
+
+  // Find the index of the song in favorites
+  const index = favorites.value.findIndex(
+    (s) => s.title === targetSong.title && s.artist === targetSong.artist
+  )
+
+  if (index !== -1) {
+    favorites.value.splice(index, 1) // remove it
+    if (typeof window !== "undefined") {
+      localStorage.setItem("favorites", JSON.stringify(favorites.value))
+    }
+
+    // If the current song matches the removed one, update liked state
+    if (
+      song.value &&
+      song.value.title === targetSong.title &&
+      song.value.artist === targetSong.artist
+    ) {
+      liked.value = false
+    }
+  }
+}
 
 // see favoritesList
 const seeFavoritesList = () => {
@@ -128,16 +153,16 @@ onMounted(async () => {
           <div v-if="showFavorites" class="absolute inset-0 z-20 rounded-lg flex flex-col overflow-auto">
             <div v-if="favorites.length > 0" class="bg-slate-200 flex-1">
               <div class="bg-slate-200 px-2 pt-4 pb-3 pl-3 sticky top-0 z-20 flex justify-start items-center gap-2">
-                <Icon name="ic:twotone-favorite" class="size-4" />
                 <p class="text-[11px] uppercase tracking-widest font-light">Favorites</p>
               </div>
               <ul class="flex flex-col gap-2">
-                <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[48px_auto] py-2">
+                <li v-for="(s, i) in favorites" :key="i" class="text-[11px] grid grid-cols-[36px_auto_24px] py-2">
                   <span class="flex justify-center items-start opacity-60">0{{ i + 1 }}.</span>
                   <span class="inline-block flex-col justify-center items-start">
                     <span class="block leading-3 font-semibold">{{ s.title }}</span>
                     <span class="opacity-60">{{ s.artist }}</span>
                   </span>
+                  <Icon name="material-symbols:heart-minus-rounded" class="size-4" @click="removeFromFavorites(s)" />
                 </li>
               </ul>
             </div>
