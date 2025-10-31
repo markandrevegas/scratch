@@ -93,7 +93,26 @@ const removeFromFavorites = (targetSong: Song) => {
 		}
 	}
 }
-
+const downloadFavorites = () => {
+	try {
+		const favoritesData = localStorage.getItem("favorites")
+		if (!favoritesData) {
+			console.warn("No favorites found in localStorage.")
+			return
+		}
+		const jsonBlob = new Blob([JSON.stringify(JSON.parse(favoritesData), null, 2)], {
+			type: "application/json",
+		})
+		const url = URL.createObjectURL(jsonBlob)
+		const a = document.createElement("a")
+		a.href = url
+		a.download = "favorites.json"
+		a.click()
+		URL.revokeObjectURL(url)
+	} catch (err) {
+		console.error("Failed to download favorites:", err)
+	}
+}
 // see favoritesList
 const toggleFaves = () => {
 	showFavorites.value = !showFavorites.value
@@ -143,7 +162,7 @@ onMounted(async () => {
 			<div class="absolute left-[64px] top-1/2 z-0 flex h-64 w-[250px] -translate-y-1/2 flex-col items-center sm:w-[240px] shadow-2xl">
 				<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="relative h-full w-full rounded-lg bg-white object-cover object-center shadow-lg" />
 				<Transition name="slide-horizontal">
-					<div v-if="showFavorites" class="absolute inset-0 z-20 flex flex-col overflow-auto rounded-lg bg-white text-abyssal dark:bg-slate-700 dark:text-yellow-50/90">
+					<div v-if="showFavorites" class="absolute inset-0 z-20 flex flex-col overflow-auto rounded-lg bg-white text-abyssal dark:bg-abyssal dark:text-yellow-50/90">
 						<div v-if="favorites.length > 0" class="h-full flex flex-col justify-between">
 							<div class="sticky top-0 z-20 flex items-center justify-between px-2 pb-3 pl-3 pt-4">
 								<p class="text-[11px] font-light uppercase tracking-widest">Favorites</p>
@@ -159,8 +178,9 @@ onMounted(async () => {
 									<Icon name="material-symbols:heart-minus-rounded opacity-50 hover:opacity-100 transition-opacity duration-500 hover:cursor-pointer" class="size-4" @click="removeFromFavorites(s)" />
 								</li>
 							</ul>
-              <div class="px-2 py-3 pl-3">
-                <span class="text-[11px] font-light uppercase tracking-widest">Favorites: {{ favorites.length }}</span>
+              <div class="p-3 dark:bg-abyssal flex items-center gap-1">
+                <Icon name="line-md:downloading-loop" class="size-4 hover:cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-500" @click="downloadFavorites" />
+                <span class="text-[11px] font-light hover:cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-500" @click="downloadFavorites">Download</span>
               </div>
 						</div>
 						<div v-else class="flex flex-1 flex-col items-center justify-center gap-2 bg-slate-200" @click="toggleFaves">
