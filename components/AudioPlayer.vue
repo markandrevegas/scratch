@@ -159,7 +159,7 @@ onMounted(async () => {
 				</div>
 				<ColorModeToggle />
 			</div>
-			<div class="absolute left-[64px] top-1/2 z-0 flex h-64 w-[250px] -translate-y-1/2 flex-col items-center sm:w-[240px] shadow-2xl overflow-hidden">
+			<div class="absolute left-[64px] top-1/2 z-0 flex h-64 w-[250px] -translate-y-1/2 flex-col items-center sm:w-[240px] shadow-2xl overflow-hidden bg-white dark:bg-slate-800 rounded-lg">
 				<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="relative h-full w-full rounded-lg bg-white object-cover object-center shadow-lg" />
 				<Transition name="slide-horizontal">
 					<div v-if="showFavorites" class="absolute inset-0 z-20 flex flex-col overflow-auto rounded-lg bg-white text-abyssal dark:bg-abyssal dark:text-yellow-50/90">
