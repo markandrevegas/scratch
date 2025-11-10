@@ -2,36 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+::root {
+  --abyssal: #1B2632;
+  --palladian: #EEE9DF;
+}
 @layer base {
   body {
-    @apply dark:bg-slate-600 dark:text-yellow-50/90 text-abyssal;
+    @apply dark:bg-slate-900 dark:text-yellow-50/90 text-abyssal;
   }
 
   progress.progress-bar {
     -webkit-appearance: none;
     appearance: none;
-    @apply bg-abyssal opacity-30 rounded-full;
+    width: 100%;
+    height: 2px;
+    border-radius: 9999px;
+    overflow: hidden;
   }
 
-  progress.progress-bar::-webkit-progress-bar,
+  /* Background (track) */
+  progress.progress-bar::-webkit-progress-bar {
+    background-color: rgb(15 23 42 / 0.8); /* abyssal w/ opacity */
+    border-radius: 9999px;
+  }
+
+  /* Value (fill) */
+  progress.progress-bar::-webkit-progress-value {
+    background-color: rgb(241 245 249 / .8); /* red-300 */
+    border-radius: 9999px;
+  }
+
+  /* Firefox uses -moz-progress-bar only for the value */
   progress.progress-bar::-moz-progress-bar {
-    @apply bg-abyssal opacity-30 rounded-full;
+    background-color: rgb(241 245 249 / .8);
+    border-radius: 9999px;
   }
 
-  progress.progress-bar::-webkit-progress-value,
-  progress.progress-bar::-moz-progress-value {
-    @apply bg-red-300 rounded-full;
+  /* Dark mode */
+  .dark progress.progress-bar::-webkit-progress-value {
+    background-color: rgb(241 245 249 / .5); /* slate-100 */
   }
-
-  .dark progress.progress-bar::-webkit-progress-bar,
   .dark progress.progress-bar::-moz-progress-bar {
-    @apply bg-abyssal dark:opacity-40 rounded-full;
+    background-color: rgb(241 245 249 / .5);
   }
 
-  .dark progress.progress-bar::-webkit-progress-value,
-  .dark progress.progress-bar::-moz-progress-value {
-    @apply bg-slate-100 rounded-full;
-  }
 }
 
 .slide-horizontal-enter-active,

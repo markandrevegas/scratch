@@ -207,7 +207,7 @@ onMounted(async () => {
 					</div>
 				</div>
 				<div class="my-4 flex w-full items-center justify-between gap-4">
-					<progress :value="elapsedTime" max="60" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
+					<progress :value="elapsedTime" max="360" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
 					<span class="text-[10px] leading-none">{{ formattedElapsed }}</span>
 				</div>
 				<div class="flex items-center justify-center gap-8">
