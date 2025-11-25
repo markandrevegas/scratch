@@ -151,15 +151,15 @@ onMounted(async () => {
 })
 </script>
 <template>
-	<div class="mx-auto flex h-screen flex-col justify-center sm:w-4/5">
-		<div class="relative mx-auto flex h-36 w-full overflow-visible rounded-lg bg-white shadow-lg dark:bg-slate-800 sm:w-4/5 md:w-3/5 xl:w-2/5">
-			<div class="flex h-full w-[64px] flex-col items-center justify-between rounded-l-lg py-4">
+	<div class="mx-auto flex h-screen flex-col justify-center w-full sm:w-4/5 md:w-1/2">
+		<div class="relative mx-auto flex items-center h-40 w-full overflow-visible rounded-lg bg-white shadow-lg dark:bg-slate-800 ">
+			<div class="min-w-[60px] max-w-[80px] flex h-full flex-col items-center justify-between rounded-l-lg py-4">
 				<div>
 					<Icon name="jam:menu" class="size-6" @click="toggleFaves" />
 				</div>
 				<ColorModeToggle />
 			</div>
-			<div class="absolute left-[64px] top-1/2 z-0 flex h-64 w-[250px] -translate-y-1/2 flex-col items-center sm:w-[240px] shadow-2xl overflow-hidden bg-white dark:bg-slate-800 rounded-lg">
+			<div class="flex self-center overflow-visible h-auto aspect-square min-w-[128px] max-w-[192px] flex-col items-center rounded-lg bg-white shadow-2xl dark:bg-slate-800">
 				<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="relative h-full w-full rounded-lg bg-white object-cover object-center shadow-lg" />
 				<Transition name="slide-horizontal">
 					<div v-if="showFavorites" class="absolute inset-0 z-20 flex flex-col overflow-auto rounded-lg bg-white text-abyssal dark:bg-abyssal dark:text-yellow-50/90">
@@ -190,7 +190,7 @@ onMounted(async () => {
 					</div>
 				</Transition>
 			</div>
-			<div class="ml-[250px] h-full flex-1 p-4 sm:ml-[240px]">
+			<div class="h-full flex-1 p-4">
 				<div class="flex items-start justify-between">
 					<div>
 						<p class="mb-1 text-xs font-medium leading-none">
