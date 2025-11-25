@@ -151,12 +151,12 @@ onMounted(async () => {
 })
 </script>
 <template>
-	<div class="mx-auto flex h-screen w-[20rem] pt-24">
+	<div class="mx-auto flex h-screen w-[20rem] pt-32 sm:pt-24">
 		<div class="relative mx-auto flex h-[24rem] w-full items-center overflow-visible rounded-lg bg-white shadow-lg dark:bg-slate-800">
 			<div class="relative h-full w-full flex-col items-center rounded-lg bg-white shadow-2xl dark:bg-slate-800">
 				<div class="absolute left-0 right-0 top-0 z-20 flex h-16 justify-between items-center px-4">
 					<div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 dark:bg-slate-900 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-700">
-						<Icon name="jam:menu" class="size-6" @click="toggleFaves" />
+						<Icon name="solar:list-bold-duotone" class="size-6" @click="toggleFaves" />
 					</div>
 					<div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 dark:bg-slate-900 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-700">
 						<ColorModeToggle />
@@ -170,21 +170,23 @@ onMounted(async () => {
 						{{ song.artist }}
 					</p>
 				</div>
-				<div class="absolute bottom-0 left-0 right-0 z-20 rounded-b-lg bg-white dark:bg-slate-800">
-					<div class="h-full flex-1 p-4">
-						<div class="hidden flex items-start justify-between">
-							<div>
+				<div class="h-[10rem] absolute bottom-0 left-0 right-0 z-20 rounded-b-lg bg-white dark:bg-slate-800 flex items-center">
+					<div class="h-full flex-1 px-4 flex flex-col justify-center items-center">
+            <div class="w-full flex justify-end">
+              <div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
+								<Transition name="fade" mode="out-in">
+									<Icon :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'" :class="['h-4 w-4 transition-colors duration-200', liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-yellow-50/90' : 'text-abyssal dark:text-yellow-50/90']" @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" />
+								</Transition>
+							</div>
+            </div>
+						<div class="flex items-start justify-between">
+							<div class="flex flex-col justify-center items-center w-full">
 								<p class="mb-1 text-xs font-medium leading-none">
 									{{ song.artist }}
 								</p>
 								<p class="text-[10px] font-light leading-4">
 									{{ song.title }}
 								</p>
-							</div>
-							<div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
-								<Transition name="fade" mode="out-in">
-									<Icon :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'" :class="['h-4 w-4 transition-colors duration-200', liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-yellow-50/90' : 'text-abyssal dark:text-yellow-50/90']" @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" />
-								</Transition>
 							</div>
 						</div>
 						<div class="my-4 flex w-full items-center justify-between gap-4">
@@ -211,7 +213,8 @@ onMounted(async () => {
 					</div>
 				</div>
 				<div class="absolute inset-0 z-10">
-					<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="relative h-full w-full rounded-lg bg-white object-cover object-center shadow-lg" />
+          <div class="absolute inset-0 bg-black/50 z-20 rounded-lg"/>
+					<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="relative h-full w-full rounded-lg bg-white object-cover object-center shadow-lg z-10" />
 				</div>
 			</div>
       <Transition name="slide-horizontal">
