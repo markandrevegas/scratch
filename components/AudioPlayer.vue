@@ -163,22 +163,15 @@ onMounted(async () => {
 					</div>
 				</div>
 				<div class="absolute left-0 right-0 top-16 z-20 flex h-32 flex-col items-center justify-center p-4 text-white">
-					<p class="mb-1 text-xl leading-none">
+					<p class="mb-1 text-xl leading-none [text-shadow:0_1px_3px_rgba(0,0,0,0.8)]">
 						{{ song.title }}
 					</p>
-					<p class="text-sm font-light leading-4">
+					<p class="text-sm font-light leading-4 [text-shadow:0_1px_3px_rgba(0,0,0,0.8)]">
 						{{ song.artist }}
 					</p>
 				</div>
 				<div class="h-[10rem] absolute bottom-0 left-0 right-0 z-20 rounded-b-lg bg-white dark:bg-slate-800 flex items-center">
 					<div class="h-full flex-1 px-4 flex flex-col justify-center items-center">
-            <div class="w-full flex justify-end">
-              <div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
-								<Transition name="fade" mode="out-in">
-									<Icon :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'" :class="['h-4 w-4 transition-colors duration-200', liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-yellow-50/90' : 'text-abyssal dark:text-yellow-50/90']" @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" />
-								</Transition>
-							</div>
-            </div>
 						<div class="flex items-start justify-between">
 							<div class="flex flex-col justify-center items-center w-full">
 								<p class="mb-1 text-xs font-medium leading-none">
@@ -190,7 +183,7 @@ onMounted(async () => {
 							</div>
 						</div>
 						<div class="my-4 flex w-full items-center justify-between gap-4">
-							<progress :value="elapsedTime" max="360" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
+							<progress :value="elapsedTime" max="720" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
 							<span class="text-[10px] leading-none">{{ formattedElapsed }}</span>
 						</div>
 						<div class="flex items-center justify-center gap-8">
@@ -205,15 +198,17 @@ onMounted(async () => {
 								</Transition>
 							</div>
 							<div class="flex">
-								<Transition name="fade" mode="out-in">
-									<Icon name="jam:chevrons-right" class="size-4 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-yellow-50/90 dark:hover:text-yellow-50/90" />
-								</Transition>
+								<div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
+                  <Transition name="fade" mode="out-in">
+                    <Icon :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'" :class="['h-4 w-4 transition-colors duration-200', liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-yellow-50/90' : 'text-abyssal dark:text-yellow-50/90']" @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" />
+                  </Transition>
+                </div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="absolute inset-0 z-10">
-          <div class="absolute inset-0 bg-black/50 z-20 rounded-lg"/>
+          <div class="absolute inset-0 bg-black/40 z-20 rounded-lg"/>
 					<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="relative h-full w-full rounded-lg bg-white object-cover object-center shadow-lg z-10" />
 				</div>
 			</div>

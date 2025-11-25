@@ -22,19 +22,19 @@
 
   /* Background (track) */
   progress.progress-bar::-webkit-progress-bar {
-    background-color: rgb(15 23 42 / 0.8); /* abyssal w/ opacity */
+    background-color: rgb(15 23 42 / 0.3); /* abyssal w/ opacity */
     border-radius: 9999px;
   }
 
   /* Value (fill) */
   progress.progress-bar::-webkit-progress-value {
-    background-color: rgb(241 245 249 / .8); /* red-300 */
+    background-color: rgb(34 197 94 / .8);
     border-radius: 9999px;
   }
 
   /* Firefox uses -moz-progress-bar only for the value */
   progress.progress-bar::-moz-progress-bar {
-    background-color: rgb(241 245 249 / .8);
+    background-color: rgb(34 197 94 / .8);
     border-radius: 9999px;
   }
 
