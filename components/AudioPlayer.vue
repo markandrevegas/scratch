@@ -101,7 +101,7 @@ const downloadFavorites = () => {
 			return
 		}
 		const jsonBlob = new Blob([JSON.stringify(JSON.parse(favoritesData), null, 2)], {
-			type: "application/json",
+			type: "application/json"
 		})
 		const url = URL.createObjectURL(jsonBlob)
 		const a = document.createElement("a")
@@ -151,83 +151,97 @@ onMounted(async () => {
 })
 </script>
 <template>
-	<div class="mx-auto flex h-screen flex-col justify-center w-full sm:w-4/5 md:w-1/2">
-		<div class="relative mx-auto flex items-center h-40 w-full overflow-visible rounded-lg bg-white shadow-lg dark:bg-slate-800 ">
-			<div class="min-w-[60px] max-w-[80px] flex h-full flex-col items-center justify-between rounded-l-lg py-4">
-				<div>
-					<Icon name="jam:menu" class="size-6" @click="toggleFaves" />
+	<div class="mx-auto flex h-screen w-[20rem] pt-24">
+		<div class="relative mx-auto flex h-[24rem] w-full items-center overflow-visible rounded-lg bg-white shadow-lg dark:bg-slate-800">
+			<div class="relative h-full w-full flex-col items-center rounded-lg bg-white shadow-2xl dark:bg-slate-800">
+				<div class="absolute left-0 right-0 top-0 z-20 flex h-16 justify-between items-center px-4">
+					<div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 dark:bg-slate-900 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-700">
+						<Icon name="jam:menu" class="size-6" @click="toggleFaves" />
+					</div>
+					<div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 dark:bg-slate-900 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-700">
+						<ColorModeToggle />
+					</div>
 				</div>
-				<ColorModeToggle />
-			</div>
-			<div class="flex self-center overflow-visible h-auto aspect-square min-w-[128px] max-w-[192px] flex-col items-center rounded-lg bg-white shadow-2xl dark:bg-slate-800">
-				<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="relative h-full w-full rounded-lg bg-white object-cover object-center shadow-lg" />
-				<Transition name="slide-horizontal">
-					<div v-if="showFavorites" class="absolute inset-0 z-20 flex flex-col overflow-auto rounded-lg bg-white text-abyssal dark:bg-abyssal dark:text-yellow-50/90">
-						<div v-if="favorites.length > 0" class="h-full flex flex-col justify-between">
-							<div class="sticky top-0 z-20 flex items-center justify-between px-2 pb-3 pl-3 pt-4">
-								<p class="text-[11px] font-light uppercase tracking-widest">Favorites</p>
-								<Icon name="material-symbols-light:close-small-outline-rounded" class="size-5" @click="toggleFaves" />
+				<div class="absolute left-0 right-0 top-16 z-20 flex h-32 flex-col items-center justify-center p-4 text-white">
+					<p class="mb-1 text-xl leading-none">
+						{{ song.title }}
+					</p>
+					<p class="text-sm font-light leading-4">
+						{{ song.artist }}
+					</p>
+				</div>
+				<div class="absolute bottom-0 left-0 right-0 z-20 rounded-b-lg bg-white dark:bg-slate-800">
+					<div class="h-full flex-1 p-4">
+						<div class="hidden flex items-start justify-between">
+							<div>
+								<p class="mb-1 text-xs font-medium leading-none">
+									{{ song.artist }}
+								</p>
+								<p class="text-[10px] font-light leading-4">
+									{{ song.title }}
+								</p>
 							</div>
-							<ul class="flex-1 overflow-auto flex flex-col gap-1 px-2">
-								<li v-for="(s, i) in favorites" :key="i" class="grid grid-cols-[48px_auto_24px] py-2 pr-2 text-[11px]">
-									<span class="flex items-start justify-center opacity-60">0{{ i + 1 }}.</span>
-									<span class="inline-block flex-col items-start justify-center">
-										<span class="block font-semibold leading-3">{{ s.title }}</span>
-										<span class="opacity-60 dark:opacity-90">{{ s.artist }}</span>
-									</span>
-									<Icon name="material-symbols:heart-minus-rounded opacity-50 hover:opacity-100 transition-opacity duration-500 hover:cursor-pointer" class="size-4" @click="removeFromFavorites(s)" />
-								</li>
-							</ul>
-              <div class="p-3 dark:bg-abyssal flex items-center gap-1">
-                <Icon name="line-md:downloading-loop" class="size-4 hover:cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-500" @click="downloadFavorites" />
-                <span class="text-[11px] font-light hover:cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-500" @click="downloadFavorites">Download</span>
-              </div>
+							<div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
+								<Transition name="fade" mode="out-in">
+									<Icon :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'" :class="['h-4 w-4 transition-colors duration-200', liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-yellow-50/90' : 'text-abyssal dark:text-yellow-50/90']" @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" />
+								</Transition>
+							</div>
 						</div>
-						<div v-else class="flex flex-1 flex-col items-center justify-center gap-2" @click="toggleFaves">
-							<Icon name="mdi-light:heart-off" class="size-8" />
-							<p class="w-1/2 text-center text-[11px] leading-4 font-light">Like the song to add to your playlist</p>
+						<div class="my-4 flex w-full items-center justify-between gap-4">
+							<progress :value="elapsedTime" max="360" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
+							<span class="text-[10px] leading-none">{{ formattedElapsed }}</span>
 						</div>
-					</div>
-				</Transition>
-			</div>
-			<div class="h-full flex-1 p-4">
-				<div class="flex items-start justify-between">
-					<div>
-						<p class="mb-1 text-xs font-medium leading-none">
-							{{ song.artist }}
-						</p>
-						<p class="text-[10px] font-light leading-4">
-							{{ song.title }}
-						</p>
-					</div>
-					<div class="inline-flex items-center justify-center transition-colors duration-200" :class="hovered ? 'text-red-600' : 'text-abyssal'" @mouseenter="hovered = true" @mouseleave="hovered = false">
-						<Transition name="fade" mode="out-in">
-							<Icon :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'" :class="['h-4 w-4 transition-colors duration-200', liked ? 'text-red-600' : hovered ? 'text-abyssal hover:text-red-600 dark:text-yellow-50/90' : 'text-abyssal dark:text-yellow-50/90']" @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" />
-						</Transition>
+						<div class="flex items-center justify-center gap-8">
+							<div class="flex" @click="setVolume(volume === 0 ? 1 : 0)">
+								<Transition name="fade" mode="out-in">
+									<Icon :key="volume === 0 ? 'muted' : 'unmuted'" :name="volume === 0 ? 'material-symbols:volume-mute' : 'material-symbols:volume-up'" class="size-4 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-yellow-50/100 dark:hover:text-yellow-50/90" />
+								</Transition>
+							</div>
+							<div class="flex">
+								<Transition name="fade" mode="out-in">
+									<Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'material-symbols:pause-circle' : 'material-symbols:play-circle'" class="size-8 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-yellow-50/90 dark:hover:text-yellow-50/100" @click="isPlaying ? pause() : play()" />
+								</Transition>
+							</div>
+							<div class="flex">
+								<Transition name="fade" mode="out-in">
+									<Icon name="jam:chevrons-right" class="size-4 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-yellow-50/90 dark:hover:text-yellow-50/90" />
+								</Transition>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="my-4 flex w-full items-center justify-between gap-4">
-					<progress :value="elapsedTime" max="360" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
-					<span class="text-[10px] leading-none">{{ formattedElapsed }}</span>
-				</div>
-				<div class="flex items-center justify-center gap-8">
-					<div class="flex" @click="setVolume(volume === 0 ? 1 : 0)">
-						<Transition name="fade" mode="out-in">
-							<Icon :key="volume === 0 ? 'muted' : 'unmuted'" :name="volume === 0 ? 'material-symbols:volume-mute' : 'material-symbols:volume-up'" class="size-4 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-yellow-50/100 dark:hover:text-yellow-50/90" />
-						</Transition>
-					</div>
-					<div class="flex">
-						<Transition name="fade" mode="out-in">
-							<Icon :key="isPlaying ? 'pause' : 'play'" :name="isPlaying ? 'material-symbols:pause-circle' : 'material-symbols:play-circle'" class="size-8 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-yellow-50/90 dark:hover:text-yellow-50/100" @click="isPlaying ? pause() : play()" />
-						</Transition>
-					</div>
-					<div class="flex">
-						<Transition name="fade" mode="out-in">
-							<Icon name="jam:chevrons-right" class="size-4 bg-abyssal text-white transition-colors duration-200 hover:text-abyssal hover:opacity-50 dark:bg-yellow-50/90 dark:hover:text-yellow-50/90" />
-						</Transition>
-					</div>
+				<div class="absolute inset-0 z-10">
+					<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="relative h-full w-full rounded-lg bg-white object-cover object-center shadow-lg" />
 				</div>
 			</div>
+      <Transition name="slide-horizontal">
+        <div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto rounded-lg bg-white text-abyssal dark:bg-abyssal dark:text-yellow-50/90">
+          <div v-if="favorites.length > 0" class="flex h-full flex-col justify-between">
+            <div class="sticky top-0 z-20 flex items-center justify-between px-2 pb-3 pl-3 pt-4">
+              <p class="text-[11px] font-light uppercase tracking-widest">Favorites</p>
+              <Icon name="material-symbols-light:close-small-outline-rounded" class="size-5" @click="toggleFaves" />
+            </div>
+            <ul class="flex flex-1 flex-col gap-1 overflow-auto px-2">
+              <li v-for="(s, i) in favorites" :key="i" class="grid grid-cols-[48px_auto_24px] py-2 pr-2 text-[11px]">
+                <span class="flex items-start justify-center opacity-60">0{{ i + 1 }}.</span>
+                <span class="inline-block flex-col items-start justify-center">
+                  <span class="block font-semibold leading-3">{{ s.title }}</span>
+                  <span class="opacity-60 dark:opacity-90">{{ s.artist }}</span>
+                </span>
+                <Icon name="material-symbols:heart-minus-rounded opacity-50 hover:opacity-100 transition-opacity duration-500 hover:cursor-pointer" class="size-4" @click="removeFromFavorites(s)" />
+              </li>
+            </ul>
+            <div class="flex items-center gap-1 p-3 dark:bg-abyssal">
+              <Icon name="line-md:downloading-loop" class="size-4 opacity-70 transition-opacity duration-500 hover:cursor-pointer hover:opacity-100" @click="downloadFavorites" />
+              <span class="text-[11px] font-light opacity-70 transition-opacity duration-500 hover:cursor-pointer hover:opacity-100" @click="downloadFavorites">Download</span>
+            </div>
+          </div>
+          <div v-else class="flex flex-1 flex-col items-center justify-center gap-2" @click="toggleFaves">
+            <Icon name="mdi-light:heart-off" class="size-8" />
+            <p class="w-1/2 text-center text-[11px] font-light leading-4">Like the song to add to your playlist</p>
+          </div>
+        </div>
+      </Transition>
 		</div>
 	</div>
 </template>
