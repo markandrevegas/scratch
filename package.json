@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": {
     "build": "npx nuxi build",
+    "clean": "rm -rf node_modules bun.lockb",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "npx serve .output/public",
-    "postinstall": "nuxt prepare",
     "format": "prettier --write **/*.{vue,js,ts}",
     "start": "node .output/server/index.mjs --hostname scratch.local"
   },
@@ -37,5 +37,8 @@
     "vite": "^4.4.9",
     "@types/node": "^24.1.0",
     "@vitejs/plugin-vue": "^4.4.0"
+  },  
+  "resolutions": {
+    "unplugin-utils": "0.3.0"
   }
 }
