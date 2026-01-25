@@ -131,11 +131,24 @@ export function useRadio() {
 		if (statusInterval !== null) clearInterval(statusInterval)
 	}
 
+	const handleKeydown = (e: KeyboardEvent) => {
+		// ignore typing in inputs
+		const target = e.target as HTMLElement
+		if (target?.tagName === "INPUT" || target?.tagName === "TEXTAREA") return
+
+		if (e.code === "Space") {
+			e.preventDefault()
+			isPlaying.value ? pause() : play()
+		}
+	}
+
 	onMounted(() => {
 		setupAudio()
 		startStatusUpdates()
+		window.addEventListener("keydown", handleKeydown)
 	})
 	onUnmounted(() => {
+		window.removeEventListener("keydown", handleKeydown)
 		stopStatusUpdates()
 		stopElapsedTimer()
 		stopStatusUpdates()

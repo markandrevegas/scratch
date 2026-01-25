@@ -193,7 +193,7 @@ onMounted(async () => {
 
 					<div class="hidden absolute inset-0 z-10 bg-black/10"></div>
 					<div class="absolute bottom-[2rem] left-0 right-0 z-30 text-white">
-						<!--progress-->
+						<!--play + progress + audio-->
 						<div class="flex justify-between items-center px-4">
 							<div class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-black/50">
 								<Transition name="fade" mode="out-in">

@@ -24,7 +24,7 @@
 
   /* Fill */
   progress.progress-bar::-webkit-progress-value {
-    @apply bg-black/50;
+    @apply bg-green-400;
     border-radius: 9999px;
   }
 
