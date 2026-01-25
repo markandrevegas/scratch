@@ -150,26 +150,34 @@
 		<div class="mx-auto my-auto flex w-[20rem] items-center justify-center rounded-lg overflow-hidden">
 			<div class="aspect-square flex w-full flex-col rounded-lg bg-white shadow-2xl dark:bg-slate-800">
 				<div class="relative aspect-square w-full overflow-hidden">
-					<div class="absolute left-0 right-0 top-0 z-30 flex h-16 items-center justify-between px-4">
-						<div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200/40 backdrop-blur-md transition-colors duration-200 hover:cursor-pointer hover:bg-gray-300 dark:bg-slate-900/40 dark:hover:bg-slate-700">
-							<Icon name="solar:list-bold-duotone" class="size-6 text-slate-900 dark:text-white" @click="toggleFaves" />
+					<div class="absolute top-0 right-0 left-0 z-30 flex items-start justify-between p-4">
+						<div class="bg-black/30 rounded-full p-4 leading-1 flex flex-col">
+							<p class="text-xs font-medium leading-none">
+								{{ song.artist }}
+							</p>
+							<p class="text-[10px] font-light leading-4">
+								{{ song.title }}
+							</p>
 						</div>
-						<div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200/40 backdrop-blur-md transition-colors duration-200 hover:cursor-pointer hover:bg-gray-300 dark:bg-slate-900/40 dark:hover:bg-slate-700">
-							<ColorModeToggle />
+						<div class="flex justify-start items-center gap-4">
+							<div class="text-white p-4 bg-black/30 flex items-center justify-center rounded-full transition-colors duration-200 hover:cursor-pointer">
+								<ColorModeToggle />
+							</div>
+							<div @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" class="text-white p-4 bg-black/30 flex items-center justify-center rounded-full transition-colors duration-200 hover:cursor-pointer hover:text-red-600">
+								<Transition name="fade" mode="out-in">
+									<PrimeHeartFilled
+										:key="liked ? 'liked' : hovered ? 'hovered' : 'default'"
+										class="size-5 transition-colors duration-200"
+										:class="liked ? 'text-red-600' : hovered ? 'text-red-400' : ''"
+									/>
+								</Transition>
+
+							</div>
 						</div>
-					</div>
-					<!--old song and artist-->
-					<div class="hidden absolute left-0 right-0 top-16 z-20 flex h-32 flex-col items-center justify-center p-4 text-white">
-						<p class="mb-1 text-xl font-bold leading-none [text-shadow:0_2px_8px_rgba(0,0,0,0.8)]">
-							{{ song.title }}
-						</p>
-						<p class="text-sm font-light leading-4 [text-shadow:0_1px_4px_rgba(0,0,0,0.8)]">
-							{{ song.artist }}
-						</p>
 					</div>
 
 					<div class="absolute inset-0 z-10 bg-black/40"></div>
-					<div class="absolute inset-0 z-20 flex flex-col justify-center text-white">
+					<div class="absolute z-30 right-0 bottom-0 left-0 text-white">
 						<div class="flex w-full flex-col items-center justify-center">
 							<p class="mb-1 text-xs font-medium leading-none">
 								{{ song.artist }}
@@ -180,7 +188,7 @@
 						</div>
 						<!--progress-->
 						<div class="my-4 flex w-full items-center justify-between gap-4">
-							<progress :value="elapsedTime" max="720" class="progress-bar h-[2px] w-full appearance-none overflow-hidden rounded-full" />
+							<progress :value="elapsedTime" max="720" class="progress-bar"></progress>
 							<span class="text-[10px] leading-none">
 								{{ formattedElapsed }}
 							</span>
@@ -199,7 +207,7 @@
 								</Transition>
 							</div>
 
-							<div class="inline-flex cursor-pointer items-center justify-center transition-colors duration-200" @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong">
+							<div class="hidden inline-flex cursor-pointer items-center justify-center transition-colors duration-200" @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong">
 								<Transition name="fade" mode="out-in">
 									<Icon :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" :name="liked || hovered ? 'jam:heart-f' : 'jam:heart'" :class="['size-5 transition-colors duration-200', liked ? 'text-red-600' : '']" />
 								</Transition>

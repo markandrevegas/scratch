@@ -12,17 +12,17 @@
   }
 
   progress.progress-bar {
+    background: #fff;
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
-    height: 2px;
+    height: 1px;
     border-radius: 9999px;
     overflow: hidden;
   }
 
   /* Background (track) */
   progress.progress-bar::-webkit-progress-bar {
-    background-color: rgb(15 23 42 / 0.3); /* abyssal w/ opacity */
     border-radius: 9999px;
   }
 
@@ -36,14 +36,6 @@
   progress.progress-bar::-moz-progress-bar {
     background-color: rgb(34 197 94 / .8);
     border-radius: 9999px;
-  }
-
-  /* Dark mode */
-  .dark progress.progress-bar::-webkit-progress-value {
-    background-color: rgb(241 245 249 / .5); /* slate-100 */
-  }
-  .dark progress.progress-bar::-moz-progress-bar {
-    background-color: rgb(241 245 249 / .5);
   }
 
 }
