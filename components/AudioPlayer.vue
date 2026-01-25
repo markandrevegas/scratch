@@ -8,6 +8,7 @@ import AudioLines from "./AudioLines.vue"
 import LayersIcon from "./LayersIcon.vue"
 import XIcon from "./XIcon.vue"
 import DeleteIcon from "./DeleteIcon.vue"
+import DownloadIcon from "./DownloadIcon.vue"
 
 const { isPlaying, play, pause, volume, setVolume, elapsedTime, song, fetchScratchRadio } = useRadio()
 
@@ -211,7 +212,7 @@ onMounted(async () => {
 						<div class="mx-auto mt-4 flex w-4/5 justify-around"></div>
 					</div>
 					<Transition name="slide-horizontal">
-						<div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto rounded-lg border bg-white text-abyssal dark:bg-slate-900 dark:text-yellow-50/90">
+						<div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto rounded-lg bg-white text-abyssal dark:bg-slate-900 dark:text-yellow-50/90">
 							<div v-if="favorites.length > 0" class="flex h-full w-full flex-col justify-between">
 								<div class="sticky left-0 right-0 top-0 z-30 flex items-start justify-between px-2 py-3">
 									<div class="flex min-h-[3rem] min-w-[12rem] items-start justify-start gap-2 rounded-full bg-black/50 p-2 text-yellow-50/90">
@@ -222,6 +223,9 @@ onMounted(async () => {
 											<p class="text-[12px] font-medium">Favorites</p>
 											<p class="relative top-[-2px] text-[9px] font-light">Hits from the 70s</p>
 										</div>
+									</div>
+									<div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/50 text-yellow-50/90">
+										<DownloadIcon @click="downloadFavorites" />
 									</div>
 								</div>
 								<ul class="flex flex-1 flex-col gap-1 overflow-auto px-2">
@@ -234,10 +238,6 @@ onMounted(async () => {
 										<DeleteIcon @click="removeFromFavorites(s)" />
 									</li>
 								</ul>
-								<div class="flex items-center gap-1 border-t p-3 dark:border-slate-700">
-									<Icon name="line-md:downloading-loop" class="size-4 cursor-pointer opacity-70 hover:opacity-100" @click="downloadFavorites" />
-									<span class="cursor-pointer text-[11px] font-light opacity-70 hover:opacity-100" @click="downloadFavorites">Download</span>
-								</div>
 							</div>
 							<div v-else class="flex flex-1 flex-col items-center justify-center gap-2" @click="toggleFaves">
 								<Icon name="mdi-light:heart-off" class="size-8" />

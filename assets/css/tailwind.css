@@ -11,7 +11,7 @@
 		@apply text-abyssal dark:bg-slate-900 dark:text-yellow-50/90;
 	}
 	progress.progress-bar {
-		@apply h-[3px] w-4/5 w-full overflow-hidden rounded-full;
+		@apply h-[3px] overflow-hidden rounded-full;
 		-webkit-appearance: none;
 		appearance: none;
 	}
