@@ -192,7 +192,7 @@ onMounted(async () => {
 					<div class="absolute inset-0 z-10 hidden bg-black/10"></div>
 					<div class="absolute bottom-[2rem] left-0 right-0 z-30 text-white">
 						<!--play + progress + audio-->
-						<div class="flex items-center justify-between px-4">
+						<div class="flex items-center justify-around px-4">
 							<div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/50">
 								<Transition name="fade" mode="out-in">
 									<component :is="isPlaying ? PauseIcon : PlayIcon" :key="isPlaying ? 'pause' : 'play'" class="flex size-8 items-center justify-center transition-colors duration-200 hover:opacity-80" @click="isPlaying ? pause() : play()" />
@@ -204,12 +204,10 @@ onMounted(async () => {
 							</div>
 							<div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/50 transition-colors duration-200">
 								<Transition name="fade" mode="out-in">
-									<AudioLines />
+									<AudioLines :active="isPlaying" />
 								</Transition>
 							</div>
 						</div>
-						<!--volume and play-->
-						<div class="mx-auto mt-4 flex w-4/5 justify-around"></div>
 					</div>
 					<Transition name="slide-horizontal">
 						<div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto rounded-lg bg-white text-abyssal dark:bg-slate-900 dark:text-yellow-50/90">
