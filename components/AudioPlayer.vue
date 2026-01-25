@@ -5,6 +5,7 @@ import PlayIcon from "../components/PlayIcon.vue"
 import PauseIcon from "../components/PauseIcon.vue"
 import VolumeIcon from "./VolumeIcon.vue"
 import AudioLines from "./AudioLines.vue"
+import LayersIcon from "./LayersIcon.vue"
 
 
 const { isPlaying, play, pause, volume, setVolume, elapsedTime, song, fetchScratchRadio } = useRadio()
@@ -156,15 +157,29 @@ onMounted(async () => {
 			<div class="flex aspect-square w-full flex-col rounded-lg bg-slate-400 shadow-2xl">
 				<div class="relative aspect-square w-full overflow-hidden">
 					<div class="absolute left-0 right-0 top-0 z-30 flex items-start justify-between px-2 py-3">
-						<div class="min-w-[12rem] min-h-[3rem] text-yellow-50/90 flex flex-col rounded-full bg-black/50 px-2 px-4 py-2">
-							<p class="text-[12px] font-medium">
-								{{ song.artist }}
-							</p>
-							<p class="relative top-[-2px] text-[9px] font-light">
-								{{ song.title }}
-							</p>
+						<div class="flex gap-2 justify-start items-start rounded-full p-2 bg-black/50 min-w-[12rem] min-h-[3rem] text-yellow-50/90">
+							<div class="p-2 bg-black/50 rounded-full text-yellow-50/90" @click="toggleFaves">
+								<LayersIcon />
+							</div>
+							<div class=" flex flex-col">
+								<p class="text-[12px] font-medium">
+									{{ song.artist }}
+								</p>
+								<p class="relative top-[-2px] text-[9px] font-light">
+									{{ song.title }}
+								</p>
+							</div>
 						</div>
 						<div class="flex items-start justify-start gap-4">
+							<div class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-black/50" @click="setVolume(volume === 0 ? 1 : 0)">
+								<Transition name="fade" mode="out-in">
+									<component
+										:is="VolumeIcon"
+										:key="volume === 0 ? 'muted' : 'unmuted'"
+										class="size-5 transition-colors duration-200 text-palladian"
+									/>
+								</Transition>
+							</div>
 							<div class="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white transition-colors duration-200 hover:cursor-pointer">
 								<ColorModeToggle />
 							</div>
@@ -179,23 +194,7 @@ onMounted(async () => {
 					<div class="hidden absolute inset-0 z-10 bg-black/10"></div>
 					<div class="absolute bottom-[2rem] left-0 right-0 z-30 text-white">
 						<!--progress-->
-						<div class="flex flex-col px-4">
-							<div class="h-8 rounded-full bg-black/30 w-full flex justify-center items-center">
-								<progress :value="elapsedTime" max="360" class="progress-bar"></progress>
-							</div>
-						</div>
-						<!--volume and play-->
-						<div class="flex justify-around w-4/5 mx-auto mt-4">
-							<div class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-black/50" @click="setVolume(volume === 0 ? 1 : 0)">
-								<Transition name="fade" mode="out-in">
-									<component
-										:is="VolumeIcon"
-										:key="volume === 0 ? 'muted' : 'unmuted'"
-										class="size-5 transition-colors duration-200"
-									/>
-								</Transition>
-							</div>
-
+						<div class="flex justify-between items-center px-4">
 							<div class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-black/50">
 								<Transition name="fade" mode="out-in">
 									<component
@@ -206,12 +205,21 @@ onMounted(async () => {
 									/>
 								</Transition>
 							</div>
-
+							<div class="h-8 rounded-full bg-black/30 w-2/3 mx-auto flex justify-center items-center">
+								<progress :value="elapsedTime" max="360" class="progress-bar"></progress>
+							</div>
 							<div class="flex h-8 w-8 rounded-full bg-black/50 cursor-pointer items-center justify-center transition-colors duration-200">
 								<Transition name="fade" mode="out-in">
 									<AudioLines />
 								</Transition>
 							</div>
+						</div>
+						<!--volume and play-->
+						<div class="flex justify-around w-4/5 mx-auto mt-4">
+							
+
+							
+
 						</div>
 					</div>
 					<Transition name="slide-horizontal">
