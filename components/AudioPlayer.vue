@@ -6,7 +6,8 @@ import PauseIcon from "../components/PauseIcon.vue"
 import VolumeIcon from "./VolumeIcon.vue"
 import AudioLines from "./AudioLines.vue"
 import LayersIcon from "./LayersIcon.vue"
-
+import XIcon from "./XIcon.vue"
+import DeleteIcon from "./DeleteIcon.vue"
 
 const { isPlaying, play, pause, volume, setVolume, elapsedTime, song, fetchScratchRadio } = useRadio()
 
@@ -157,11 +158,11 @@ onMounted(async () => {
 			<div class="flex aspect-square w-full flex-col rounded-lg bg-slate-400 shadow-2xl">
 				<div class="relative aspect-square w-full overflow-hidden">
 					<div class="absolute left-0 right-0 top-0 z-30 flex items-start justify-between px-2 py-3">
-						<div class="flex gap-2 justify-start items-start rounded-full p-2 bg-black/50 min-w-[12rem] min-h-[3rem] text-yellow-50/90">
-							<div class="p-2 bg-black/50 rounded-full text-yellow-50/90" @click="toggleFaves">
+						<div class="flex min-h-[3rem] min-w-[12rem] items-start justify-start gap-2 rounded-full bg-black/50 p-2 text-yellow-50/90">
+							<div class="rounded-full bg-black/50 p-2 text-yellow-50/90" @click="toggleFaves">
 								<LayersIcon />
 							</div>
-							<div class=" flex flex-col">
+							<div class="flex flex-col">
 								<p class="text-[12px] font-medium">
 									{{ song.artist }}
 								</p>
@@ -171,13 +172,9 @@ onMounted(async () => {
 							</div>
 						</div>
 						<div class="flex items-start justify-start gap-4">
-							<div class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-black/50" @click="setVolume(volume === 0 ? 1 : 0)">
+							<div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/50" @click="setVolume(volume === 0 ? 1 : 0)">
 								<Transition name="fade" mode="out-in">
-									<component
-										:is="VolumeIcon"
-										:key="volume === 0 ? 'muted' : 'unmuted'"
-										class="size-5 transition-colors duration-200 text-palladian"
-									/>
+									<component :is="VolumeIcon" :key="volume === 0 ? 'muted' : 'unmuted'" class="size-5 text-palladian transition-colors duration-200" />
 								</Transition>
 							</div>
 							<div class="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white transition-colors duration-200 hover:cursor-pointer">
@@ -191,52 +188,50 @@ onMounted(async () => {
 						</div>
 					</div>
 
-					<div class="hidden absolute inset-0 z-10 bg-black/10"></div>
+					<div class="absolute inset-0 z-10 hidden bg-black/10"></div>
 					<div class="absolute bottom-[2rem] left-0 right-0 z-30 text-white">
 						<!--play + progress + audio-->
-						<div class="flex justify-between items-center px-4">
-							<div class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-black/50">
+						<div class="flex items-center justify-between px-4">
+							<div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/50">
 								<Transition name="fade" mode="out-in">
-									<component
-										:is="isPlaying ? PauseIcon : PlayIcon"
-										:key="isPlaying ? 'pause' : 'play'"
-										class="flex justify-center items-center size-8 transition-colors duration-200 hover:opacity-80"
-										@click="isPlaying ? pause() : play()"
-									/>
+									<component :is="isPlaying ? PauseIcon : PlayIcon" :key="isPlaying ? 'pause' : 'play'" class="flex size-8 items-center justify-center transition-colors duration-200 hover:opacity-80" @click="isPlaying ? pause() : play()" />
 								</Transition>
 							</div>
-							<div class="h-8 rounded-full bg-black/30 w-2/3 mx-auto flex justify-center items-center">
+							<div class="mx-auto flex h-8 w-2/3 items-center justify-center gap-4 rounded-full bg-black/30">
 								<progress :value="elapsedTime" max="360" class="progress-bar"></progress>
+								<span class="text-xs">{{ formattedElapsed }}</span>
 							</div>
-							<div class="flex h-8 w-8 rounded-full bg-black/50 cursor-pointer items-center justify-center transition-colors duration-200">
+							<div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/50 transition-colors duration-200">
 								<Transition name="fade" mode="out-in">
 									<AudioLines />
 								</Transition>
 							</div>
 						</div>
 						<!--volume and play-->
-						<div class="flex justify-around w-4/5 mx-auto mt-4">
-							
-
-							
-
-						</div>
+						<div class="mx-auto mt-4 flex w-4/5 justify-around"></div>
 					</div>
 					<Transition name="slide-horizontal">
-						<div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto rounded-lg bg-white text-abyssal dark:bg-slate-900 dark:text-yellow-50/90">
-							<div v-if="favorites.length > 0" class="flex h-full flex-col justify-between">
-								<div class="sticky top-0 z-20 flex items-center justify-between bg-white px-2 pb-3 pl-3 pt-4 dark:bg-slate-900">
-									<p class="text-[11px] font-light uppercase tracking-widest">Favorites</p>
-									<Icon name="material-symbols-light:close-small-outline-rounded" class="size-6 cursor-pointer" @click="toggleFaves" />
+						<div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto rounded-lg border bg-white text-abyssal dark:bg-slate-900 dark:text-yellow-50/90">
+							<div v-if="favorites.length > 0" class="flex h-full w-full flex-col justify-between">
+								<div class="sticky left-0 right-0 top-0 z-30 flex items-start justify-between px-2 py-3">
+									<div class="flex min-h-[3rem] min-w-[12rem] items-start justify-start gap-2 rounded-full bg-black/50 p-2 text-yellow-50/90">
+										<div class="rounded-full bg-black/50 p-2 text-yellow-50/90" @click="toggleFaves">
+											<LayersIcon />
+										</div>
+										<div class="flex flex-col">
+											<p class="text-[12px] font-medium">Favorites</p>
+											<p class="relative top-[-2px] text-[9px] font-light">Hits from the 70s</p>
+										</div>
+									</div>
 								</div>
 								<ul class="flex flex-1 flex-col gap-1 overflow-auto px-2">
-									<li v-for="(s, i) in favorites" :key="i" class="grid grid-cols-[48px_auto_24px] py-2 pr-2 text-[11px]">
+									<li v-for="(s, i) in favorites" :key="i" class="grid grid-cols-[48px_auto_24px] items-start py-2 pr-2 text-[11px]">
 										<span class="flex items-start justify-center opacity-60">0{{ i + 1 }}.</span>
-										<span class="inline-block flex-col items-start justify-center">
+										<span class="inline-block flex-col items-start justify-center text-xs">
 											<span class="block font-semibold leading-3">{{ s.title }}</span>
 											<span class="opacity-60 dark:opacity-90">{{ s.artist }}</span>
 										</span>
-										<Icon name="material-symbols:heart-minus-rounded" class="size-4 cursor-pointer opacity-50 transition-opacity hover:opacity-100" @click="removeFromFavorites(s)" />
+										<DeleteIcon @click="removeFromFavorites(s)" />
 									</li>
 								</ul>
 								<div class="flex items-center gap-1 border-t p-3 dark:border-slate-700">

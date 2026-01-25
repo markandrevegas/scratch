@@ -7,32 +7,32 @@
 	--palladian: #eee9df;
 }
 @layer base {
-  body {
+	body {
 		@apply text-abyssal dark:bg-slate-900 dark:text-yellow-50/90;
 	}
-  progress.progress-bar {
-    @apply w-full h-[3px] rounded-full overflow-hidden w-4/5;
-    -webkit-appearance: none;
-    appearance: none;
-  }
+	progress.progress-bar {
+		@apply h-[3px] w-4/5 w-full overflow-hidden rounded-full;
+		-webkit-appearance: none;
+		appearance: none;
+	}
 
-  /* Track */
-  progress.progress-bar::-webkit-progress-bar {
-    @apply bg-white;
-    border-radius: 9999px;
-  }
+	/* Track */
+	progress.progress-bar::-webkit-progress-bar {
+		@apply bg-white;
+		border-radius: 9999px;
+	}
 
-  /* Fill */
-  progress.progress-bar::-webkit-progress-value {
-    @apply bg-green-400;
-    border-radius: 9999px;
-  }
+	/* Fill */
+	progress.progress-bar::-webkit-progress-value {
+		@apply bg-green-400;
+		border-radius: 9999px;
+	}
 
-  /* Firefox fill */
-  progress.progress-bar::-moz-progress-bar {
-    background-color: black;
-    border-radius: 9999px;
-  }
+	/* Firefox fill */
+	progress.progress-bar::-moz-progress-bar {
+		background-color: black;
+		border-radius: 9999px;
+	}
 }
 .slide-horizontal-enter-active,
 .slide-horizontal-leave-active {

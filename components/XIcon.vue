@@ -1,44 +1,37 @@
 <template>
-	<div class="hover:bg-accent flex cursor-pointer select-none items-center justify-center rounded-md transition-colors duration-200" @mouseenter="mouseEnterHandler" @mouseleave="mouseLeaveHandler" role="button" tabindex="0">
+	<div className="cursor-pointer select-none hover:bg-accent rounded-md transition-colors duration-200 flex items-center justify-center" @mouseenter="mouseEnterHandler" @mouseleave="mouseLeaveHandler" role="button" tabindex="0">
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-			<Motion is="rect" :ref="targetList[0]" x="6" y="4" width="4" height="16" rx="1" />
-			<Motion is="rect" :ref="targetList[1]" x="14" y="4" width="4" height="16" rx="1" />
+			<Motion is="path" :ref="targetList[0]" d="M18 6 6 18" />
+			<Motion is="path" :ref="targetList[1]" d="m6 6 12 12" />
 		</svg>
 	</div>
 </template>
 
 <script>
 export default {
-	name: "PlayIcon"
+	name: "XIcon"
 }
 </script>
 
 <script setup>
 import { MotionComponent as Motion, useMotion } from "@vueuse/motion"
 
-const defaultTransition = {
-	transition: {
-		times: [0, 0.2, 0.5, 1],
-		duration: 500,
-		stiffness: 260,
-		damping: 20
-	}
-}
-
 const variants = {
 	normal: {
-		y: 0
+		opacity: 1,
+		strokeDasharray: 17,
+		strokeDashoffset: [0, 0]
 	},
-	animate: [
-		{
-			y: [0, 2, 0, 0],
-			...defaultTransition
-		},
-		{
-			y: [0, 0, 2, 0],
-			...defaultTransition
+	animate: (i) => ({
+		strokeDasharray: 17,
+		strokeDashoffset: [17, 0],
+		opacity: [0, 1],
+		transition: {
+			duration: 200,
+			delay: i === 1 ? 250 : 0,
+			opacity: { duration: 100 }
 		}
-	]
+	})
 }
 
 const len = 2
@@ -54,7 +47,7 @@ for (let i = 0; i < len; i++) {
 
 const hoverFn = (type) => {
 	for (let i = 0; i < len; i++) {
-		const variant = type === "animate" ? variants[type][i] : variants[type]
+		const variant = type === "animate" ? variants.animate(i) : variants.normal
 		const instance = targetInstanceList[i]
 		instance.apply(variant)
 	}
@@ -65,6 +58,6 @@ function mouseEnterHandler() {
 }
 
 function mouseLeaveHandler() {
-	hoverFn("normal")
+	// hoverFn('normal');
 }
 </script>
