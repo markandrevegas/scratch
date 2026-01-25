@@ -3,65 +3,61 @@
 @tailwind utilities;
 
 ::root {
-  --abyssal: #1B2632;
-  --palladian: #EEE9DF;
+	--abyssal: #1b2632;
+	--palladian: #eee9df;
 }
 @layer base {
   body {
-    @apply dark:bg-slate-900 dark:text-yellow-50/90 text-abyssal;
-  }
-
+		@apply text-abyssal dark:bg-slate-900 dark:text-yellow-50/90;
+	}
   progress.progress-bar {
-    background: #fff;
+    @apply w-full h-[3px] rounded-full overflow-hidden w-4/5;
     -webkit-appearance: none;
     appearance: none;
-    width: 100%;
-    height: 1px;
-    border-radius: 9999px;
-    overflow: hidden;
   }
 
-  /* Background (track) */
+  /* Track */
   progress.progress-bar::-webkit-progress-bar {
+    @apply bg-white;
     border-radius: 9999px;
   }
 
-  /* Value (fill) */
+  /* Fill */
   progress.progress-bar::-webkit-progress-value {
-    background-color: rgb(34 197 94 / .8);
+    @apply bg-black/50;
     border-radius: 9999px;
   }
 
-  /* Firefox uses -moz-progress-bar only for the value */
+  /* Firefox fill */
   progress.progress-bar::-moz-progress-bar {
-    background-color: rgb(34 197 94 / .8);
+    background-color: black;
     border-radius: 9999px;
   }
-
 }
-
 .slide-horizontal-enter-active,
 .slide-horizontal-leave-active {
-  transition: transform 0.1s ease-in-out, opacity 0.2s ease-in-out;
-  will-change: transform, opacity;
+	transition:
+		transform 0.1s ease-in-out,
+		opacity 0.2s ease-in-out;
+	will-change: transform, opacity;
 }
 
 .slide-horizontal-enter-from {
-  transform: translateX(-100%);
-  opacity: 0;
+	transform: translateX(-100%);
+	opacity: 0;
 }
 
 .slide-horizontal-enter-to {
-  transform: translateX(0);
-  opacity: 1;
+	transform: translateX(0);
+	opacity: 1;
 }
 
 .slide-horizontal-leave-from {
-  transform: translateX(0);
-  opacity: 1;
+	transform: translateX(0);
+	opacity: 1;
 }
 
 .slide-horizontal-leave-to {
-  transform: translateX(0);
-  opacity: 0;
+	transform: translateX(0);
+	opacity: 0;
 }
