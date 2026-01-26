@@ -6,7 +6,6 @@ import PauseIcon from "../components/PauseIcon.vue"
 import VolumeIcon from "./VolumeIcon.vue"
 import AudioLines from "./AudioLines.vue"
 import LayersIcon from "./LayersIcon.vue"
-import XIcon from "./XIcon.vue"
 import DeleteIcon from "./DeleteIcon.vue"
 import DownloadIcon from "./DownloadIcon.vue"
 
@@ -159,20 +158,20 @@ onMounted(async () => {
 			<div class="flex aspect-square w-full flex-col rounded-lg bg-abyssal/70 shadow-2xl">
 				<div class="relative aspect-square w-full overflow-hidden">
 					<div class="absolute left-0 right-0 top-0 z-30 flex items-start justify-between px-2 py-3">
-						<div class="flex min-h-[3rem] min-w-[12rem] items-start justify-start gap-2 rounded-full bg-black/70 p-2 text-yellow-50/90">
-							<div class="rounded-full bg-black/70 p-2 text-yellow-50/90" @click="toggleFaves">
+						<div class="igrid flex min-h-[3rem] min-w-max grid-cols-3 gap-2 rounded-full bg-black/70 p-2 text-yellow-50/90">
+							<div class="col-span-2 rounded-full bg-black/70 p-2 text-yellow-50/90" @click="toggleFaves">
 								<LayersIcon />
 							</div>
-							<div class="flex flex-col">
-								<p class="text-[10px] font-medium">
+							<div class="col-span-1 flex flex-col pr-3">
+								<p class="text-[12px] font-medium">
 									{{ song.artist }}
 								</p>
-								<p class="relative top-[-2px] text-[9px] font-light">
+								<p class="relative top-[-2px] text-[11px] font-light">
 									{{ song.title }}
 								</p>
 							</div>
 						</div>
-						<div class="flex items-start justify-start gap-4">
+						<div class="flex items-start justify-start gap-2">
 							<div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/70" @click="setVolume(volume === 0 ? 1 : 0)">
 								<Transition name="fade" mode="out-in">
 									<component :is="VolumeIcon" :key="volume === 0 ? 'muted' : 'unmuted'" class="size-5 text-palladian transition-colors duration-200" />
@@ -192,13 +191,13 @@ onMounted(async () => {
 					<div class="absolute inset-0 z-10 bg-black/10"></div>
 					<div class="absolute bottom-[2rem] left-0 right-0 z-30 text-white">
 						<!--play + progress + audio-->
-						<div class="flex items-center justify-around px-4">
+						<div class="flex items-center justify-between px-4">
 							<div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/70">
 								<Transition name="fade" mode="out-in">
 									<component :is="isPlaying ? PauseIcon : PlayIcon" :key="isPlaying ? 'pause' : 'play'" class="flex size-8 items-center justify-center transition-colors duration-200 hover:opacity-80" @click="isPlaying ? pause() : play()" />
 								</Transition>
 							</div>
-							<div class="mx-auto flex h-8 w-2/3 items-center justify-center gap-4 rounded-full bg-black/70">
+							<div class="mx-auto flex h-8 w-auto items-center justify-center gap-4 rounded-full bg-black/70 px-8">
 								<progress :value="elapsedTime" max="360" class="progress-bar"></progress>
 								<span class="text-xs">{{ formattedElapsed }}</span>
 							</div>
@@ -233,7 +232,7 @@ onMounted(async () => {
 											<span class="block font-semibold leading-3">{{ s.title }}</span>
 											<span class="opacity-60 dark:opacity-90">{{ s.artist }}</span>
 										</span>
-										<DeleteIcon @click="removeFromFavorites(s)" />
+										<DeleteIcon @click="removeFromFavorites(s)" class="opacity-40 hover:text-abyssal hover:opacity-100" />
 									</li>
 								</ul>
 							</div>

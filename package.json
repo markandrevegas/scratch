@@ -8,7 +8,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "npx serve .output/public",
-    "format": "prettier --write **/*.{vue,js,ts,css}",
+    "format": "prettier --write **/*.{vue,js,ts,css,svg}",
     "start": "node .output/server/index.mjs --hostname scratch.local"
   },
   "dependencies": {
