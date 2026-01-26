@@ -158,8 +158,8 @@ onMounted(async () => {
 			<div class="flex aspect-square w-full flex-col rounded-lg bg-abyssal/70 shadow-2xl">
 				<div class="relative aspect-square w-full overflow-hidden">
 					<div class="absolute left-0 right-0 top-0 z-30 flex items-start justify-between px-2 py-3">
-						<div class="igrid flex min-h-[3rem] min-w-max grid-cols-3 gap-2 rounded-full bg-black/70 p-2 text-yellow-50/90">
-							<div class="col-span-2 rounded-full bg-black/70 p-2 text-yellow-50/90" @click="toggleFaves">
+						<div class="flex min-h-[3rem] min-w-max grid-cols-3 gap-2 rounded-full bg-black/50 p-2 text-yellow-50/90">
+							<div class="col-span-2 rounded-full bg-black/50 p-2 text-yellow-50/90" @click="toggleFaves">
 								<LayersIcon />
 							</div>
 							<div class="col-span-1 flex flex-col pr-3">
@@ -177,10 +177,10 @@ onMounted(async () => {
 									<component :is="VolumeIcon" :key="volume === 0 ? 'muted' : 'unmuted'" class="size-5 text-palladian transition-colors duration-200" />
 								</Transition>
 							</div>
-							<div class="flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-white transition-colors duration-200 hover:cursor-pointer">
+							<div class="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white transition-colors duration-200 hover:cursor-pointer">
 								<ColorModeToggle />
 							</div>
-							<div @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" class="flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-white transition-colors duration-200 hover:cursor-pointer hover:text-red-600">
+							<div @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" class="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white transition-colors duration-200 hover:cursor-pointer hover:text-red-600">
 								<Transition name="fade" mode="out-in">
 									<PrimeHeartFilled :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" class="size-5 transition-colors duration-200" :class="liked ? 'text-red-600' : hovered ? 'text-red-400' : ''" />
 								</Transition>
@@ -197,11 +197,11 @@ onMounted(async () => {
 									<component :is="isPlaying ? PauseIcon : PlayIcon" :key="isPlaying ? 'pause' : 'play'" class="flex size-8 items-center justify-center transition-colors duration-200 hover:opacity-80" @click="isPlaying ? pause() : play()" />
 								</Transition>
 							</div>
-							<div class="mx-auto flex h-8 w-auto items-center justify-center gap-4 rounded-full bg-black/70 px-8">
+							<div class="mx-auto flex h-8 w-auto items-center justify-center gap-4 rounded-full bg-black/50 px-8">
 								<progress :value="elapsedTime" max="360" class="progress-bar"></progress>
 								<span class="text-xs">{{ formattedElapsed }}</span>
 							</div>
-							<div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/70 transition-colors duration-200">
+							<div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/50 transition-colors duration-200">
 								<Transition name="fade" mode="out-in">
 									<AudioLines :active="isPlaying" />
 								</Transition>
@@ -212,8 +212,8 @@ onMounted(async () => {
 						<div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto rounded-lg bg-white text-abyssal dark:bg-slate-900 dark:text-yellow-50/90">
 							<div v-if="favorites.length > 0" class="flex h-full w-full flex-col justify-between">
 								<div class="sticky left-0 right-0 top-0 z-30 flex items-start justify-between px-2 py-3">
-									<div class="flex min-h-[3rem] min-w-[12rem] items-start justify-start gap-2 rounded-full bg-black/70 p-2 text-yellow-50/90">
-										<div class="rounded-full bg-black/70 p-2 text-yellow-50/90" @click="toggleFaves">
+									<div class="flex min-h-[3rem] min-w-[12rem] items-start justify-start gap-2 rounded-full bg-black/50 p-2 text-yellow-50/90">
+										<div class="rounded-full bg-black/50 p-2 text-yellow-50/90" @click="toggleFaves">
 											<LayersIcon />
 										</div>
 										<div class="flex flex-col">
@@ -221,7 +221,7 @@ onMounted(async () => {
 											<p class="relative top-[-2px] text-[9px] font-light">Hits from the 70s</p>
 										</div>
 									</div>
-									<div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/70 text-yellow-50/90">
+									<div class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/50 text-yellow-50/90">
 										<DownloadIcon @click="downloadFavorites" />
 									</div>
 								</div>
