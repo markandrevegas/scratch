@@ -27,7 +27,7 @@ declare module 'nuxt/schema' {
 
 export default defineNuxtConfig({
 	app: {
-		baseURL: 'https://github.com/markandrevegas/scratch',
+		baseURL: '/scratch',
 		head: {
 			link: [
 				{ rel: "preconnect", href: "https://api.spotify.com", crossorigin: "" },
@@ -87,12 +87,13 @@ export default defineNuxtConfig({
 		]
 	},
 	nitro: {
-		preset: "node-server",
+		preset: "github-pages",
+    prerender: {
+      failOnError: false,
+			crawlLinks: true
+    },
 		externals: {
 			inline: ["ipx", "ofetch"]
-		},
-		prerender: {
-      failOnError: false, 
-    }
+		}
 	}
 })
