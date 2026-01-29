@@ -9,7 +9,8 @@
     "generate": "nuxt generate",
     "preview": "npx serve .output/public",
     "format": "prettier --write **/*.{vue,js,ts,css,svg}",
-    "start": "node .output/server/index.mjs --hostname scratch.local"
+    "start": "node .output/server/index.mjs --hostname scratch.local",
+    "deploy": "nuxt generate && gh-pages -d .output/public"
   },
   "dependencies": {
     "@nuxt/eslint": "1.8.0",
@@ -32,12 +33,13 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@types/node": "^24.1.0",
+    "@vitejs/plugin-vue": "^4.4.0",
+    "gh-pages": "^6.3.0",
     "prettier": "^3.6.2",
     "tailwindcss": "^3.0.0",
     "typescript": "^5.1.0",
-    "vite": "^4.4.9",
-    "@types/node": "^24.1.0",
-    "@vitejs/plugin-vue": "^4.4.0"
+    "vite": "^4.4.9"
   },
   "resolutions": {
     "unplugin-utils": "0.3.0"
