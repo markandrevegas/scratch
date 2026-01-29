@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <defs>
+    <clipPath id="circle-clip">
+      <circle cx="12" cy="12" r="12"></circle>
+    </clipPath>
+  </defs>
+
+  <!-- Background bands clipped to circle -->
+  <g clip-path="url(#circle-clip)">
+    <rect x="0" y="0" width="24" height="8" fill="#c1272d"></rect>
+    <rect x="0" y="8" width="24" height="8" fill="#f4c430"></rect>
+    <rect x="0" y="16" width="24" height="8" fill="#1f8b4c"></rect>
+  </g>
+
+  <!-- Five-pointed star -->
+  <path d="M12 4.5
+			L13.9 9.3
+			L19 9.6
+			L15 12.9
+			L16.4 18
+			L12 15
+			L7.6 18
+			L9 12.9
+			L5 9.6
+			L10.1 9.3
+			Z" fill="#000000"></path>
+</svg></svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>
