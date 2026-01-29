@@ -1,7 +1,7 @@
 name: Deploy to GitHub Pages
 on:
   push:
-    branches: [ main ] # Runs when you push to the main branch
+    branches: [ gh-pages ] # Runs when you push to the main branch
 
 jobs:
   build-and-deploy:
