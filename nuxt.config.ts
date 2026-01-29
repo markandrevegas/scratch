@@ -90,6 +90,9 @@ export default defineNuxtConfig({
 		preset: "node-server",
 		externals: {
 			inline: ["ipx", "ofetch"]
-		}
+		},
+		prerender: {
+      failOnError: false, 
+    }
 	}
 })
