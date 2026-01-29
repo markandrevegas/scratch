@@ -27,6 +27,7 @@ declare module 'nuxt/schema' {
 
 export default defineNuxtConfig({
 	app: {
+		baseURL: 'https://github.com/markandrevegas/scratch',
 		head: {
 			link: [
 				{ rel: "preconnect", href: "https://api.spotify.com", crossorigin: "" },
