@@ -8,7 +8,7 @@
 }
 @layer base {
 	body {
-		@apply text-abyssal dark:bg-slate-900 dark:text-yellow-50/90;
+		@apply bg-abyssal/20 text-abyssal dark:bg-abyssal/90 dark:text-palladian;
 	}
 	progress.progress-bar {
 		@apply h-[3px] overflow-hidden rounded-full;

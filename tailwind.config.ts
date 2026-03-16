@@ -19,7 +19,10 @@ const config: Config = {
       },
       colors: {
         palladian: "#EEE9DF",
-        abyssal: "#1B2632"
+        abyssal: "#1B2632",
+        ember: "#FF6B35",
+        warmGlow: "#FFB849",
+        slate: "#2A3441"
       },
     }
   },
