@@ -173,7 +173,7 @@ const emit = defineEmits(['seek'])
 	<div class="flex h-screen flex-col">
 		<div class="mx-auto mt-48 flex w-2/5 flex-col gap-4">
 			<span class="mx-auto my-auto block text-center text-xs font-light uppercase tracking-widest">Now Playing</span>
-			<div class="relative flex max-h-72 items-stretch overflow-hidden rounded-lg border border-slate-200 bg-white shadow-2xl dark:border-none dark:bg-abyssal/80 dark:text-palladian">
+			<div class="relative flex max-h-72 items-stretch overflow-hidden rounded-lg border border-slate-100 bg-white shadow-2xl dark:border-none dark:bg-abyssal/80 dark:text-palladian">
 				<div class="relative flex flex-1 overflow-hidden flex-col">
 					<div class="flex items-center justify-between p-4">
 						<button @click="toggleFaves" class="max-w-content hover:text-ember"><FileStackIcon /></button>
@@ -182,10 +182,10 @@ const emit = defineEmits(['seek'])
 					<div class="flex-1 relative">
 						<div class="flex w-full h-full flex-col text-center gap-6">
 							<div class="flex flex-col gap-2 min-h-16">
-								<p class="text-xl font-semibold min-w-[20ch]">
+								<p class="text-xl font-medium min-w-[20ch]">
 									{{ song.title }}
 								</p>
-								<p class="text-xs uppercase tracking-wider font-medium min-w-[35ch]">
+								<p class="text-xs uppercase tracking-wider min-w-[35ch]">
 									{{ song.artist }}
 								</p>
 							</div>
@@ -241,7 +241,7 @@ const emit = defineEmits(['seek'])
 										<component :is="isPlaying ? PauseIcon : PlayIcon" :key="isPlaying ? 'pause' : 'play'" class="flex size-10 items-center justify-center transition-colors duration-200 hover:text-ember" @click="isPlaying ? pause() : play()" />
 									</Transition>
 								</div>
-								<div @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" class="flex items-center justify-center text-abyssal transition-colors duration-200 hover:cursor-pointer hover:text-red-600">
+								<div @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" class="flex items-center justify-center text-abyssal dark:text-palladian transition-colors duration-200 hover:cursor-pointer hover:text-red-600">
 									<Transition name="fade" mode="out-in">
 										<PrimeHeartFilled :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" class="size-5 transition-colors duration-200" :class="liked ? 'text-red-600' : hovered ? 'text-red-400' : ''" />
 									</Transition>
@@ -283,7 +283,10 @@ const emit = defineEmits(['seek'])
 					</Transition>
 				</div>
 				<div class="h-72 w-72">
-					<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="h-full w-full object-cover object-center transition-transform duration-500" />
+					<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="min-h-72 min-w-72 object-cover transition-transform duration-500" />
+					<div v-else class="w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 50%, #FFB849 100%)">
+						<span class="text-6xl font-bold text-white/90">♪</span>
+					</div>
 				</div>
 			</div>
 		</div>
