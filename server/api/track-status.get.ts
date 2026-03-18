@@ -29,7 +29,7 @@ export default defineEventHandler(async () => {
     // itunes search next
     try {
       const searchTerm = `${artist} ${title}`
-      console.log(`🔎 iTunes Search (Raw): "${searchTerm}"`)
+      // console.log(`🔎 iTunes Search (Raw): "${searchTerm}"`)
       
       const searchRes = await $fetch<any>('https://itunes.apple.com/search', {
         params: {
@@ -42,7 +42,7 @@ export default defineEventHandler(async () => {
         parseResponse: JSON.parse 
       })
 
-      console.log('iTunes Full Response:', JSON.stringify(searchRes, null, 2))
+      // console.log('iTunes Full Response:', JSON.stringify(searchRes, null, 2))
 
       if (searchRes.results && searchRes.results.length > 0) {
 
@@ -51,9 +51,9 @@ export default defineEventHandler(async () => {
         
         if (foundArt) {
           art = foundArt.replace('100x100bb', '600x600bb')
-          console.log('art variable is now set to:', art)
+          // console.log('art variable is now set to:', art)
         } else {
-          console.warn('Match found, but no artwork URLs in the result.')
+          // console.warn('Match found, but no artwork URLs in the result.')
         }
       } else {
         console.warn('iTunes: No results found in the array.')
@@ -64,7 +64,7 @@ export default defineEventHandler(async () => {
 
     // then get unsplash fallback
     if (!art && unsplashAccessKey) {
-      console.log('Fetching fallback...')
+      // console.log('Fetching fallback...')
       try {
         const unsplashRes = await $fetch<any>('https://api.unsplash.com/photos/random', {
           params: {
@@ -79,7 +79,7 @@ export default defineEventHandler(async () => {
         const imageData = Array.isArray(unsplashRes) ? unsplashRes[0] : unsplashRes
         if (imageData?.urls?.regular) {
           art = imageData.urls.regular + '&auto=format&fit=crop&w=600&h=600&q=80'
-          console.log('unsplash was used')
+          // console.log('unsplash was used')
         }
       } catch (e: any) {
         console.error('unsplash error:', e.message)
