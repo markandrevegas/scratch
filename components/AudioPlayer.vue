@@ -11,9 +11,7 @@ import FileStackIcon from "./FileStackIcon.vue"
 
 const { isPlaying, play, pause, volume, setVolume, elapsedTime, song, fetchScratchRadio } = useRadio()
 
-const waveformHeights = computed(() => 
-  Array.from({ length: 120 }, () => Math.random() * 36 + 12)
-)
+const waveformHeights = computed(() => Array.from({ length: 120 }, () => Math.random() * 36 + 12))
 
 const hovered = ref(false)
 // const liked = ref(false)
@@ -123,14 +121,12 @@ const downloadFavorites = () => {
 const toggleFaves = () => {
 	showFavorites.value = !showFavorites.value
 }
-
 watch(song, async (newSong, oldSong) => {
 	liked.value = !!favorites.value.find((s) => s.title === newSong.title && s.artist === newSong.artist && s.liked)
 	if (newSong && oldSong && newSong.title === oldSong.title && newSong.artist === oldSong.artist) {
 		return
 	}
 })
-
 watch(
 	favorites,
 	(newVal) => {
@@ -154,81 +150,64 @@ onMounted(async () => {
 	if (song.value) {
 		liked.value = !!favorites.value.find((s) => s.title === song.value.title && s.artist === song.value.artist && s.liked)
 	}
-	console.log(song.value.title)
 })
 
 const maxTime = ref(360)
-const progressWidth = computed(() => 
-  `${(elapsedTime.value / maxTime.value) * 360}`
-)
+const progressWidth = computed(() => `${(elapsedTime.value / maxTime.value) * 360}`)
 const handleSeek = (event: any) => {
-  const rect = event.currentTarget.getBoundingClientRect()
-  const x = event.clientX - rect.left
-  const percentage = x / rect.width
-  emit('seek', percentage * maxTime.value)
+	const rect = event.currentTarget.getBoundingClientRect()
+	const x = event.clientX - rect.left
+	const percentage = x / rect.width
+	emit("seek", percentage * maxTime.value)
 }
-const emit = defineEmits(['seek'])
+const emit = defineEmits(["seek"])
 </script>
 <template>
-	<div class="flex h-screen flex-col">
-		<div class="mx-auto mt-48 flex w-2/5 flex-col gap-4">
-			<span class="mx-auto my-auto block text-center text-xs font-light uppercase tracking-widest">Now Playing</span>
-			<div class="relative flex max-h-72 items-stretch overflow-hidden rounded-lg border border-slate-100 bg-white shadow-2xl dark:border-none dark:bg-abyssal/80 dark:text-palladian">
-				<div class="relative flex flex-1 overflow-hidden flex-col">
-					<div class="flex items-center justify-between p-4">
-						<button @click="toggleFaves" class="max-w-content hover:text-ember"><FileStackIcon /></button>
-						<ColorModeToggle class="hover:text-ember" />
+	<div class="flex min-h-screen flex-col justify-center px-8">
+		<div class="mx-auto flex w-full flex-col gap-4 lg:mt-48 lg:w-2/5">
+			<span class="mx-auto hidden text-center text-xs font-light uppercase tracking-widest lg:block">Now Playing</span>
+			<div class="border-slate-100 relative flex flex-1 flex-col-reverse overflow-hidden rounded-lg border bg-white shadow-2xl dark:border-none dark:bg-abyssal/80 dark:text-palladian lg:max-h-72 lg:items-stretch">
+				<div class="relative flex flex-col overflow-hidden pb-8">
+					<div class="flex items-center justify-between px-2 lg:p-4">
+						<button @click="toggleFaves" class="max-w-content scale-75 hover:text-ember"><FileStackIcon /></button>
+						<ColorModeToggle class="scale-75 hover:text-ember" />
 					</div>
-					<div class="flex-1 relative">
-						<div class="flex w-full h-full flex-col text-center gap-6">
-							<div class="flex flex-col gap-2 min-h-16">
-								<p class="text-xl font-medium min-w-[20ch]">
+					<div class="relative flex-1">
+						<div class="flex h-full w-full flex-col gap-2 text-center">
+							<div class="flex min-h-16 flex-col gap-1">
+								<p class="min-w-[20ch] font-medium">
 									{{ song.title }}
 								</p>
-								<p class="text-xs uppercase tracking-wider min-w-[35ch]">
+								<p class="min-w-[35ch] text-[11px] uppercase tracking-wider">
 									{{ song.artist }}
 								</p>
 							</div>
 							<div class="mx-auto flex w-auto items-center justify-center gap-4 px-8">
-								<div class="waveform-container" @click="handleSeek">
+								<div class="waveform-container scale-80 relative h-[30px] scale-y-75 lg:w-[300px]" @click="handleSeek">
 									<svg class="waveform-svg" viewBox="0 0 360 48" preserveAspectRatio="none">
 										<!-- Background waveform -->
 										<g class="waveform-bg">
-											<rect v-for="(height, i) in waveformHeights" 
-														:key="`bg-${i}`"
-														:x="i * 3" 
-														:y="(48 - height) / 2" 
-														width="2" 
-														:height="height"
-														rx="1"
-														fill="#2A3441" />
+											<rect v-for="(height, i) in waveformHeights" :key="`bg-${i}`" :x="i * 3" :y="(48 - height) / 2" width="2" :height="height" rx="1" fill="#2A3441" />
 										</g>
-										
+
 										<!-- Progress mask -->
 										<defs>
 											<clipPath id="progress-clip">
 												<rect :width="progressWidth" height="48" />
 											</clipPath>
 											<linearGradient id="waveform-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-												<stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
-												<stop offset="100%" style="stop-color:#FFB849;stop-opacity:1" />
+												<stop offset="0%" style="stop-color: #ff6b35; stop-opacity: 1" />
+												<stop offset="100%" style="stop-color: #ffb849; stop-opacity: 1" />
 											</linearGradient>
 										</defs>
-										
+
 										<!-- Foreground waveform with gradient -->
 										<g clip-path="url(#progress-clip)">
-											<rect v-for="(height, i) in waveformHeights" 
-														:key="`fg-${i}`"
-														:x="i * 3" 
-														:y="(48 - height) / 2" 
-														width="2" 
-														:height="height"
-														rx="1"
-														fill="url(#waveform-gradient)" />
+											<rect v-for="(height, i) in waveformHeights" :key="`fg-${i}`" :x="i * 3" :y="(48 - height) / 2" width="2" :height="height" rx="1" fill="url(#waveform-gradient)" />
 										</g>
 									</svg>
 								</div>
-								<span class="font-mono text-xs tabular-nums text-muted">{{ formattedElapsed }}</span>
+								<span class="text-muted font-mono text-xs tabular-nums">{{ formattedElapsed }}</span>
 							</div>
 							<div class="flex items-center justify-center gap-16">
 								<div class="flex cursor-pointer items-center justify-center" @click="setVolume(volume === 0 ? 1 : 0)">
@@ -241,7 +220,7 @@ const emit = defineEmits(['seek'])
 										<component :is="isPlaying ? PauseIcon : PlayIcon" :key="isPlaying ? 'pause' : 'play'" class="flex size-10 items-center justify-center transition-colors duration-200 hover:text-ember" @click="isPlaying ? pause() : play()" />
 									</Transition>
 								</div>
-								<div @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" class="flex items-center justify-center text-abyssal dark:text-palladian transition-colors duration-200 hover:cursor-pointer hover:text-red-600">
+								<div @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" class="flex items-center justify-center text-abyssal transition-colors duration-200 hover:cursor-pointer hover:text-red-600 dark:text-palladian">
 									<Transition name="fade" mode="out-in">
 										<PrimeHeartFilled :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" class="size-5 transition-colors duration-200" :class="liked ? 'text-red-600' : hovered ? 'text-red-400' : ''" />
 									</Transition>
@@ -260,18 +239,24 @@ const emit = defineEmits(['seek'])
 										</button>
 										<p>Favorites</p>
 									</div>
-									<button @click="downloadFavorites" class="flex justify-center items-center p-2">
+									<button @click="downloadFavorites" class="flex items-center justify-center p-2">
 										<DownloadIcon />
 									</button>
 								</div>
 								<ul class="flex flex-1 flex-col gap-1 overflow-auto px-2">
-									<li v-for="(s, i) in favorites" :key="i" class="grid grid-cols-[48px_auto_24px] items-start py-2 pr-2 text-[11px]">
+									<li v-for="(s, i) in favorites" :key="i" class="grid grid-cols-[48px_40px_auto_24px] items-center gap-2 py-2 pr-2 text-[11px]">
 										<span class="flex items-start justify-center opacity-60">0{{ i + 1 }}.</span>
-										<span class="inline-block flex-col items-start justify-center text-xs">
-											<span class="block font-semibold leading-3">{{ s.title }}</span>
-											<span class="opacity-60 dark:opacity-90">{{ s.artist }}</span>
+										<div class="size-10 flex-shrink-0 overflow-hidden rounded bg-gray-200 dark:bg-gray-800">
+											<img v-if="s.art" :src="s.art" alt="art" class="h-full w-full object-cover" />
+											<div v-else class="flex h-full w-full items-center justify-center opacity-20">
+												<Icon name="mdi:music" />
+											</div>
+										</div>
+										<span class="flex flex-col items-start justify-center truncate text-xs">
+											<span class="block w-full truncate font-semibold leading-3">{{ s.title }}</span>
+											<span class="w-full truncate opacity-60 dark:opacity-90">{{ s.artist }}</span>
 										</span>
-										<DeleteIcon @click="removeFromFavorites(s)" class="opacity-40 hover:text-abyssal hover:opacity-100" />
+										<DeleteIcon @click="removeFromFavorites(s)" class="cursor-pointer opacity-40 hover:text-red-500 hover:opacity-100" />
 									</li>
 								</ul>
 							</div>
@@ -282,9 +267,9 @@ const emit = defineEmits(['seek'])
 						</div>
 					</Transition>
 				</div>
-				<div class="h-72 w-72">
-					<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="min-h-72 min-w-72 object-cover transition-transform duration-500" />
-					<div v-else class="w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 50%, #FFB849 100%)">
+				<div class="aspect-square h-full w-full overflow-hidden lg:h-72 lg:w-72">
+					<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="h-full w-full object-cover transition-transform duration-500 lg:object-center" />
+					<div v-else class="flex min-h-72 min-w-72 items-center justify-center" style="background: linear-gradient(135deg, #ff6b35 0%, #ff8e53 50%, #ffb849 100%)">
 						<span class="text-6xl font-bold text-white/90">♪</span>
 					</div>
 				</div>
@@ -294,9 +279,6 @@ const emit = defineEmits(['seek'])
 </template>
 <style>
 .waveform-container {
-	width: 300px;
-	height: 30px;
-	position: relative;
 }
 
 .waveform-svg {
