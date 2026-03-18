@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from "vue"
 import { useRadio } from "../composables/useScratchRadio"
-import PlayIcon from "../components/PlayIcon.vue"
-import PauseIcon from "../components/PauseIcon.vue"
-import VolumeIcon from "./VolumeIcon.vue"
-import LayersIcon from "./LayersIcon.vue"
-import DeleteIcon from "./DeleteIcon.vue"
-import DownloadIcon from "./DownloadIcon.vue"
-import FileStackIcon from "./FileStackIcon.vue"
+import PlayIcon  from "../components/icons/PlayIcon.vue"
+import PauseIcon	from 	"../components/icons/PauseIcon.vue"
+import VolumeIcon from "../components/icons/VolumeIcon.vue"
 
 const { isPlaying, play, pause, volume, setVolume, elapsedTime, song, fetchScratchRadio } = useRadio()
 
@@ -161,20 +157,31 @@ const handleSeek = (event: any) => {
 	emit("seek", percentage * maxTime.value)
 }
 const emit = defineEmits(["seek"])
+
+const songArtLoaded = ref(false)
+watch(
+  () => song.value?.art,
+  () => {
+    songArtLoaded.value = false
+  }
+)
+const displayFavorites = computed(() => {
+  return [...favorites.value].reverse()
+});
 </script>
 <template>
 	<div class="flex min-h-screen flex-col justify-center px-8">
-		<div class="mx-auto flex w-full flex-col gap-4 lg:mt-48 lg:w-2/5">
+		<div class="mx-auto flex w-full flex-col gap-4 sm:w-3/5">
 			<span class="mx-auto hidden text-center text-xs font-light uppercase tracking-widest lg:block">Now Playing</span>
-			<div class="border-slate-100 relative flex flex-1 flex-col-reverse overflow-hidden rounded-lg border bg-white shadow-2xl dark:border-none dark:bg-abyssal/80 dark:text-palladian lg:max-h-72 lg:items-stretch">
-				<div class="relative flex flex-col overflow-hidden pb-8">
+			<div class="border-slate-100 relative flex flex-1 flex-col-reverse sm:grid sm:grid-cols-[1fr_288px] overflow-hidden rounded-lg border bg-white shadow-2xl dark:border-none dark:bg-abyssal/80 dark:text-palladian sm:max-h-72 lg:items-stretch">
+				<div class="relative flex flex-col overflow-hidden pb-8 sm:pb-0">
 					<div class="flex items-center justify-between px-2 lg:p-4">
 						<button @click="toggleFaves" class="max-w-content scale-75 hover:text-ember"><FileStackIcon /></button>
 						<ColorModeToggle class="scale-75 hover:text-ember" />
 					</div>
 					<div class="relative flex-1">
-						<div class="flex h-full w-full flex-col gap-2 text-center">
-							<div class="flex min-h-16 flex-col gap-1">
+						<div class="flex h-full w-full flex-col justify-start gap-2 text-center">
+							<div class="flex sm:mb-2 flex-col gap-1">
 								<p class="min-w-[20ch] font-medium">
 									{{ song.title }}
 								</p>
@@ -183,7 +190,7 @@ const emit = defineEmits(["seek"])
 								</p>
 							</div>
 							<div class="mx-auto flex w-auto items-center justify-center gap-4 px-8">
-								<div class="waveform-container scale-80 relative h-[30px] scale-y-75 lg:w-[300px]" @click="handleSeek">
+								<div class="waveform-container scale-80 relative h-[30px] scale-y-75 sm:w-[300px]" @click="handleSeek">
 									<svg class="waveform-svg" viewBox="0 0 360 48" preserveAspectRatio="none">
 										<!-- Background waveform -->
 										<g class="waveform-bg">
@@ -209,7 +216,7 @@ const emit = defineEmits(["seek"])
 								</div>
 								<span class="text-muted font-mono text-xs tabular-nums">{{ formattedElapsed }}</span>
 							</div>
-							<div class="flex items-center justify-center gap-16">
+							<div class="flex items-center justify-center gap-16 my-2">
 								<div class="flex cursor-pointer items-center justify-center" @click="setVolume(volume === 0 ? 1 : 0)">
 									<Transition name="fade" mode="out-in">
 										<component :is="VolumeIcon" :key="volume === 0 ? 'muted' : 'unmuted'" class="size-5 transition-colors duration-200" />
@@ -231,7 +238,7 @@ const emit = defineEmits(["seek"])
 					<!--favoritesList-->
 					<Transition name="slide-horizontal">
 						<div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto bg-white dark:bg-abyssal">
-							<div v-if="favorites.length > 0" class="flex h-full w-full flex-col justify-between">
+							<div v-if="displayFavorites.length > 0" class="flex h-full w-full flex-col justify-between">
 								<div class="sticky left-0 right-0 top-0 z-30 flex items-start justify-between p-4">
 									<div class="flex items-center justify-start gap-2">
 										<button @click="toggleFaves">
@@ -244,7 +251,7 @@ const emit = defineEmits(["seek"])
 									</button>
 								</div>
 								<ul class="flex flex-1 flex-col gap-1 overflow-auto px-2">
-									<li v-for="(s, i) in favorites" :key="i" class="grid grid-cols-[48px_40px_auto_24px] items-center gap-2 py-2 pr-2 text-[11px]">
+									<li v-for="(s, i) in displayFavorites" :key="i" class="grid grid-cols-[48px_40px_auto_24px] items-center gap-2 py-2 pr-2 text-[11px]">
 										<span class="flex items-start justify-center opacity-60">0{{ i + 1 }}.</span>
 										<div class="size-10 flex-shrink-0 overflow-hidden rounded bg-gray-200 dark:bg-gray-800">
 											<img v-if="s.art" :src="s.art" alt="art" class="h-full w-full object-cover" />
@@ -267,9 +274,12 @@ const emit = defineEmits(["seek"])
 						</div>
 					</Transition>
 				</div>
-				<div class="aspect-square h-full w-full overflow-hidden lg:h-72 lg:w-72">
-					<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="h-full w-full object-cover transition-transform duration-500 lg:object-center" />
-					<div v-else class="flex min-h-72 min-w-72 items-center justify-center" style="background: linear-gradient(135deg, #ff6b35 0%, #ff8e53 50%, #ffb849 100%)">
+				<div class="aspect-square relative h-full w-full sm:w-72 overflow-hidden lg:h-72 lg:w-72 bg-gray-100 dark:bg-gray-800">
+					<Transition name="fade-slow" appear>
+						<NuxtImg v-if="song.art && songArtLoaded" :src="song.art" provider="ipx" class="h-full w-full object-cover transition-transform duration-500 sm:object-center" />
+					</Transition>
+					<img  v-if="song.art" :src="song.art" @load="songArtLoaded = true" class="absolute invisible size-0" />
+					<div v-if="!song.art || (song.art && !songArtLoaded)" class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity duration-300" :class="{'opacity-0': songArtLoaded}" style="background: linear-gradient(135deg, #ff6b35 0%, #ff8e53 50%, #ffb849 100%)">
 						<span class="text-6xl font-bold text-white/90">♪</span>
 					</div>
 				</div>
@@ -278,9 +288,6 @@ const emit = defineEmits(["seek"])
 	</div>
 </template>
 <style>
-.waveform-container {
-}
-
 .waveform-svg {
 	width: 100%;
 	height: 100%;
@@ -290,5 +297,15 @@ const emit = defineEmits(["seek"])
 
 .waveform-svg:hover {
 	opacity: 0.9;
+}
+
+.fade-slow-enter-active,
+.fade-slow-leave-active {
+  transition: opacity 1s ease;
+}
+
+.fade-slow-enter-from,
+.fade-slow-leave-to {
+  opacity: 0;
 }
 </style>
