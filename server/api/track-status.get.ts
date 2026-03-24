@@ -10,7 +10,6 @@ export default defineEventHandler(async () => {
   const now = Date.now()
 
   try {
-
     const statusRes = await $fetch<{ icestats?: { source?: { title?: string } } }>(radioStatusUrl)
     const currentTitle = statusRes.icestats?.source?.title || ''
     
@@ -20,51 +19,69 @@ export default defineEventHandler(async () => {
 
     if (!title || !artist) return { title: title || '', artist: artist || '', art: null }
 
-    // check cache first
     const trackKey = `${artist}-${title}`.toLowerCase()
-    if (trackCache[trackKey]?.art) return trackCache[trackKey]
-
     let art: string | null = null
 
-    // itunes search next
+    // Try iTunes first
     try {
-      const searchTerm = `${artist} ${title}`
-      // console.log(`🔎 iTunes Search (Raw): "${searchTerm}"`)
+      const searchTerm = `${artist} ${title}`.trim()
       
-      const searchRes = await $fetch<any>('https://itunes.apple.com/search', {
-        params: {
-          term: searchTerm,
-          media: 'music',
-          entity: 'song',
-          limit: 1
-        },
-        timeout: 5000,
-        parseResponse: JSON.parse 
+      const params = new URLSearchParams({
+        term: searchTerm,
+        media: 'music',
+        entity: 'musicTrack',
+        limit: '20',
+        country: 'US'
       })
 
-      // console.log('iTunes Full Response:', JSON.stringify(searchRes, null, 2))
+      const url = `https://itunes.apple.com/search?${params.toString()}`
+      
+      const response = await fetch(url)
+      const searchRes = await response.json()
 
       if (searchRes.results && searchRes.results.length > 0) {
-
-        const track = searchRes.results[0]
-        const foundArt = track.artworkUrl100 || track.artworkUrl60 || track.artworkUrl30
+        const reggaeGenres = ['reggae', 'ska', 'rocksteady', 'dub']
+        let track = searchRes.results.find((t: any) => 
+          reggaeGenres.some(genre => 
+            t.primaryGenreName?.toLowerCase().includes(genre)
+          )
+        )
         
-        if (foundArt) {
-          art = foundArt.replace('100x100bb', '600x600bb')
-          // console.log('art variable is now set to:', art)
-        } else {
-          // console.warn('Match found, but no artwork URLs in the result.')
+        if (!track) {
+          track = searchRes.results[0]
         }
-      } else {
-        console.warn('iTunes: No results found in the array.')
+
+        if (track) {
+          const foundArt = track.artworkUrl100 || track.artworkUrl60
+          
+          if (foundArt) {
+            art = foundArt.replace('100x100bb', '600x600bb')
+            console.log('✓ iTunes art found')
+          }
+        }
       }
     } catch (e: any) {
       console.error('iTunes Error:', e.message)
     }
 
-    // then get unsplash fallback
-    if (!art && unsplashAccessKey) {
-      // console.log('Fetching fallback...')
+    // If iTunes succeeded, cache it and return
+    if (art) {
+      const trackData = { artist, title, art, timestamp: now }
+      trackCache[trackKey] = trackData
+      return trackData
+    }
+
+    // iTunes failed - check if we already have a cached Unsplash result
+    const CACHE_TTL = 1000 * 60 * 60 * 24 // 24 hours
+    const cached = trackCache[trackKey]
+    
+    if (cached?.art && (now - cached.timestamp) < CACHE_TTL) {
+      console.log('Using cached Unsplash art (no iTunes result)')
+      return cached
+    }
+
+    // No cache - fetch from Unsplash and cache it
+    if (unsplashAccessKey) {
       try {
         const unsplashRes = await $fetch<any>('https://api.unsplash.com/photos/random', {
           params: {
@@ -79,20 +96,20 @@ export default defineEventHandler(async () => {
         const imageData = Array.isArray(unsplashRes) ? unsplashRes[0] : unsplashRes
         if (imageData?.urls?.regular) {
           art = imageData.urls.regular + '&auto=format&fit=crop&w=600&h=600&q=80'
-          // console.log('unsplash was used')
+          console.log('Unsplash fallback used (will be cached)')
         }
       } catch (e: any) {
-        console.error('unsplash error:', e.message)
+        console.error('Unsplash error:', e.message)
       }
     }
 
-    // cache the data at last
+    // Cache the Unsplash result (or null if both failed)
     const trackData = { artist, title, art, timestamp: now }
     trackCache[trackKey] = trackData
     return trackData
 
   } catch (err) {
-    console.error('global error here!')
+    console.error('Global error:', err)
     return { title: '', artist: '', art: null }
   }
 })
