@@ -48,7 +48,7 @@ export default defineNuxtConfig({
 		// baseURL: '/scratch',
 		head: {
 			link: [
-				{ rel: "preconnect", href: "https://api.spotify.com", crossorigin: "" },
+				{ rel: "preconnect", href: "https://itunes.apple.com", crossorigin: "" },
 				{ rel: "preconnect", href: "https://api.unsplash.com", crossorigin: "" },
 				{ rel: "preconnect", href: "http://scratch-radio.ca:8000" },
 				{ rel: "icon", type: "image/png", href: "/favicon-96x96.png", sizes: "96x96" },

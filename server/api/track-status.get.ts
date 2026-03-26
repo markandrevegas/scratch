@@ -22,7 +22,7 @@ export default defineEventHandler(async () => {
     const trackKey = `${artist}-${title}`.toLowerCase()
     let art: string | null = null
 
-    // Try iTunes first
+    // we try itunes for album art
     try {
       const searchTerm = `${artist} ${title}`.trim()
       
@@ -34,8 +34,7 @@ export default defineEventHandler(async () => {
         country: 'US'
       })
 
-      const url = `https://itunes.apple.com/search?${params.toString()}`
-      
+      const url = 'https://itunes.apple.com/search?' + params.toString()
       const response = await fetch(url)
       const searchRes = await response.json()
 
@@ -50,13 +49,11 @@ export default defineEventHandler(async () => {
         if (!track) {
           track = searchRes.results[0]
         }
-
         if (track) {
           const foundArt = track.artworkUrl100 || track.artworkUrl60
-          
           if (foundArt) {
             art = foundArt.replace('100x100bb', '600x600bb')
-            console.log('✓ iTunes art found')
+            // console.log('art found')
           }
         }
       }
@@ -64,28 +61,28 @@ export default defineEventHandler(async () => {
       console.error('iTunes Error:', e.message)
     }
 
-    // If iTunes succeeded, cache it and return
+    // if no itunes art cache then return
     if (art) {
       const trackData = { artist, title, art, timestamp: now }
       trackCache[trackKey] = trackData
       return trackData
     }
 
-    // iTunes failed - check if we already have a cached Unsplash result
-    const CACHE_TTL = 1000 * 60 * 60 * 24 // 24 hours
+    // when itunes fails check cache for unsplash image
+    const CACHE_TTL = 1000 * 60 * 60 * 24
     const cached = trackCache[trackKey]
     
     if (cached?.art && (now - cached.timestamp) < CACHE_TTL) {
-      console.log('Using cached Unsplash art (no iTunes result)')
+      // console.log('used cached Unsplash art')
       return cached
     }
 
-    // No cache - fetch from Unsplash and cache it
+    // if no unsplash in cache then fetch one
     if (unsplashAccessKey) {
       try {
         const unsplashRes = await $fetch<any>('https://api.unsplash.com/photos/random', {
           params: {
-            query: '70s reggae beach horizon',
+            query: '70s reggae concert',
             orientation: 'squarish',
             count: 1,
             client_id: unsplashAccessKey
@@ -96,14 +93,14 @@ export default defineEventHandler(async () => {
         const imageData = Array.isArray(unsplashRes) ? unsplashRes[0] : unsplashRes
         if (imageData?.urls?.regular) {
           art = imageData.urls.regular + '&auto=format&fit=crop&w=600&h=600&q=80'
-          console.log('Unsplash fallback used (will be cached)')
+          // console.log('unsplash fallback used (will be cached)')
         }
       } catch (e: any) {
-        console.error('Unsplash error:', e.message)
+        console.error('unsplash error here:', e.message)
       }
     }
 
-    // Cache the Unsplash result (or null if both failed)
+    // Ccache what we get from unsplash
     const trackData = { artist, title, art, timestamp: now }
     trackCache[trackKey] = trackData
     return trackData

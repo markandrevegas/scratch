@@ -8,7 +8,7 @@
 }
 @layer base {
 	body {
-		@apply bg-abyssal/20 text-abyssal dark:bg-abyssal/90 dark:text-palladian;
+		@apply bg-abyssal/10 text-abyssal dark:bg-abyssal/90 dark:text-palladian;
 	}
 	progress.progress-bar {
 		@apply h-[3px] overflow-hidden rounded-full;
@@ -18,13 +18,13 @@
 
 	/* Track */
 	progress.progress-bar::-webkit-progress-bar {
-		@apply bg-white;
+		@apply bg-abyssal/20 dark:bg-palladian/20;
 		border-radius: 9999px;
 	}
 
 	/* Fill */
 	progress.progress-bar::-webkit-progress-value {
-		@apply bg-green-400;
+		@apply bg-abyssal dark:bg-palladian;
 		border-radius: 9999px;
 	}
 

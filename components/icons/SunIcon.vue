@@ -1,5 +1,5 @@
 <template>
-	<div className="cursor-pointer select-none p-2 hover:bg-accent rounded-md transition-colors duration-200 flex items-center justify-center" @mouseenter="mouseEnterHandler" @mouseleave="mouseLeaveHandler" role="button" tabindex="0">
+	<div class="cursor-pointer select-none hover:bg-accent rounded-md transition-colors duration-200 flex items-center justify-center" @mouseenter="mouseEnterHandler" @mouseleave="mouseLeaveHandler" role="button" tabindex="0">
 		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 			<circle cx="12" cy="12" r="4" />
 			<Motion is="path" v-for="(item, index) in paths" :key="item" :ref="(el) => (targetList[index] = el)" :d="item" />
