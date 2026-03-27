@@ -1,6 +1,6 @@
-# Nuxt 4 Scratch Radio Player
+# Scratch Radio | Nuxt 4 Audio Player
 
-A single-station web audio player for Scratch Radio built with Nuxt 4, Vue 3, and TailwindCSS.
+A high-fidelity, single-station streaming application built with **Nuxt 4**, **Vue 3**, and **TailwindCSS**. This player is specifically optimized for a mobile-first experience, constrained to **iPhone 14 Pro** dimensions for a focused, app-like feel.
 
 ![Preview of app](./screenshot.png)
 
@@ -8,14 +8,13 @@ A single-station web audio player for Scratch Radio built with Nuxt 4, Vue 3, an
 
 ## Features
 
-- **Live radio stream playback** from Icecast (`http://scratch-radio.ca:8000/stream`)
-- **Track metadata polling** from Icecast status API
-- **Album art lookup via iTunes Search API** (no Spotify dependency)
-- **Unsplash fallback art** when iTunes artwork is unavailable
-- **Favorites playlist** stored in localStorage (like, remove, download JSON)
-- **Mobile-first unified player layout** optimized for phone viewport
-- **Light/Dark mode** with color mode toggle
-- **Componentized UI structure** (`NowPlaying`, `AlbumArt`, `AlbumTitle`, `AudioWaveform`, `AudioControls`)
+* **Nuxt 4 + Vue 3** - Optimized for the latest directory structure and performance
+* **Mobile-First Design** - Layout locked to **iPhone 14 Pro** dimensions (393px x 852px)
+* **iTunes Integration** - Metadata and album art lookups handled on the frontend via iTunes Search API
+* **Advanced Waveform UI** - Custom SVG waveform with 45 dynamic bars, staggered animations, and progress masking
+* **Icecast Streaming** - Real-time client-side audio streaming from `scratch-radio.ca`
+* **Local Favorites** - Persistent "Like" system using local storage
+* **Unsplash Fallback** - High-quality dynamic backgrounds when album art is unavailable
 
 ---
 
@@ -23,66 +22,28 @@ A single-station web audio player for Scratch Radio built with Nuxt 4, Vue 3, an
 
 ```bash
 bun install
-```
 
 ---
 
-## Environment Variables
-
-Only Unsplash is optional now. iTunes lookup does not require API credentials.
-
-Create a `.env` file in the project root if you want fallback images:
-
-```env
-NUXT_UNSPLASH_ACCESS_KEY=your_unsplash_access_key
-```
-
-If `NUXT_UNSPLASH_ACCESS_KEY` is not set, the player still works and will simply return no fallback image when iTunes has no artwork.
-
----
-
-## Running the App
+## Development
 
 ```bash
-bun dev
-```
+bun run dev
 
-Build for production:
+---
+
+## Build
 
 ```bash
 bun run build
-```
 
-Preview production output:
+
+## Preview
 
 ```bash
 bun run preview
-```
 
----
+## Start app
 
-## Usage Notes
-
-- Press **Space** to toggle play/pause.
-- Track title, artist, and elapsed time update while streaming.
-- Click the heart to save the current track to favorites.
-- Open favorites from the top-right button to manage or export your list.
-
----
-
-## Tech Stack
-
-- [Nuxt 4](https://nuxt.com/)
-- [Vue 3](https://vuejs.org/)
-- [TailwindCSS](https://tailwindcss.com/)
-- [Vite](https://vitejs.dev/)
-- [iTunes Search API](https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/index.html)
-- [Unsplash API](https://unsplash.com/developers)
-- [TypeScript](https://www.typescriptlang.org/)
-- [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/)
-
----
-
-## License
-
-MIT License. See [LICENSE](./LICENSE) for details.
+```bash
+bun run start
