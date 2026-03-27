@@ -1,14 +1,14 @@
 <template>
-	<div class="hover:bg-accent flex cursor-pointer select-none items-center justify-center rounded-md transition-colors duration-200" @mouseenter="mouseEnterHandler" @mouseleave="mouseLeaveHandler" role="button" tabindex="0">
+	<div class="cursor-pointer select-none hover:bg-accent rounded-md transition-colors duration-200 flex items-center justify-center" @mouseenter="mouseEnterHandler" @mouseleave="mouseLeaveHandler" role="button" tabindex="0">
 		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-			<Motion is="polygon" ref="target" points="6 3 20 12 6 21 6 3" transform-origin="12 12" />
+			<Motion is="path" ref="target" d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" transform-origin="12 12" />
 		</svg>
 	</div>
 </template>
 
 <script>
 export default {
-	name: "PlayIcon"
+	name: "MoonIcon"
 }
 </script>
 
@@ -17,17 +17,13 @@ import { MotionComponent as Motion, useMotion } from "@vueuse/motion"
 
 const variants = {
 	normal: {
-		x: 0,
 		rotate: 0
 	},
 	animate: {
-		x: [0, -1, 2, 0],
-		rotate: [0, -10, 0, 0],
+		rotate: [0, -10, 10, -5, 5, 0],
 		transition: {
-			duration: 500,
-			times: [0, 0.2, 0.5, 1],
-			stiffness: 260,
-			damping: 20
+			duration: 1200,
+			ease: "easeInOut"
 		}
 	}
 }
@@ -42,7 +38,6 @@ const hoverFn = (type) => {
 	const variant = variants[type]
 	targetInstance.apply(variant)
 }
-
 function mouseEnterHandler() {
 	hoverFn("animate")
 }

@@ -1,24 +1,42 @@
 import { defineNuxtConfig } from 'nuxt/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-// Extend the NuxtConfig type
 declare module 'nuxt/schema' {
   interface NuxtConfig {
-    image?: {
-      quality?: number;
-      domains?: string[];
-      providers?: {
-        [key: string]: {
-          name: string;
-          provider: string;
-          options?: {
-            baseURL?: string;
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  }
+		image?: {
+			alias?: {
+				[key: string]: string;
+			};
+			quality?: number;
+			domains?: string[];
+			providers?: {
+				[key: string]: {
+					name: string;
+					provider: string;
+					options?: {
+						baseURL?: string;
+						[key: string]: unknown;
+					};
+				};
+			};
+		};
+		nitro?: {
+			preset?: string;
+			prerender?: {
+				failOnError?: boolean;
+				crawlLinks?: boolean;
+				routes?: string[];
+				ignore?: string[];
+			};
+			compressPublicAssets?: boolean;
+			minify?: boolean;
+			externals?: {
+				inline?: string[];
+				external?: string[];
+			};
+			[key: string]: any;
+		};
+	}
 
   interface NuxtOptions {
     image?: NuxtConfig['image'];
@@ -27,10 +45,10 @@ declare module 'nuxt/schema' {
 
 export default defineNuxtConfig({
 	app: {
-		baseURL: '/scratch',
+		// baseURL: '/scratch',
 		head: {
 			link: [
-				{ rel: "preconnect", href: "https://api.spotify.com", crossorigin: "" },
+				{ rel: "preconnect", href: "https://itunes.apple.com", crossorigin: "" },
 				{ rel: "preconnect", href: "https://api.unsplash.com", crossorigin: "" },
 				{ rel: "preconnect", href: "http://scratch-radio.ca:8000" },
 				{ rel: "icon", type: "image/png", href: "/favicon-96x96.png", sizes: "96x96" },
@@ -45,6 +63,12 @@ export default defineNuxtConfig({
 	compatibilityDate: "2025-07-15",
 	devtools: { enabled: true },
 	css: ["@/assets/css/tailwind.css"],
+	components: [
+		{
+			path: "~/components",
+			pathPrefix: false
+		}
+	],
 	vite: {
 		plugins: [tsconfigPaths()],
     server: {
@@ -62,7 +86,19 @@ export default defineNuxtConfig({
 				}
 			}
 		},
-		domains: ["placehold.co"],
+		domains: [
+			"placehold.co", 
+			"is1-ssl.mzstatic.com", // iTunes
+			"is2-ssl.mzstatic.com", // iTunes
+			"is3-ssl.mzstatic.com", // iTunes
+			"is4-ssl.mzstatic.com", // iTunes
+			"is5-ssl.mzstatic.com", // iTunes
+			"images.unsplash.com"  // Unsplash
+		],
+		alias: {
+			unsplash: "https://images.unsplash.com",
+			itunes: "https://is1-ssl.mzstatic.com"
+		},
 		quality: 80
 	},
 	runtimeConfig: {
@@ -87,13 +123,10 @@ export default defineNuxtConfig({
 		]
 	},
 	nitro: {
-		preset: "github-pages",
+		preset: "node-server",
     prerender: {
       failOnError: false,
-			crawlLinks: true
-    },
-		externals: {
-			inline: ["ipx", "ofetch"]
-		}
+			crawlLinks: false
+    }
 	}
 })

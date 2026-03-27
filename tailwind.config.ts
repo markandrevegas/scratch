@@ -24,9 +24,19 @@ const config: Config = {
         warmGlow: "#FFB849",
         slate: "#2A3441"
       },
+      screens: {
+        se: '360px',
+        '12pro': '390px',
+        xr: '414px'
+      }
     }
   },
-  plugins: []
+  plugins: [
+    function ({ addVariant }) {
+      addVariant('portrait', '@media (orientation: portrait)')
+      addVariant('landscape', '@media (orientation: landscape)')
+    }
+  ]
 }
 
 export default config

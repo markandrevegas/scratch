@@ -1,0 +1,19 @@
+<script setup lang="ts">
+const emit = defineEmits<{
+	(e: "toggle-faves"): void
+}>()
+</script>
+
+<template>
+	<div class="flex h-16 w-full items-center justify-between px-4">
+		<button class="scale-75">
+			<ColorModeToggle />
+		</button>
+		<div class="w-48">
+			<p class="text-center text-xs">Now Playing</p>
+		</div>
+		<button @click="emit('toggle-faves')">
+			<PlaylistIcon />
+		</button>
+	</div>
+</template>

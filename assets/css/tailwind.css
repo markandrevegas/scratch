@@ -2,13 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
-::root {
+:root {
 	--abyssal: #1b2632;
 	--palladian: #eee9df;
+	--warmglow: #FFB849;
+	--ember: #FF6B35;
 }
+
+@layer components {
+	.waveform-container {
+		width: 300px;
+		height: 24px;
+		position: relative;
+	}
+
+	.waveform-svg {
+		width: 100%;
+		height: 100%;
+		cursor: pointer;
+	}
+
+	.waveform-bar {
+		transform-box: fill-box;
+		transform-origin: center center;
+		will-change: transform;
+		transition: fill 0.3s ease;
+	}
+
+	.bar-bg {
+		@apply fill-abyssal/40 dark:fill-palladian/20;
+	}
+
+	.bar-fg {
+		@apply fill-abyssal dark:fill-palladian;
+	}
+}
+
 @layer base {
 	body {
-		@apply bg-abyssal/20 text-abyssal dark:bg-abyssal/90 dark:text-palladian;
+		@apply bg-abyssal/10 text-abyssal dark:bg-abyssal/90 dark:text-palladian;
 	}
 	progress.progress-bar {
 		@apply h-[3px] overflow-hidden rounded-full;
@@ -18,13 +50,13 @@
 
 	/* Track */
 	progress.progress-bar::-webkit-progress-bar {
-		@apply bg-white;
+		@apply bg-abyssal/20 dark:bg-palladian/20;
 		border-radius: 9999px;
 	}
 
 	/* Fill */
 	progress.progress-bar::-webkit-progress-value {
-		@apply bg-green-400;
+		@apply bg-abyssal dark:bg-palladian;
 		border-radius: 9999px;
 	}
 
@@ -59,5 +91,15 @@
 
 .slide-horizontal-leave-to {
 	transform: translateX(0);
+	opacity: 0;
+}
+
+.fade-slow-enter-active,
+.fade-slow-leave-active {
+	transition: opacity 1s ease;
+}
+
+.fade-slow-enter-from,
+.fade-slow-leave-to {
 	opacity: 0;
 }

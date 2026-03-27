@@ -1,22 +1,33 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from "vue"
 import { useRadio } from "../composables/useScratchRadio"
-import PlayIcon from "../components/PlayIcon.vue"
-import PauseIcon from "../components/PauseIcon.vue"
-import VolumeIcon from "./VolumeIcon.vue"
-import LayersIcon from "./LayersIcon.vue"
-import DeleteIcon from "./DeleteIcon.vue"
-import DownloadIcon from "./DownloadIcon.vue"
-import FileStackIcon from "./FileStackIcon.vue"
+import NowPlaying from "./ui/NowPlaying.vue"
+import AlbumArt from "./ui/AlbumArt.vue"
+import AlbumTitle from "./ui/AlbumTitle.vue"
+import AudioControls from "./ui/AudioControls.vue"
 
 const { isPlaying, play, pause, volume, setVolume, elapsedTime, song, fetchScratchRadio } = useRadio()
 
-const waveformHeights = computed(() => 
-  Array.from({ length: 120 }, () => Math.random() * 36 + 12)
-)
+const waveformHeights = computed(() => {
+  const bars = 45
+  const maxHeight = 34
+
+  return Array.from({ length: bars }, (_, i) => {
+    const x = i / (bars - 1)
+    const envelope = Math.pow(x * (1 - x), 1.1) * 5.0
+
+    const pulseFrequency = 8
+    const rhythm = 0.75 + Math.pow(Math.abs(Math.cos(x * pulseFrequency)), 2) * 0.25
+
+    const noise = 0.8 + Math.random() * 0.4
+    let amplitude = envelope * rhythm * noise
+
+    const finalHeight = Math.max(5, amplitude * maxHeight)
+    return finalHeight
+  })
+})
 
 const hovered = ref(false)
-// const liked = ref(false)
 const liked = computed({
 	get: () => {
 		if (!song.value) return false
@@ -123,14 +134,12 @@ const downloadFavorites = () => {
 const toggleFaves = () => {
 	showFavorites.value = !showFavorites.value
 }
-
 watch(song, async (newSong, oldSong) => {
 	liked.value = !!favorites.value.find((s) => s.title === newSong.title && s.artist === newSong.artist && s.liked)
 	if (newSong && oldSong && newSong.title === oldSong.title && newSong.artist === oldSong.artist) {
 		return
 	}
 })
-
 watch(
 	favorites,
 	(newVal) => {
@@ -154,156 +163,82 @@ onMounted(async () => {
 	if (song.value) {
 		liked.value = !!favorites.value.find((s) => s.title === song.value.title && s.artist === song.value.artist && s.liked)
 	}
-	console.log(song.value.title)
 })
 
-const maxTime = ref(360)
-const progressWidth = computed(() => 
-  `${(elapsedTime.value / maxTime.value) * 360}`
+const maxTime = ref(600)
+const progressWidth = computed(() => `${(elapsedTime.value / maxTime.value) * 360}`)
+const emit = defineEmits(["seek"])
+
+const songArtLoaded = ref(false)
+watch(
+	() => song.value?.art,
+	() => {
+		songArtLoaded.value = false
+	}
 )
-const handleSeek = (event: any) => {
-  const rect = event.currentTarget.getBoundingClientRect()
-  const x = event.clientX - rect.left
-  const percentage = x / rect.width
-  emit('seek', percentage * maxTime.value)
-}
-const emit = defineEmits(['seek'])
+const displayFavorites = computed(() => {
+	return [...favorites.value].reverse()
+})
 </script>
 <template>
-	<div class="flex h-screen flex-col">
-		<div class="mx-auto mt-48 flex w-2/5 flex-col gap-4">
-			<span class="mx-auto my-auto block text-center text-xs font-light uppercase tracking-widest">Now Playing</span>
-			<div class="relative flex max-h-72 items-stretch overflow-hidden rounded-lg border border-slate-200 bg-white shadow-2xl dark:border-none dark:bg-abyssal/80 dark:text-palladian">
-				<div class="relative flex flex-1 overflow-hidden flex-col">
-					<div class="flex items-center justify-between p-4">
-						<button @click="toggleFaves" class="max-w-content hover:text-ember"><FileStackIcon /></button>
-						<ColorModeToggle class="hover:text-ember" />
-					</div>
-					<div class="flex-1 relative">
-						<div class="flex w-full h-full flex-col text-center gap-6">
-							<div class="flex flex-col gap-2 min-h-16">
-								<p class="text-xl font-semibold min-w-[20ch]">
-									{{ song.title }}
-								</p>
-								<p class="text-xs uppercase tracking-wider font-medium min-w-[35ch]">
-									{{ song.artist }}
-								</p>
-							</div>
-							<div class="mx-auto flex w-auto items-center justify-center gap-4 px-8">
-								<div class="waveform-container" @click="handleSeek">
-									<svg class="waveform-svg" viewBox="0 0 360 48" preserveAspectRatio="none">
-										<!-- Background waveform -->
-										<g class="waveform-bg">
-											<rect v-for="(height, i) in waveformHeights" 
-														:key="`bg-${i}`"
-														:x="i * 3" 
-														:y="(48 - height) / 2" 
-														width="2" 
-														:height="height"
-														rx="1"
-														fill="#2A3441" />
-										</g>
-										
-										<!-- Progress mask -->
-										<defs>
-											<clipPath id="progress-clip">
-												<rect :width="progressWidth" height="48" />
-											</clipPath>
-											<linearGradient id="waveform-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-												<stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
-												<stop offset="100%" style="stop-color:#FFB849;stop-opacity:1" />
-											</linearGradient>
-										</defs>
-										
-										<!-- Foreground waveform with gradient -->
-										<g clip-path="url(#progress-clip)">
-											<rect v-for="(height, i) in waveformHeights" 
-														:key="`fg-${i}`"
-														:x="i * 3" 
-														:y="(48 - height) / 2" 
-														width="2" 
-														:height="height"
-														rx="1"
-														fill="url(#waveform-gradient)" />
-										</g>
-									</svg>
-								</div>
-								<span class="font-mono text-xs tabular-nums text-muted">{{ formattedElapsed }}</span>
-							</div>
-							<div class="flex items-center justify-center gap-16">
-								<div class="flex cursor-pointer items-center justify-center" @click="setVolume(volume === 0 ? 1 : 0)">
-									<Transition name="fade" mode="out-in">
-										<component :is="VolumeIcon" :key="volume === 0 ? 'muted' : 'unmuted'" class="size-5 transition-colors duration-200" />
-									</Transition>
-								</div>
-								<div class="flex cursor-pointer items-center justify-center">
-									<Transition name="fade" mode="out-in">
-										<component :is="isPlaying ? PauseIcon : PlayIcon" :key="isPlaying ? 'pause' : 'play'" class="flex size-10 items-center justify-center transition-colors duration-200 hover:text-ember" @click="isPlaying ? pause() : play()" />
-									</Transition>
-								</div>
-								<div @mouseenter="hovered = true" @mouseleave="hovered = false" @click="copySong" class="flex items-center justify-center text-abyssal transition-colors duration-200 hover:cursor-pointer hover:text-red-600">
-									<Transition name="fade" mode="out-in">
-										<PrimeHeartFilled :key="liked ? 'liked' : hovered ? 'hovered' : 'default'" class="size-5 transition-colors duration-200" :class="liked ? 'text-red-600' : hovered ? 'text-red-400' : ''" />
-									</Transition>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!--favoritesList-->
-					<Transition name="slide-horizontal">
-						<div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto bg-white dark:bg-abyssal">
-							<div v-if="favorites.length > 0" class="flex h-full w-full flex-col justify-between">
-								<div class="sticky left-0 right-0 top-0 z-30 flex items-start justify-between p-4">
-									<div class="flex items-center justify-start gap-2">
-										<button @click="toggleFaves">
-											<FileStackIcon />
-										</button>
-										<p>Favorites</p>
-									</div>
-									<button @click="downloadFavorites" class="flex justify-center items-center p-2">
-										<DownloadIcon />
-									</button>
-								</div>
-								<ul class="flex flex-1 flex-col gap-1 overflow-auto px-2">
-									<li v-for="(s, i) in favorites" :key="i" class="grid grid-cols-[48px_auto_24px] items-start py-2 pr-2 text-[11px]">
-										<span class="flex items-start justify-center opacity-60">0{{ i + 1 }}.</span>
-										<span class="inline-block flex-col items-start justify-center text-xs">
-											<span class="block font-semibold leading-3">{{ s.title }}</span>
-											<span class="opacity-60 dark:opacity-90">{{ s.artist }}</span>
-										</span>
-										<DeleteIcon @click="removeFromFavorites(s)" class="opacity-40 hover:text-abyssal hover:opacity-100" />
-									</li>
-								</ul>
-							</div>
-							<div v-else class="flex flex-1 flex-col items-center justify-center gap-2" @click="toggleFaves">
-								<Icon name="mdi-light:heart-off" class="size-8" />
-								<p class="w-1/2 text-center text-[11px] font-light leading-4">Like the song to add to your playlist</p>
-							</div>
-						</div>
-					</Transition>
-				</div>
-				<div class="h-72 w-72">
-					<NuxtImg v-if="song.art" :src="song?.art" provider="ipx" class="h-full w-full object-cover object-center transition-transform duration-500" />
+	<div class="flex flex-col justify-center h-screen bg-gray-100 p-8 dark:bg-gray-900">
+		<div class="relative flex w-full max-w-[393px] mx-auto flex-col items-stretch overflow-hidden rounded-lg bg-white shadow-2xl dark:bg-abyssal/80 h-[616px]">
+			<!--colorMode-->
+			<NowPlaying @toggle-faves="toggleFaves" />
+			<!--album art-->
+			<AlbumArt :song-art="song.art" :song-art-loaded="songArtLoaded" @art-loaded="songArtLoaded = true" />
+			<!--title and favorites-->
+			<AlbumTitle :hovered="hovered" :liked="liked" :title="song.title" :formatted-elapsed="formattedElapsed" :artist="song.artist" @hover="hovered = $event" @copy-song="copySong" />
+			<!--progress and play/pause-->
+			<div class="relative w-full max-w-[520px] flex-1 overflow-hidden pt-8">
+				<div class="flex h-full w-full flex-col justify-center">
+					<!--progressbar-->
+					<AudioWaveform :progress-width="progressWidth" :waveform-heights="waveformHeights" :active="isPlaying" />
+					<!--play/pause-->
+					<AudioControls :is-playing="isPlaying" @toggle-play="isPlaying ? pause() : play()" />
 				</div>
 			</div>
+			<!--favoritesList-->
+			<Transition name="slide-horizontal">
+				<div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto bg-white dark:bg-abyssal">
+					<div v-if="displayFavorites.length > 0" class="flex h-full w-full flex-col justify-between">
+						<div class="sticky left-0 right-0 top-0 z-30 flex items-start justify-between p-4">
+							<div class="flex items-center justify-start gap-2">
+								<p class="text-sm">Favorites</p>
+								<button @click="downloadFavorites" class="flex items-center justify-center p-2">
+								<DownloadIcon />
+							</button>
+							</div>
+							<button @click="toggleFaves">
+								<XIcon class="scale-75" />
+							</button>
+						</div>
+						<ul class="flex flex-1 flex-col gap-1 overflow-auto px-4">
+							<li v-for="(s, i) in displayFavorites" :key="i" class="grid grid-cols-[40px_auto_24px] items-start gap-2 py-2 text-[11px]">
+								<div class="flex-shrink-0 overflow-hidden rounded bg-gray-200 dark:bg-gray-800">
+									<img v-if="s.art" :src="s.art" alt="art" class="h-full w-full object-cover" />
+									<div v-else class="flex h-full w-full items-center justify-center opacity-20">
+										<Icon name="mdi:music" />
+									</div>
+								</div>
+								<span class="flex flex-col gap-1 items-start justify-center truncate text-sm pt-1 pl-2">
+									<span class="block w-full truncate font-medium leading-3">{{ s.title }}</span>
+									<span class="w-full text-xs font-light truncate dark:opacity-90">{{ s.artist }}</span>
+								</span>
+								<DeleteIcon @click="removeFromFavorites(s)" class="cursor-pointer hover:text-red-500 scale-75" />
+							</li>
+						</ul>
+					</div>
+					<div v-else class="flex flex-1 flex-col items-center justify-center gap-2" @click="toggleFaves">
+						<Icon name="mdi-light:heart-off" class="size-8" />
+						<p class="w-1/2 text-center text-[11px] font-light leading-4">Like the song to add to your playlist</p>
+					</div>
+				</div>
+			</Transition>
 		</div>
 	</div>
 </template>
-<style>
-.waveform-container {
-	width: 300px;
-	height: 30px;
-	position: relative;
-}
+<style scoped>
 
-.waveform-svg {
-	width: 100%;
-	height: 100%;
-	cursor: pointer;
-	transition: opacity 0.2s ease;
-}
 
-.waveform-svg:hover {
-	opacity: 0.9;
-}
 </style>

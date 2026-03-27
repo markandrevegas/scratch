@@ -2,109 +2,111 @@
 import { defineEventHandler } from 'h3'
 import { $fetch } from 'ofetch'
 
-const spotifyClientId = process.env.NUXT_SPOTIFY_CLIENT_ID
-const spotifyClientSecret = process.env.NUXT_SPOTIFY_CLIENT_SECRET
 const unsplashAccessKey = process.env.NUXT_UNSPLASH_ACCESS_KEY
-
-interface SpotifyImage {
-  url: string
-  height: number
-  width: number
-}
-
-interface UnsplashResponse {
-  urls: { regular: string }
-  user: { name: string }
-}
-
-// Server-side cache
-let spotifyToken: string | null = null
-let tokenExpiry: number | null = null
-// 2️⃣ Track art cache
-interface TrackCacheItem {
-  artist: string
-  title: string
-  art: string | null
-  timestamp: number
-}
-const trackCache: Record<string, TrackCacheItem> = {}
-const TRACK_CACHE_DURATION = 10_000 // 10 seconds
+const trackCache: Record<string, any> = {}
 
 export default defineEventHandler(async () => {
   const radioStatusUrl = 'http://scratch-radio.ca:8000/status-json.xsl'
   const now = Date.now()
 
   try {
-    // current track fetching
-    const res = await $fetch<{ icestats?: { source?: { title?: string } } }>(radioStatusUrl)
-    const currentTitle = res.icestats?.source?.title || ''
-    const [artist, title] = currentTitle.split(/\s*-\s*/).map(s => s.trim())
-    const now = Date.now()
-    if (!title || !artist) {
-      return { title: title || '', artist: artist || '', art: null }
-    }
+    const statusRes = await $fetch<{ icestats?: { source?: { title?: string } } }>(radioStatusUrl)
+    const currentTitle = statusRes.icestats?.source?.title || ''
+    
+    const parts = currentTitle.split(/\s*-\s*/)
+    const artist = parts[0]?.trim() || ''
+    const title = parts[1]?.trim() || ''
 
-    const trackKey = (artist + '-' + title).toLowerCase()
-    if (trackCache[trackKey] && trackCache[trackKey].art) {
-      return trackCache[trackKey]
-    }
+    if (!title || !artist) return { title: title || '', artist: artist || '', art: null }
 
+    const trackKey = `${artist}-${title}`.toLowerCase()
     let art: string | null = null
 
-    if (spotifyClientId && spotifyClientSecret) {
-      try {
-        // use spotify token cache
-        if (!spotifyToken || !tokenExpiry || now >= tokenExpiry) {
-          const authString = Buffer.from(spotifyClientId + ':' + spotifyClientSecret).toString('base64')
-          const tokenRes = await $fetch<{ access_token: string; expires_in: number }>(
-            'https://accounts.spotify.com/api/token',
-            {
-              method: 'POST',
-              headers: {
-                Authorization: 'Basic ' + authString,
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              body: 'grant_type=client_credentials'
-            }
-          )
-          spotifyToken = tokenRes.access_token
-          tokenExpiry = now + tokenRes.expires_in * 1000 - 5000
-        }
+    // we try itunes for album art
+    try {
+      const searchTerm = `${artist} ${title}`.trim()
+      
+      const params = new URLSearchParams({
+        term: searchTerm,
+        media: 'music',
+        entity: 'musicTrack',
+        limit: '20',
+        country: 'US'
+      })
 
-        // search spotify for track album art
-        const query = encodeURIComponent('track:' + title + ' artist:' + artist)
-        const spotifyRes = await $fetch<{
-          tracks?: { items: { album?: { images?: SpotifyImage[] } }[] }
-        }>('https://api.spotify.com/v1/search?q=$' + query + '&type=track&limit=1', {
-          headers: { Authorization: 'Bearer ' + spotifyToken }
+      const url = 'https://itunes.apple.com/search?' + params.toString()
+      const response = await fetch(url)
+      const searchRes = await response.json()
+
+      if (searchRes.results && searchRes.results.length > 0) {
+        const reggaeGenres = ['reggae', 'ska', 'rocksteady', 'dub']
+        let track = searchRes.results.find((t: any) => 
+          reggaeGenres.some(genre => 
+            t.primaryGenreName?.toLowerCase().includes(genre)
+          )
+        )
+        
+        if (!track) {
+          track = searchRes.results[0]
+        }
+        if (track) {
+          const foundArt = track.artworkUrl100 || track.artworkUrl60
+          if (foundArt) {
+            art = foundArt.replace('100x100bb', '600x600bb')
+            // console.log('art found')
+          }
+        }
+      }
+    } catch (e: any) {
+      console.error('iTunes Error:', e.message)
+    }
+
+    // if no itunes art cache then return
+    if (art) {
+      const trackData = { artist, title, art, timestamp: now }
+      trackCache[trackKey] = trackData
+      return trackData
+    }
+
+    // when itunes fails check cache for unsplash image
+    const CACHE_TTL = 1000 * 60 * 60 * 24
+    const cached = trackCache[trackKey]
+    
+    if (cached?.art && (now - cached.timestamp) < CACHE_TTL) {
+      // console.log('used cached Unsplash art')
+      return cached
+    }
+
+    // if no unsplash in cache then fetch one
+    if (unsplashAccessKey) {
+      try {
+        const unsplashRes = await $fetch<any>('https://api.unsplash.com/photos/random', {
+          params: {
+            query: '70s reggae concert',
+            orientation: 'squarish',
+            count: 1,
+            client_id: unsplashAccessKey
+          },
+          timeout: 5000
         })
 
-        const track = spotifyRes.tracks?.items?.[0]
-        art = track?.album?.images?.[0]?.url ?? null
-        
-      } catch (spotifyErr) {
-        spotifyToken = null
+        const imageData = Array.isArray(unsplashRes) ? unsplashRes[0] : unsplashRes
+        if (imageData?.urls?.regular) {
+          art = imageData.urls.regular + '&auto=format&fit=crop&w=600&h=600&q=80'
+          // console.log('unsplash fallback used (will be cached)')
+        }
+      } catch (e: any) {
+        console.error('unsplash error here:', e.message)
       }
     }
 
-    if (!art && unsplashAccessKey) {
-      try {
-        const unsplashRes = await $fetch<UnsplashResponse[]>(
-          'https://api.unsplash.com/photos/random?query=' + encodeURIComponent('70s reggae') + '&count=1&client_id=' + unsplashAccessKey
-        )
-        art = unsplashRes[0]?.urls?.regular ?? null
-      } catch (err) {
-        console.error('Unsplash fallback failed:', err)
-      }
-    }
-
-    const trackData: TrackCacheItem = { artist, title, art, timestamp: now }
+    // Ccache what we get from unsplash
+    const trackData = { artist, title, art, timestamp: now }
     trackCache[trackKey] = trackData
-
     return trackData
 
-  } catch (err: unknown) {
-    console.error('Failed to fetch track status:', err)
+  } catch (err) {
+    console.error('Global error:', err)
     return { title: '', artist: '', art: null }
   }
 })

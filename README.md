@@ -1,7 +1,6 @@
-# Nuxt 4 Audio Player with Favorites
+# Scratch Radio | Nuxt 4 Audio Player
 
-A modern Nuxt 4 application with Vue 3, Vite, and TailwindCSS.
-This is for only one station, Scratch Radio. It uses Spotify album art using the Spotify API, and Unsplash as fallback.
+A high-fidelity, single-station streaming application built with **Nuxt 4**, **Vue 3**, and **TailwindCSS**. This player is specifically optimized for a mobile-first experience, constrained to **iPhone 14 Pro** dimensions for a focused, app-like feel.
 
 ![Preview of app](./screenshot.png)
 
@@ -9,21 +8,25 @@ This is for only one station, Scratch Radio. It uses Spotify album art using the
 
 ## Features
 
-- **Nuxt 4 + Vue 3** with Vite for fast dev experience
-- **TailwindCSS** for utility-first styling
-- **Color Mode Support** (light/dark)
-- **Client-side streaming** from Icecast (`http://scratch-radio.ca:8000/stream`)
-- **Live track updates** using Icecast JSON API
-- **Spotify album art lookup**
-- **Unsplash fallback**
-- **TypeScript** support for type safety
-- **Prettier & ESLint** for code style and linting
+* **Nuxt 4 + Vue 3** - Optimized for the latest directory structure and performance
+* **Mobile-First Design** - Layout locked to **iPhone 14 Pro** dimensions (393px x 852px)
+* **iTunes Integration** - Metadata and album art lookups handled on the frontend via iTunes Search API
+* **Advanced Waveform UI** - Custom SVG waveform with 45 dynamic bars, staggered animations, and progress masking
+* **Icecast Streaming** - Real-time client-side audio streaming from `scratch-radio.ca`
+* **Local Favorites** - Persistent "Like" system using local storage
+* **Unsplash Fallback** - High-quality dynamic backgrounds when album art is unavailable
 
 ---
 
-## Installation
+## Environment Variables
 
-Clone the repo and install dependencies:
+Create a `.env` file in the root directory and add your Unsplash Access Key for fallback background images
+
+```env
+UNSPLASH_ACCESS_KEY=your_unsplash_access_key
+```
+
+## Installation
 
 ```bash
 bun install
@@ -31,84 +34,28 @@ bun install
 
 ---
 
-## API Keys
-
-This app requires **Spotify** and **Unsplash** API keys to fetch album art and fallback images.
-
-### 1. Spotify API Key
-- Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
-- Create a new app and copy your **Client ID** and **Client Secret**
-- You’ll use these to authenticate and request album art data
-
-### 2. Unsplash API Key
-- Go to [Unsplash Developers](https://unsplash.com/developers)
-- Register a new app and copy the **Access Key**
-- This will be used to fetch fallback background images when no album art is found
-
----
-
-## Environment Variables
-
-Create a `.env` file in the root of your project and add:
-
-```env
-# Spotify API
-SPOTIFY_CLIENT_ID=your_spotify_client_id
-SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
-
-# Unsplash API
-UNSPLASH_ACCESS_KEY=your_unsplash_access_key
-```
-
-After creating or updating `.env`, restart the development server.
-
----
-
-## Running the App
-
-Start the development server:
+## Development
 
 ```bash
 bun dev
 ```
+---
 
-Build for production:
+## Build
 
 ```bash
-bun run build
+bun build
 ```
 
-Preview production build:
+## Preview
 
 ```bash
-bun run preview
+bun preview
 ```
 
----
+## Start app
 
-## 🎧 Usage
+```bash
+bun start
+```
 
-- The app will stream music directly from Icecast
-- Track info updates live from the Icecast JSON API
-- Album art is fetched from Spotify automatically
-- If no Spotify art is found, a random Unsplash image is used as a fallback
-- You can like tracks to build your **favorites playlist** (stored in local storage)
-
----
-
-## 🛠 Tech Stack
-
-- [Nuxt 4](https://nuxt.com/)
-- [Vue 3](https://vuejs.org/)
-- [Vite](https://vitejs.dev/)
-- [TailwindCSS](https://tailwindcss.com/)
-- [Spotify Web API](https://developer.spotify.com/documentation/web-api/)
-- [Unsplash API](https://unsplash.com/developers)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Prettier](https://prettier.io/) + [ESLint](https://eslint.org/)
-
----
-
-## 📄 License
-
-MIT License. See [LICENSE](./LICENSE) for details.
