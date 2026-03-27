@@ -18,32 +18,44 @@ A high-fidelity, single-station streaming application built with **Nuxt 4**, **V
 
 ---
 
+## Environment Variables
+
+Create a `.env` file in the root directory and add your Unsplash Access Key for fallback background images
+
+```env
+UNSPLASH_ACCESS_KEY=your_unsplash_access_key
+```
+
 ## Installation
 
 ```bash
 bun install
+```
 
 ---
 
 ## Development
 
 ```bash
-bun run dev
-
+bun dev
+```
 ---
 
 ## Build
 
 ```bash
-bun run build
-
+bun build
+```
 
 ## Preview
 
 ```bash
-bun run preview
+bun preview
+```
 
 ## Start app
 
 ```bash
-bun run start
+bun start
+```
+
