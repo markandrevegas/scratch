@@ -1,6 +1,6 @@
 <template>
 	<div class="hover:bg-accent flex cursor-pointer select-none items-center justify-center rounded-md transition-colors duration-200" @mouseenter="mouseEnterHandler" @mouseleave="mouseLeaveHandler" role="button" tabindex="0">
-		<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 			<Motion is="g" ref="targetG">
 				<path d="M3 6h18" />
 				<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />

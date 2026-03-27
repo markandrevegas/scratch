@@ -17,8 +17,6 @@ let bgMotionInstances: any[] = []
 let fgMotionInstances: any[] = []
 
 const scaleYSteps = computed(() => {
-	// Create deterministic-ish per-bar motion from the existing heights.
-	// (No Math.random here, so visuals don't "jump" due to recompute.)
 	const maxHeight = 42
 	return props.waveformHeights.map((h, i) => {
 		const normalized = h / maxHeight
@@ -33,7 +31,7 @@ const durations = computed(() => {
 
 const updateAnimation = () => {
   const run = props.active
-  const staggerDelay = 40 // Milliseconds between each bar's start
+  const staggerDelay = 60
 
   bgMotionInstances.forEach((instance, i) => {
     if (!instance) return
@@ -95,77 +93,43 @@ watch(
 </script>
 
 <template>
-  <div class="waveform-container">
-    <svg class="waveform-svg" viewBox="0 0 360 40" preserveAspectRatio="none">
-      <defs>
-        <clipPath id="progress-clip">
-          <rect :width="clipWidth" height="40" x="0" y="0" />
-        </clipPath>
-      </defs>
+	<div class="flex w-full items-center justify-between gap-4 px-4">
+		<div class="waveform-container mx-auto">
+			<svg class="waveform-svg" viewBox="0 0 360 40" preserveAspectRatio="none">
+				<defs>
+					<clipPath id="progress-clip">
+						<rect :width="clipWidth" height="40" x="0" y="0" />
+					</clipPath>
+				</defs>
 
-      <g>
-        <rect
-          v-for="(height, i) in waveformHeights"
-          :key="`bg-${i}`"
-          :x="i * 8"
-          :y="(40 - height) / 2"
-          width="4"
-          :height="height"
-          rx="2"
-          fill="#1a202c" 
-          fill-opacity="0.4"
-          class="waveform-bar"
-          :ref="(el) => { if (el) bgTargets[i] = el }"
-        />
-      </g>
+				<g>
+					<rect
+						v-for="(height, i) in waveformHeights"
+						:key="`bg-${i}`"
+						:x="i * 8"
+						:y="(40 - height) / 2"
+						width="4"
+						:height="height"
+						rx="2"
+						class="waveform-bar bar-bg"
+						:ref="(el) => { if (el) bgTargets[i] = el }"
+					/>
+				</g>
 
-      <g clip-path="url(#progress-clip)">
-        <rect
-          v-for="(height, i) in waveformHeights"
-          :key="`fg-${i}`"
-          :x="i * 8"
-          :y="(40 - height) / 2"
-          width="4"
-          :height="height"
-          rx="2"
-          fill="#1a202c"
-          class="waveform-bar"
-          :ref="(el) => { if (el) fgTargets[i] = el }"
-        />
-      </g>
-    </svg>
-  </div>
+				<g clip-path="url(#progress-clip)">
+					<rect
+						v-for="(height, i) in waveformHeights"
+						:key="`fg-${i}`"
+						:x="i * 8"
+						:y="(40 - height) / 2"
+						width="4"
+						:height="height"
+						rx="2"
+						class="waveform-bar bar-fg"
+						:ref="(el) => { if (el) fgTargets[i] = el }"
+					/>
+				</g>
+			</svg>
+		</div>
+	</div>
 </template>
-
-<style scoped>
-.waveform-container {
-	width: 300px;
-	height: 40px;
-	position: relative;
-}
-
-.waveform-svg {
-	width: 100%;
-	height: 100%;
-	cursor: pointer;
-	transition: opacity 0.2s ease;
-}
-
-.waveform-svg:hover {
-	opacity: 0.9;
-}
-
-.waveform-bg rect {
-	transition: fill 0.3s ease;
-}
-
-.waveform-svg:hover .waveform-bg rect {
-	fill: #5a6578;
-}
-
-.waveform-bar {
-	transform-box: fill-box;
-	transform-origin: center center;
-	will-change: transform;
-}
-</style>
