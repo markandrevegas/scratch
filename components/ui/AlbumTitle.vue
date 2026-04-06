@@ -33,12 +33,12 @@ const emit = defineEmits<{
 				</div>
 			</div>
 			<div class="flex min-h-8 w-full flex-col items-center justify-center gap-1 text-center">
-				<p class="font-medium">{{ title }}</p>
+				<p class="font-medium dark:text-palladian">{{ title }}</p>
 			</div>
-			<div class="flex min-h-8 items-center justify-center dark:text-palladian">
+			<div class="flex min-h-8 items-center justify-center dark:text-muted">
 				<span class="font-mono text-[12px] tabular-nums">{{ formattedElapsed }}</span>
 			</div>
 		</div>
-		<p class="min-h-8 text-[11px] uppercase text-center">{{ artist }}</p>
+		<p class="min-h-8 text-[11px] uppercase text-center dark:text-muted">{{ artist }}</p>
 	</div>
 </template>

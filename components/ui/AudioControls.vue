@@ -13,7 +13,7 @@ const emit = defineEmits<{
 
 <template>
 	<div class="mt-auto flex w-full flex-1 items-center justify-center gap-8 px-4">
-		<div class="flex cursor-pointer items-center justify-center opacity-40">
+		<div class="flex cursor-pointer items-center justify-center opacity-40 dark:text-muted">
 			<SkipPrevious />
 		</div>
 		<div class="flex cursor-pointer items-center justify-center">
@@ -27,7 +27,7 @@ const emit = defineEmits<{
 				/>
 			</Transition>
 		</div>
-		<div class="flex cursor-pointer items-center justify-center opacity-40">
+		<div class="flex cursor-pointer items-center justify-center opacity-40 dark:text-muted">
 			<SkipNext />
 		</div>
 	</div>

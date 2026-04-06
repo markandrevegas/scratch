@@ -18,11 +18,14 @@ const config: Config = {
         widest: '.25em'
       },
       colors: {
-        palladian: "#EEE9DF",
-        abyssal: "#1B2632",
+        palladian: "#E9EDF3",
+        abyssal: "#0E1218",
         ember: "#FF6B35",
         warmGlow: "#FFB849",
-        slate: "#2A3441"
+        slate: "#151B24",
+        slate2: "#1C2431",
+        muted: "#B7C0CD",
+        muted2: "#8A96A6"
       },
       screens: {
         se: '360px',

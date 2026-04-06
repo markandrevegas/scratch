@@ -54,6 +54,9 @@ interface Song {
 }
 const showFavorites = ref(false)
 const favorites = ref<Song[]>([])
+const undoVisible = ref(false)
+const undoTimer = ref<ReturnType<typeof setTimeout> | null>(null)
+const lastDeleted = ref<{ song: Song; index: number } | null>(null)
 // Load favorites and likedSongs from localStorage on mount
 if (typeof window !== "undefined") {
 	const likedSongs = ref<Song[]>([])
@@ -99,6 +102,7 @@ const removeFromFavorites = (targetSong: Song) => {
 	const index = favorites.value.findIndex((s) => s.title === targetSong.title && s.artist === targetSong.artist)
 
 	if (index !== -1) {
+		lastDeleted.value = { song: { ...favorites.value[index] }, index }
 		favorites.value.splice(index, 1) // remove it
 		if (typeof window !== "undefined") {
 			localStorage.setItem("favorites", JSON.stringify(favorites.value))
@@ -108,7 +112,29 @@ const removeFromFavorites = (targetSong: Song) => {
 		if (song.value && song.value.title === targetSong.title && song.value.artist === targetSong.artist) {
 			liked.value = false
 		}
+
+		undoVisible.value = true
+		if (undoTimer.value) clearTimeout(undoTimer.value)
+		undoTimer.value = setTimeout(() => {
+			undoVisible.value = false
+			lastDeleted.value = null
+		}, 3000)
 	}
+}
+const undoDelete = () => {
+	if (!lastDeleted.value) return
+	const { song: deletedSong, index } = lastDeleted.value
+	const insertIndex = Math.min(Math.max(index, 0), favorites.value.length)
+	favorites.value.splice(insertIndex, 0, deletedSong)
+	if (typeof window !== "undefined") {
+		localStorage.setItem("favorites", JSON.stringify(favorites.value))
+	}
+	if (song.value && song.value.title === deletedSong.title && song.value.artist === deletedSong.artist) {
+		liked.value = true
+	}
+	undoVisible.value = false
+	lastDeleted.value = null
+	if (undoTimer.value) clearTimeout(undoTimer.value)
 }
 const downloadFavorites = () => {
 	try {
@@ -181,8 +207,8 @@ const displayFavorites = computed(() => {
 })
 </script>
 <template>
-	<div class="flex flex-col justify-center h-screen bg-gray-100 p-8 dark:bg-gray-900">
-		<div class="relative flex w-full max-w-[393px] mx-auto flex-col items-stretch overflow-hidden rounded-lg bg-white shadow-2xl dark:bg-abyssal/80 h-[616px]">
+	<div class="flex flex-col justify-center h-screen bg-gray-100 p-8 dark:bg-abyssal">
+		<div class="relative flex w-full max-w-[393px] mx-auto flex-col items-stretch overflow-hidden rounded-lg bg-white shadow-2xl dark:bg-slate h-[616px]">
 			<!--colorMode-->
 			<NowPlaying @toggle-faves="toggleFaves" />
 			<!--album art-->
@@ -200,7 +226,7 @@ const displayFavorites = computed(() => {
 			</div>
 			<!--favoritesList-->
 			<Transition name="slide-horizontal">
-				<div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto bg-white dark:bg-abyssal">
+				<div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto bg-white dark:bg-slate">
 					<div v-if="displayFavorites.length > 0" class="flex h-full w-full flex-col justify-between">
 						<div class="sticky left-0 right-0 top-0 z-30 flex items-start justify-between p-4">
 							<div class="flex items-center justify-start gap-2">
@@ -215,7 +241,7 @@ const displayFavorites = computed(() => {
 						</div>
 						<ul class="flex flex-1 flex-col gap-1 overflow-auto px-4">
 							<li v-for="(s, i) in displayFavorites" :key="i" class="grid grid-cols-[40px_auto_24px] items-start gap-2 py-2 text-[11px]">
-								<div class="flex-shrink-0 overflow-hidden rounded bg-gray-200 dark:bg-gray-800">
+								<div class="flex-shrink-0 overflow-hidden rounded bg-gray-200 dark:bg-slate2">
 									<img v-if="s.art" :src="s.art" alt="art" class="h-full w-full object-cover" />
 									<div v-else class="flex h-full w-full items-center justify-center opacity-20">
 										<Icon name="mdi:music" />
@@ -223,7 +249,7 @@ const displayFavorites = computed(() => {
 								</div>
 								<span class="flex flex-col gap-1 items-start justify-center truncate text-sm pt-1 pl-2">
 									<span class="block w-full truncate font-medium leading-3">{{ s.title }}</span>
-									<span class="w-full text-xs font-light truncate dark:opacity-90">{{ s.artist }}</span>
+									<span class="w-full text-xs font-light truncate dark:text-muted">{{ s.artist }}</span>
 								</span>
 								<DeleteIcon @click="removeFromFavorites(s)" class="cursor-pointer hover:text-red-500 scale-75" />
 							</li>
@@ -233,6 +259,15 @@ const displayFavorites = computed(() => {
 						<Icon name="mdi-light:heart-off" class="size-8" />
 						<p class="w-1/2 text-center text-[11px] font-light leading-4">Like the song to add to your playlist</p>
 					</div>
+					<Transition name="fade-slow">
+						<div
+							v-if="undoVisible"
+							class="pointer-events-auto absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full bg-abyssal/90 px-4 py-2 text-[11px] text-palladian shadow-lg dark:bg-slate2"
+						>
+							<span>Removed from favorites</span>
+							<button class="font-semibold text-warmGlow hover:underline" @click="undoDelete">Undo</button>
+						</div>
+					</Transition>
 				</div>
 			</Transition>
 		</div>

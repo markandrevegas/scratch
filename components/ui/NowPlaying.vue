@@ -10,7 +10,7 @@ const emit = defineEmits<{
 			<ColorModeToggle />
 		</button>
 		<div class="w-48">
-			<p class="text-center text-xs">Now Playing</p>
+			<p class="text-center text-xs dark:text-muted">Now Playing</p>
 		</div>
 		<button @click="emit('toggle-faves')">
 			<PlaylistIcon />
