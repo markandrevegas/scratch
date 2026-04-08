@@ -118,7 +118,7 @@ const removeFromFavorites = (targetSong: Song) => {
 		undoTimer.value = setTimeout(() => {
 			undoVisible.value = false
 			lastDeleted.value = null
-		}, 3000)
+		}, 5000)
 	}
 }
 const undoDelete = () => {
@@ -185,6 +185,7 @@ const formattedElapsed = computed(() => {
 })
 
 onMounted(async () => {
+	// undoVisible.value = true
 	fetchScratchRadio()
 	if (song.value) {
 		liked.value = !!favorites.value.find((s) => s.title === song.value.title && s.artist === song.value.artist && s.liked)
@@ -207,8 +208,8 @@ const displayFavorites = computed(() => {
 })
 </script>
 <template>
-	<div class="flex flex-col justify-center h-screen bg-gray-100 p-8 dark:bg-abyssal">
-		<div class="relative flex w-full max-w-[393px] mx-auto flex-col items-stretch overflow-hidden rounded-lg bg-white shadow-2xl dark:bg-slate h-[616px]">
+	<div class="flex flex-col justify-center h-screen bg-gray-100 p-8 dark:bg-abyssal relative">
+		<div class="relative flex w-full max-w-[393px] mx-auto flex-col items-stretch overflow-hidden rounded-lg bg-white shadow-2xl dark:bg-palladian/20 h-[616px]">
 			<!--colorMode-->
 			<NowPlaying @toggle-faves="toggleFaves" />
 			<!--album art-->
@@ -229,11 +230,29 @@ const displayFavorites = computed(() => {
 				<div v-if="showFavorites" class="absolute inset-0 z-50 flex flex-col overflow-auto bg-white dark:bg-slate">
 					<div v-if="displayFavorites.length > 0" class="flex h-full w-full flex-col justify-between">
 						<div class="sticky left-0 right-0 top-0 z-30 flex items-start justify-between p-4">
-							<div class="flex items-center justify-start gap-2">
-								<p class="text-sm">Favorites</p>
-								<button @click="downloadFavorites" class="flex items-center justify-center p-2">
-								<DownloadIcon />
-							</button>
+							<div class="relative min-h-10 flex-1 pr-4">
+								<Transition name="fade-slow" mode="out-in">
+									<div
+										v-if="undoVisible"
+										key="undo-banner"
+										class="absolute inset-0 flex items-center"
+									>
+										<div class="pointer-events-auto inline-flex h-10 items-center gap-3 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-light text-abyssal dark:border-abyssal/30 dark:bg-palladian/20 dark:text-palladian">
+											<span>Removed from favorites</span>
+											<button class="font-semibold text-warmGlow hover:underline" @click="undoDelete">Undo</button>
+										</div>
+									</div>
+									<div
+										v-else
+										key="favorites-toolbar"
+										class="absolute inset-0 flex items-center gap-2"
+									>
+										<p class="text-sm">Favorites</p>
+										<button @click="downloadFavorites" class="flex size-10 items-center justify-center">
+											<DownloadIcon />
+										</button>
+									</div>
+								</Transition>
 							</div>
 							<button @click="toggleFaves">
 								<XIcon class="scale-75" />
@@ -259,15 +278,6 @@ const displayFavorites = computed(() => {
 						<Icon name="mdi-light:heart-off" class="size-8" />
 						<p class="w-1/2 text-center text-[11px] font-light leading-4">Like the song to add to your playlist</p>
 					</div>
-					<Transition name="fade-slow">
-						<div
-							v-if="undoVisible"
-							class="pointer-events-auto absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full bg-abyssal/90 px-4 py-2 text-[11px] text-palladian shadow-lg dark:bg-slate2"
-						>
-							<span>Removed from favorites</span>
-							<button class="font-semibold text-warmGlow hover:underline" @click="undoDelete">Undo</button>
-						</div>
-					</Transition>
 				</div>
 			</Transition>
 		</div>

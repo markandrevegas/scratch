@@ -96,7 +96,7 @@
 
 .fade-slow-enter-active,
 .fade-slow-leave-active {
-	transition: opacity 1s ease;
+	transition: opacity 0.24s ease;
 }
 
 .fade-slow-enter-from,

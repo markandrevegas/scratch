@@ -41,7 +41,7 @@ const scoreTrack = (track: any, artist: string, title: string) => {
   const trackArtist = normalize(track?.artistName || '')
   const trackTitle = normalize(track?.trackName || track?.collectionName || '')
   const genre = normalize(track?.primaryGenreName || '')
-  console.log(trackArtist)
+  // console.log(trackArtist)
 
   let score = 0
   if (trackArtist === targetArtist) score += 3
