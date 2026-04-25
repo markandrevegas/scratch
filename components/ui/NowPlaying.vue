@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import Archive from '../icons/Archive.vue';
+import MoreVertical from '../icons/MoreVertical.vue';
+
 const emit = defineEmits<{
 	(e: "toggle-faves"): void
 }>()
@@ -10,10 +13,10 @@ const emit = defineEmits<{
 			<ColorModeToggle />
 		</button>
 		<div class="w-48">
-			<p class="text-center text-xs dark:text-muted">Now Playing</p>
+			<p class="text-center text-sm dark:text-muted">Now Playing</p>
 		</div>
-		<button @click="emit('toggle-faves')">
-			<PlaylistIcon />
+		<button @click="emit('toggle-faves')" class="scale-75">
+			<Archive />
 		</button>
 	</div>
 </template>
